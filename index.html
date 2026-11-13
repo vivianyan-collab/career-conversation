@@ -6,39 +6,35 @@
   <title>职业发展对话 · 个人练习工作台</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Google Fonts: Inter & Noto Sans SC -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <script>
     tailwind.config = {
       theme: {
         extend: {
           colors: {
-            warmpaper: '#F8F7F4',
-            slateink: '#1E293B',
-            calmteal: {
-              50: '#F0FDFA',
-              100: '#CCFBF1',
-              200: '#99F6E4',
-              600: '#0D9488',
-              700: '#0F766E',
-              800: '#115E59',
-              900: '#134E4A',
+            applebg: '#F5F5F7',
+            applesurface: '#FAFAFC',
+            appletrack: '#E8E8ED',
+            appleink: '#1D1D1F',
+            applesecondary: '#6E6E73',
+            applemuted: '#86868B',
+            pine: {
+              DEFAULT: '#0F5C56',
+              hover: '#0B4641',
             },
-            warmamber: {
-              50: '#FFFBEB',
-              100: '#FEF3C7',
-              200: '#FDE68A',
-              500: '#F59E0B',
-              600: '#D97706',
-              700: '#B45309',
-              800: '#92400E',
-            }
+            staramber: '#B45309'
           },
           fontFamily: {
-            sans: ['"Inter"', '"Noto Sans SC"', '-apple-system', 'BlinkMacSystemFont', '"PingFang SC"', '"Microsoft YaHei"', 'sans-serif'],
+            sans: [
+              '-apple-system',
+              'BlinkMacSystemFont',
+              '"SF Pro Display"',
+              '"SF Pro Text"',
+              '"PingFang SC"',
+              '"Hiragino Sans GB"',
+              '"Microsoft YaHei"',
+              'sans-serif'
+            ],
           }
         }
       }
@@ -46,59 +42,132 @@
   </script>
 
   <style>
+    /* Apple 极简全局排版与色彩基底 */
     body {
-      background-color: #F8F7F4;
-      color: #1E293B;
-      font-family: "Inter", "Noto Sans SC", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+      background-color: #F5F5F7;
+      color: #1D1D1F;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
       -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
     }
 
-    /* 沉静青绿输入焦点光晕 */
-    .editorial-input:focus {
+    /* 隐藏横向滚动条，保留顺滑触控滑动 */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* 0.5px 极细发丝分割线 */
+    .hairline-b {
+      border-bottom: 0.5px solid rgba(0, 0, 0, 0.08);
+    }
+    .hairline-t {
+      border-top: 0.5px solid rgba(0, 0, 0, 0.08);
+    }
+
+    /* 无边框极简输入控件：静止态浅灰块，聚焦态纯白浮起 + 深松石绿柔光 */
+    .apple-field {
+      background-color: #F5F5F7;
+      border: 1px solid transparent;
+      border-radius: 14px;
+      color: #1D1D1F;
+      transition: background-color 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+    .apple-field::placeholder {
+      color: #86868B;
+    }
+    .apple-field:hover {
+      background-color: #EFEFF4;
+    }
+    .apple-field:focus {
       outline: none;
-      border-color: #0F766E;
-      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
+      background-color: #FFFFFF;
+      border-color: rgba(15, 92, 86, 0.35);
+      box-shadow: 0 2px 14px rgba(0, 0, 0, 0.04), 0 0 0 3px rgba(15, 92, 86, 0.08);
     }
 
-    /* 卡片平滑切换动画 */
-    @keyframes gentleReveal {
+    /* 柔和视图入场过渡 */
+    @keyframes appleFadeIn {
       from {
         opacity: 0;
-        transform: translateY(6px);
+        transform: translateY(4px);
       }
       to {
         opacity: 1;
         transform: translateY(0);
       }
     }
-    .animate-reveal {
-      animation: gentleReveal 0.22s ease-out forwards;
+    .animate-apple-in {
+      animation: appleFadeIn 0.22s cubic-bezier(0.22, 1, 0.36, 1) forwards;
     }
 
-    /* 打印与导出 PDF 专属排版 */
+    /* ==================== 瑞士网格刊物级 PDF 打印样式 ==================== */
     @media print {
+      @page {
+        size: A4 portrait;
+        margin: 13mm 13mm 14mm 13mm;
+      }
+
       body {
         background-color: #FFFFFF !important;
-        color: #0F172A !important;
+        color: #1D1D1F !important;
         margin: 0 !important;
         padding: 0 !important;
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
       }
+
+      /* 隐藏所有网页交互外框 */
+      #app-shell,
       .no-print {
         display: none !important;
       }
-      .print-wrapper {
-        max-width: 100% !important;
-        width: 100% !important;
+
+      /* 解除全屏弹窗定位，保证跨页自然排版 */
+      #onepager-modal {
+        position: static !important;
+        inset: auto !important;
+        display: block !important;
+        overflow: visible !important;
+        background: #FFFFFF !important;
         padding: 0 !important;
         margin: 0 !important;
+        width: 100% !important;
+        height: auto !important;
       }
-      .one-pager-card {
+
+      #onepager-modal-dialog {
+        max-width: 100% !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
         box-shadow: none !important;
-        border: 1px solid #CBD5E1 !important;
-        border-radius: 10px !important;
+        border: none !important;
       }
+
+      #onepager-printable {
+        box-shadow: none !important;
+        border: none !important;
+        border-radius: 0 !important;
+        padding: 0 !important;
+      }
+
+      /* 打印时强制锁定瑞士 35% / 65% 不对称双栏网格 */
+      .swiss-print-grid {
+        display: grid !important;
+        grid-template-columns: 35% 1fr !important;
+        gap: 24px !important;
+      }
+
+      .swiss-left-col {
+        border-right: 0.5px solid rgba(0, 0, 0, 0.14) !important;
+        padding-right: 20px !important;
+      }
+
       .print-avoid-break {
         break-inside: avoid;
         page-break-inside: avoid;
@@ -108,87 +177,145 @@
 </head>
 <body class="min-h-screen flex flex-col">
 
-  <!-- ==================== 顶部固定导航区（打印时隐藏） ==================== -->
-  <header class="no-print sticky top-0 z-30 bg-[#F8F7F4]/95 backdrop-blur-md border-b border-[#E2E8F0]">
-    <div class="max-w-[960px] mx-auto px-4 sm:px-6 pt-3.5 pb-3">
-      <!-- 顶部栏：左侧标题 + 右侧姓名/昵称与自动保存胶囊 -->
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div class="flex items-center gap-3">
-          <div class="w-9 h-9 rounded-xl bg-calmteal-700 text-white flex items-center justify-center shadow-2xs shrink-0">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-            </svg>
+  <!-- ==================== 主工作台外框（导出 PDF 时自动隐藏） ==================== -->
+  <div id="app-shell" class="flex-1 flex flex-col">
+
+    <!-- 顶部毛玻璃导航栏 -->
+    <header class="sticky top-0 z-30 bg-[#F5F5F7]/85 backdrop-blur-xl hairline-b">
+      <div class="max-w-[940px] mx-auto px-4 sm:px-6 pt-3.5 pb-0">
+
+        <!-- 第一行：极简品牌标识 + 右侧单行控制区 -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-3.5">
+          <!-- 左侧品牌标题 -->
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="w-8 h-8 rounded-[10px] bg-white shadow-[0_1px_4px_rgba(0,0,0,0.06)] flex items-center justify-center text-[#1D1D1F] shrink-0" id="brand-icon-slot"></div>
+            <div class="min-w-0">
+              <h1 class="text-[16px] sm:text-[17px] font-semibold tracking-[-0.015em] text-[#1D1D1F] leading-snug truncate">
+                职业发展对话 · 个人练习工作台
+              </h1>
+              <p class="text-[12px] text-[#86868B] leading-tight mt-0.5 truncate">
+                Opentalk · 职业发展对话实战与应用
+              </p>
+            </div>
           </div>
-          <div>
-            <h1 class="text-base sm:text-lg font-bold text-slateink tracking-tight leading-tight">
-              职业发展对话 · 个人练习工作台
-            </h1>
-            <p class="text-xs text-slate-500 mt-0.5">
-              基于「三叶草模型」的课前准备、对话框架与课后沉淀
-            </p>
+
+          <!-- 右侧全局工具栏（单行水平对齐） -->
+          <div class="flex items-center justify-between sm:justify-end gap-2.5 shrink-0">
+            <!-- 无边框内联姓名/邮箱编辑区 -->
+            <div class="group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-transparent hover:bg-[#E8E8ED]/80 focus-within:bg-[#E8E8ED] transition-colors">
+              <span class="text-[#86868B] group-hover:text-[#1D1D1F] transition-colors shrink-0" id="header-pencil-slot"></span>
+              <input type="text" id="header-student-name"
+                aria-label="输入姓名或公司邮箱"
+                placeholder="输入姓名或公司邮箱"
+                oninput="onStudentNameChange(this.value)"
+                class="w-36 sm:w-44 text-[13px] font-medium text-[#1D1D1F] placeholder-[#86868B] bg-transparent focus:outline-none truncate" />
+            </div>
+
+            <!-- 极简自动保存微指示 -->
+            <div id="save-status-text" class="text-[12px] text-[#86868B] transition-colors duration-300 whitespace-nowrap select-none">
+              ✓ 已保存
+            </div>
+
+            <!-- 唯一实心品牌主按钮：预览/打印 -->
+            <button type="button" onclick="openOnePagerModal()"
+              class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#0F5C56] hover:bg-[#0B4641] active:scale-[0.99] text-white text-[13px] font-medium transition-all shadow-[0_2px_8px_rgba(15,92,86,0.18)] cursor-pointer whitespace-nowrap shrink-0">
+              <span id="header-print-icon-slot"></span>
+              <span>预览/打印</span>
+            </button>
           </div>
         </div>
 
-        <!-- 右侧可选姓名输入框 + 隐私安心自动保存指示 -->
-        <div class="flex flex-wrap items-center gap-2">
-          <div class="flex items-center bg-white border border-[#E2E8F0] rounded-xl px-2.5 py-1.5 shadow-2xs focus-within:border-calmteal-700">
-            <label for="header-student-name" class="text-xs text-slate-400 mr-1.5 shrink-0">你的姓名/昵称</label>
-            <input type="text" id="header-student-name" placeholder="选填"
-              oninput="onStudentNameChange(this.value)"
-              class="w-24 sm:w-28 text-xs font-medium text-slateink placeholder-slate-300 bg-transparent focus:outline-none" />
+        <!-- 第二行：Apple Segmented Control（阶段分段控制器） -->
+        <div class="pb-3">
+          <div id="stage-segmented-control" role="tablist" aria-label="课程阶段切换"
+            class="inline-flex items-center bg-[#E8E8ED] p-[3px] rounded-[10px] w-full sm:w-auto overflow-x-auto no-scrollbar">
+            <!-- JS 动态渲染 -->
           </div>
+        </div>
 
-          <div id="save-badge" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-[#E2E8F0] text-xs font-medium text-calmteal-700 shadow-2xs">
-            <span id="save-label">✓ 个人笔记已自动保存</span>
-          </div>
+        <!-- 第三行：Safari 风格极简子步骤导航（仅在阶段一展开，阶段二/三彻底隐藏） -->
+        <div id="substep-underline-bar" class="flex items-center gap-6 overflow-x-auto no-scrollbar pt-0.5">
+          <!-- JS 动态渲染 -->
+        </div>
+
+      </div>
+    </header>
+
+    <!-- 主工作区容器 -->
+    <main class="flex-1 max-w-[940px] w-full mx-auto px-4 sm:px-6 pt-7 sm:pt-9 pb-24">
+      <div id="step-view" class="animate-apple-in">
+        <!-- JS 动态渲染当前视图 -->
+      </div>
+    </main>
+
+    <!-- 极简页脚（连续点击 3 次可呼出讲师后台端点配置） -->
+    <footer class="py-6 text-center text-[12px] text-[#86868B] select-none px-4">
+      <span id="footer-secret-trigger" class="cursor-default">
+        Opentalk · 职业发展对话实战与应用 · 使用同一姓名或公司邮箱可在多设备同步最新进度
+      </span>
+    </footer>
+  </div>
+
+  <!-- ==================== 瑞士网格刊物级《职业发展对话准备单》预览与 PDF 导出弹窗 ==================== -->
+  <div id="onepager-modal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-black/35 backdrop-blur-md p-3 sm:p-6 md:p-10">
+    <div id="onepager-modal-dialog" class="max-w-[880px] mx-auto my-1 sm:my-3 animate-apple-in">
+
+      <!-- 悬浮毛玻璃工具栏（打印时自动隐藏） -->
+      <div class="no-print mb-4 bg-white/90 backdrop-blur-xl rounded-full px-4 sm:px-5 py-2.5 flex flex-wrap items-center justify-between gap-2 shadow-[0_8px_30px_rgba(0,0,0,0.08)]">
+        <div class="flex items-center gap-2 pl-1">
+          <span class="w-2 h-2 rounded-full bg-[#0F5C56]"></span>
+          <span class="text-[13px] font-medium text-[#1D1D1F]">高管级《职业发展对话准备单》预览</span>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="copyFullSummaryText()"
+            class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[13px] font-medium text-[#1D1D1F] bg-[#F5F5F7] hover:bg-[#E8E8ED] transition cursor-pointer">
+            <span id="modal-copy-icon"></span>
+            <span>复制纯文本</span>
+          </button>
+
+          <button type="button" onclick="triggerPrintOnePager()"
+            class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-[13px] font-medium text-white bg-[#0F5C56] hover:bg-[#0B4641] transition cursor-pointer">
+            <span id="modal-print-icon"></span>
+            <span>导出 PDF / 打印</span>
+          </button>
+
+          <button type="button" onclick="closeOnePagerModal()" aria-label="关闭预览"
+            class="w-8 h-8 rounded-full flex items-center justify-center text-[#6E6E73] hover:text-[#1D1D1F] hover:bg-[#F5F5F7] transition cursor-pointer">
+            <span id="modal-close-icon"></span>
+          </button>
         </div>
       </div>
 
-      <!-- 8 步自由切换导航栏（无逐步锁定，所有阶段随时点击） -->
-      <nav aria-label="练习步骤导航" class="mt-3">
-        <div id="step-nav-grid" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-1.5">
-          <!-- 由 JS 动态渲染 8 个自由切换标签 -->
-        </div>
-      </nav>
+      <!-- 纯白瑞士刊物主体（无边框大画布） -->
+      <div id="onepager-printable" class="bg-white rounded-[20px] p-6 sm:p-10 md:p-12 shadow-[0_12px_40px_rgba(0,0,0,0.08)]">
+        <!-- JS 动态渲染瑞士网格报告 -->
+      </div>
     </div>
-  </header>
+  </div>
 
-  <!-- ==================== 主内容工作区 ==================== -->
-  <main class="flex-1 max-w-[960px] w-full mx-auto px-4 sm:px-6 pt-6 sm:pt-8 pb-24 print-wrapper">
-    <div id="step-view" class="animate-reveal">
-      <!-- 动态渲染当前步骤内容 -->
-    </div>
-  </main>
+  <!-- ==================== 极简浮层轻提示 Toast ==================== -->
+  <div id="toast-box" class="no-print fixed bottom-7 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-2 pointer-events-none"></div>
 
-  <!-- ==================== 极简页脚（连续点击 3 次版权文字可配置后台归档地址） ==================== -->
-  <footer class="no-print py-6 border-t border-[#E2E8F0] bg-[#F8F7F4] text-center text-xs text-slate-400 select-none">
-    <span id="footer-secret-trigger" class="cursor-default">
-      © 职业发展对话 · 课堂互动练习工作台 · 所有练习内容仅保存在你的本地设备中
-    </span>
-  </footer>
-
-  <!-- ==================== 轻提示 Toast ==================== -->
-  <div id="toast-box" class="no-print fixed bottom-6 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
-
-  <!-- ==================== 隐蔽后台配置弹窗（仅三击页脚时呼出，学员默认不可见） ==================== -->
-  <div id="archive-config-modal" class="no-print fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/40 backdrop-blur-xs p-4">
-    <div class="bg-white rounded-2xl max-w-md w-full p-6 border border-[#E2E8F0] shadow-xl animate-reveal">
-      <h3 class="text-base font-bold text-slateink">课程归档端点配置（讲师高级设置）</h3>
-      <p class="text-xs text-slate-500 mt-1.5 leading-relaxed">
-        粘贴 Google Apps Script 部署后的 Web App URL，工作台将在后台静默同步结构化 JSON 数据。留空则仅保存在本地浏览器。
+  <!-- ==================== 隐蔽后台端点配置弹窗（三击页脚呼出） ==================== -->
+  <div id="archive-config-modal" class="no-print fixed inset-0 z-50 hidden items-center justify-center bg-black/30 backdrop-blur-xs p-4">
+    <div class="bg-white rounded-[20px] max-w-md w-full p-6 sm:p-7 shadow-[0_20px_50px_rgba(0,0,0,0.12)] animate-apple-in">
+      <h3 class="text-[17px] font-semibold text-[#1D1D1F]">课程归档端点配置</h3>
+      <p class="text-[13px] text-[#6E6E73] mt-1.5 leading-relaxed">
+        粘贴 Google Apps Script 部署后的 Web App URL，系统将在后台静默同步 25 列结构化数据。留空则仅保存在本地浏览器。
       </p>
       <div class="mt-4">
-        <label for="config-sheet-url" class="block text-xs font-semibold text-slate-700 mb-1.5">Web App URL</label>
+        <label for="config-sheet-url" class="block text-[12px] font-medium text-[#86868B] mb-1.5">Web App URL</label>
         <input type="url" id="config-sheet-url" placeholder="https://script.google.com/macros/s/.../exec"
-          class="w-full rounded-xl border border-[#E2E8F0] bg-[#F8F7F4] px-3.5 py-2.5 text-xs text-slateink editorial-input" />
+          class="w-full px-3.5 py-2.5 text-[13px] apple-field" />
       </div>
-      <div class="mt-5 flex items-center justify-end gap-2">
+      <div class="mt-6 flex items-center justify-end gap-2">
         <button type="button" onclick="closeArchiveConfig()"
-          class="px-3.5 py-2 rounded-xl text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 transition">
+          class="px-4 py-2 rounded-full text-[13px] font-medium text-[#6E6E73] bg-[#F5F5F7] hover:bg-[#E8E8ED] transition cursor-pointer">
           取消
         </button>
         <button type="button" onclick="saveArchiveConfig()"
-          class="px-4 py-2 rounded-xl text-xs font-semibold text-white bg-calmteal-700 hover:bg-calmteal-800 transition">
+          class="px-4 py-2 rounded-full text-[13px] font-medium text-white bg-[#0F5C56] hover:bg-[#0B4641] transition cursor-pointer">
           保存配置
         </button>
       </div>
@@ -196,19 +323,19 @@
   </div>
 
   <!-- ==================== 清空重置二次确认弹窗 ==================== -->
-  <div id="reset-confirm-modal" class="no-print fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/40 backdrop-blur-xs p-4">
-    <div class="bg-white rounded-2xl max-w-md w-full p-6 border border-[#E2E8F0] shadow-xl animate-reveal">
-      <h3 class="text-base font-bold text-slateink">确认清空当前练习内容？</h3>
-      <p class="text-sm text-slate-600 mt-2 leading-relaxed">
-        清空后，所有步骤中已填写的笔记、价值观与技能卡牌分类将被重置。建议先点击「复制完整文本摘要」或「打印 / 保存为 PDF」留存副本。
+  <div id="reset-confirm-modal" class="no-print fixed inset-0 z-50 hidden items-center justify-center bg-black/30 backdrop-blur-xs p-4">
+    <div class="bg-white rounded-[20px] max-w-md w-full p-6 sm:p-7 shadow-[0_20px_50px_rgba(0,0,0,0.12)] animate-apple-in">
+      <h3 class="text-[17px] font-semibold text-[#1D1D1F]">清空当前所有练习内容？</h3>
+      <p class="text-[13px] text-[#6E6E73] mt-2 leading-relaxed">
+        清空后，三个阶段中的所有填写记录、价值观星标与技能卡牌分类将被重置。建议先点击「预览/打印」导出 PDF 留存副本。
       </p>
-      <div class="mt-6 flex items-center justify-end gap-2.5">
+      <div class="mt-6 flex items-center justify-end gap-2">
         <button type="button" onclick="closeResetModal()"
-          class="px-4 py-2 rounded-xl text-sm font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 transition">
+          class="px-4 py-2 rounded-full text-[13px] font-medium text-[#6E6E73] bg-[#F5F5F7] hover:bg-[#E8E8ED] transition cursor-pointer">
           取消
         </button>
         <button type="button" onclick="confirmResetAll()"
-          class="px-4 py-2 rounded-xl text-sm font-semibold text-white bg-rose-600 hover:bg-rose-700 transition">
+          class="px-4 py-2 rounded-full text-[13px] font-medium text-white bg-[#D70015] hover:bg-[#B80012] transition cursor-pointer">
           确认清空
         </button>
       </div>
@@ -221,44 +348,79 @@
     // =========================================================================
     const SHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbx5augAG0F0ssPUCNjU5h6ANb4fQaDgEdff1sbPsckDEzs_i2U2slwe250bEvhoDeFh/exec";
 
-    // 本地存储键名
-    const STORAGE_DATA_KEY = "ccw_clover_workbench_v3";
-    const STORAGE_UID_KEY = "ccw_student_uid_v3";
-    const STORAGE_SHEET_KEY = "ccw_archive_endpoint_v3";
+    // 本地存储键名（沿用既有键名，无缝继承已填写的数据）
+    const STORAGE_DATA_KEY = "ccw_opentalk_workbench_v4";
+    const STORAGE_UID_KEY = "ccw_anon_uid_v4";
+    const STORAGE_SHEET_KEY = "ccw_archive_endpoint_v4";
 
     // =========================================================================
-    // 1. 8 个自由切换步骤定义
+    // 1. Apple SF Symbols 风格 1.5px 极细单色线性 SVG 图标库（全局零系统 Emoji）
     // =========================================================================
-    const NAV_STEPS = [
-      { id: 1, label: "1. 明确谈话目标" },
-      { id: 2, label: "2. 认知自我·价值" },
-      { id: 3, label: "3. 认知自我·兴趣" },
-      { id: 4, label: "4. 认知自我·能力" },
-      { id: 5, label: "5. 职业方向·SMART" },
-      { id: 6, label: "6. 对话中·提纲" },
-      { id: 7, label: "7. 对话后·沉淀" },
-      { id: 8, label: "8. 对话一页纸" }
+    function svgIcon(name, sizeClass = "w-4 h-4") {
+      const paths = {
+        compass: `<circle cx="12" cy="12" r="9"/><polygon points="15.5 8.5 13.8 13.8 8.5 15.5 10.2 10.2 15.5 8.5"/>`,
+        pencil: `<path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/><path d="m14.5 5.5 3 3"/>`,
+        printer: `<path d="M6 9V3h12v6"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="7" rx="1"/>`,
+        copy: `<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>`,
+        close: `<path d="M18 6 6 18"/><path d="m6 6 12 12"/>`,
+        target: `<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/>`,
+        shuffle: `<path d="M16 3h5v5"/><path d="M4 20 21 3"/><path d="M21 16v5h-5"/><path d="m15 15 6 6"/><path d="m4 4 5 5"/>`,
+        rocket: `<path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/>`,
+        sliders: `<line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="2" y1="14" x2="6" y2="14"/><line x1="10" y1="8" x2="14" y2="8"/><line x1="18" y1="16" x2="22" y2="16"/>`,
+        sprout: `<path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/>`,
+        users: `<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>`,
+        star: `<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>`,
+        starFilled: `<polygon fill="currentColor" points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>`,
+        search: `<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>`,
+        sparkles: `<path d="M12 3v3m0 12v3M3 12h3m12 0h3M5.6 5.6l2.1 2.1m8.6 8.6 2.1 2.1m0-12.8-2.1 2.1m-8.6 8.6-2.1 2.1"/><circle cx="12" cy="12" r="2.5"/>`,
+        bolt: `<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>`,
+        battery: `<rect x="2" y="7" width="18" height="10" rx="2"/><line x1="22" y1="11" x2="22" y2="13"/><line x1="6" y1="10" x2="6" y2="14"/>`,
+        archive: `<rect x="3" y="4" width="18" height="4" rx="1"/><path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8"/><line x1="10" y1="12" x2="14" y2="12"/>`,
+        clock: `<circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/>`,
+        lightbulb: `<path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/>`,
+        heart: `<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>`,
+        link: `<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>`,
+        check: `<polyline points="20 6 9 17 4 12"/>`,
+        arrowRight: `<line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>`,
+        arrowLeft: `<line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>`,
+        clover: `<circle cx="12" cy="7.5" r="3.5"/><circle cx="8" cy="13.5" r="3.5"/><circle cx="16" cy="13.5" r="3.5"/><path d="M12 16v5"/>`
+      };
+      const inner = paths[name] || paths.compass;
+      return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="${sizeClass} shrink-0" aria-hidden="true">${inner}</svg>`;
+    }
+
+    // =========================================================================
+    // 2. 双层级导航配置（阶段一含 5 个子步骤；阶段二、三直接渲染单页）
+    // =========================================================================
+    const STAGES = [
+      { id: "stage1", label: "阶段一：事前准备" },
+      { id: "stage2", label: "阶段二：开展对话" },
+      { id: "stage3", label: "阶段三：事后跟进" }
     ];
 
-    // Step 1 谈话目标灵感胶囊
+    const STAGE1_SUBSTEPS = [
+      { id: "1.1", label: "1.1 谈话目标" },
+      { id: "1.2", label: "1.2 价值观" },
+      { id: "1.3", label: "1.3 兴趣" },
+      { id: "1.4", label: "1.4 优势能力" },
+      { id: "1.5", label: "1.5 职业方向" }
+    ];
+
+    // 1.1 谈话目标灵感胶囊（纯文本 + SF 风格单色图标）
     const STEP1_GOAL_PILLS = [
-      "🎯 对齐晋升标准与当前差距",
-      "🧭 探索内部轮岗或转岗可能性",
-      "🚀 争取更有挑战性的关键项目",
-      "⚖️ 梳理当前工作瓶颈与优先级",
-      "🌱 明确未来半年的能力提升重点",
-      "🤝 了解团队接下来的业务新机会"
+      { label: "对齐晋升标准与当前差距", icon: "target" },
+      { label: "探索内部轮岗或转岗可能性", icon: "shuffle" },
+      { label: "争取更有挑战性的关键项目", icon: "rocket" },
+      { label: "梳理当前工作瓶颈与优先级", icon: "sliders" },
+      { label: "明确未来半年的能力提升重点", icon: "sprout" },
+      { label: "了解团队接下来的业务新机会", icon: "users" }
     ];
 
     // =========================================================================
-    // 2. 完整 112 个核心价值观词库（按 4 大维度无重复划分）
+    // 3. 1.2 核心价值观词库（完整收录全部 111 个独特价值观词汇，按 4 维度聚类）
     // =========================================================================
     const VALUE_GROUPS = [
-      {
-        id: "all",
-        label: "全部 (112)",
-        words: []
-      },
+      { id: "all", label: "全部", words: [] },
       {
         id: "drive",
         label: "成就与驱动",
@@ -266,7 +428,7 @@
           "成就", "进取", "争做第一", "卓越", "业绩", "成功",
           "挑战", "勇气", "大胆", "承担风险", "领导力", "权威",
           "力量", "积极主动", "激励", "激情", "热情", "辉煌",
-          "远见", "认可", "人气", "果断", "财富", "资源丰富"
+          "远见", "认可", "人气", "财富", "资源丰富"
         ]
       },
       {
@@ -305,7 +467,7 @@
       }
     ];
 
-    const ALL_112_VALUES = Array.from(new Set([
+    const ALL_VALUES_LIST = Array.from(new Set([
       ...VALUE_GROUPS[1].words,
       ...VALUE_GROUPS[2].words,
       ...VALUE_GROUPS[3].words,
@@ -313,7 +475,7 @@
     ]));
 
     // =========================================================================
-    // 3. 完整 51 张《诺德尔动力技能卡牌》数据
+    // 4. 1.4 完整 51 张《诺德尔动力技能卡牌》数据
     // =========================================================================
     const MOTIVATED_SKILLS_51 = [
       { id: 1, title: "作为联络协调人", desc: "代表、协助，作为个人或团队之间的桥梁" },
@@ -370,11 +532,11 @@
     ];
 
     const PREF_LEVELS = [
-      { id: "love", label: "非常喜欢使用", tip: "至少 5 张", keyNum: "1", badgeClass: "bg-calmteal-700 text-white border-calmteal-700" },
-      { id: "like_lot", label: "很喜欢使用", tip: "", keyNum: "2", badgeClass: "bg-calmteal-600 text-white border-calmteal-600" },
-      { id: "like", label: "喜欢使用", tip: "", keyNum: "3", badgeClass: "bg-teal-50 text-calmteal-800 border-teal-200" },
-      { id: "avoid", label: "尽量不想用", tip: "", keyNum: "4", badgeClass: "bg-amber-50 text-warmamber-800 border-amber-200" },
-      { id: "dislike", label: "非常不喜欢使用", tip: "至少 5 张", keyNum: "5", badgeClass: "bg-rose-50 text-rose-800 border-rose-200" }
+      { id: "love", label: "非常喜欢使用", shortLabel: "非常喜欢", tip: "建议 ≥5 张", keyNum: "1" },
+      { id: "like_lot", label: "很喜欢使用", shortLabel: "很喜欢", tip: "", keyNum: "2" },
+      { id: "like", label: "喜欢使用", shortLabel: "喜欢", tip: "", keyNum: "3" },
+      { id: "avoid", label: "尽量不想用", shortLabel: "尽量不想", tip: "", keyNum: "4" },
+      { id: "dislike", label: "非常不喜欢使用", shortLabel: "非常不喜欢", tip: "建议 ≥5 张", keyNum: "5" }
     ];
 
     const PROF_LEVELS = [
@@ -383,7 +545,7 @@
       { id: "developing", label: "尚未达到期望水平" }
     ];
 
-    // Step 5 初始职业发展方向胶囊 & SMART 五维自检胶囊
+    // 1.5 初始职业发展方向胶囊 & SMART 五维自检胶囊
     const STEP5_DIRECTION_PILLS = [
       "我想晋升到下一职级",
       "我想走专业专家深耕路线",
@@ -393,25 +555,25 @@
     ];
 
     const SMART_CHECK_ITEMS = [
-      { id: "S", label: "S 具体明确（做什么/什么角色）" },
-      { id: "M", label: "M 可衡量（有数量/结果标准）" },
-      { id: "A", label: "A 可实现（跳一跳够得着）" },
-      { id: "R", label: "R 相关性（契合三叶草与业务需求）" },
-      { id: "T", label: "T 有时限（有明确时间节点）" }
+      { id: "S", label: "S 具体的" },
+      { id: "M", label: "M 可衡量" },
+      { id: "A", label: "A 可实现" },
+      { id: "R", label: "R 相关的" },
+      { id: "T", label: "T 有时限" }
     ];
 
-    // Step 6 寻求帮助 6 维度
-    const STEP6_HELP_PILLS = [
-      { id: "time", label: "时间", hint: "如：每周预留固定学习时间或试点项目精力分配" },
-      { id: "ideas", label: "理念", hint: "如：请上级帮忙诊断能力盲区与优先级判断" },
-      { id: "opportunities", label: "机会", hint: "如：争取关键项目负责人、跨团队历练或轮岗机会" },
-      { id: "emotional", label: "情绪", hint: "如：在角色转型期获得信任授权与定期正向反馈" },
-      { id: "connections", label: "关系", hint: "如：引荐相关业务负责人或资深导师进行交流" },
-      { id: "experience", label: "经验", hint: "如：请上级分享过往类似职级跃迁的实战方法" }
+    // 阶段二：寻求帮助 6 维度（单色 SF 图标 + 极简标签）
+    const STAGE2_HELP_PILLS = [
+      { id: "time", label: "时间", icon: "clock", hint: "每周预留固定学习时间或试点项目精力分配" },
+      { id: "ideas", label: "理念", icon: "lightbulb", hint: "请上级帮忙诊断能力盲区与优先级判断" },
+      { id: "opportunities", label: "机会", icon: "rocket", hint: "争取关键项目负责人、跨团队历练或轮岗机会" },
+      { id: "emotional", label: "情绪", icon: "heart", hint: "在角色转型期获得信任授权与定期正向反馈" },
+      { id: "connections", label: "关系", icon: "link", hint: "引荐相关业务负责人或资深导师进行交流" },
+      { id: "experience", label: "经验", icon: "compass", hint: "请上级分享过往类似职级跃迁的实战方法" }
     ];
 
     // =========================================================================
-    // 4. 状态管理与本地存储
+    // 5. 状态管理、跨设备确定性 UID 与本地存储
     // =========================================================================
     function getTodayISO() {
       const d = new Date();
@@ -423,22 +585,40 @@
       return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")} ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}:${String(d.getSeconds()).padStart(2, "0")}`;
     }
 
-    function getOrCreateStudentUID() {
-      try {
-        let uid = window.localStorage.getItem(STORAGE_UID_KEY);
-        if (!uid) {
-          uid = "stu_" + Date.now().toString(36) + "_" + Math.random().toString(36).substring(2, 8);
-          window.localStorage.setItem(STORAGE_UID_KEY, uid);
+    // 确定性哈希：相同姓名/邮箱在不同设备上严格生成相同的 student_uid
+    function computeDeterministicUID(rawName) {
+      const normalized = (rawName || "").trim().toLowerCase().replace(/\s+/g, "");
+      if (!normalized) {
+        try {
+          let anon = window.localStorage.getItem(STORAGE_UID_KEY);
+          if (!anon) {
+            anon = "stu_anon_" + Date.now().toString(36) + "_" + Math.random().toString(36).substring(2, 7);
+            window.localStorage.setItem(STORAGE_UID_KEY, anon);
+          }
+          return anon;
+        } catch (e) {
+          return "stu_session_" + Math.random().toString(36).substring(2, 9);
         }
-        return uid;
-      } catch (e) {
-        return "stu_session_" + Math.random().toString(36).substring(2, 10);
       }
+
+      let h1 = 0x811c9dc5;
+      let h2 = 0x01000193;
+      for (let i = 0; i < normalized.length; i++) {
+        const ch = normalized.charCodeAt(i);
+        h1 ^= ch;
+        h1 = Math.imul(h1, 0x01000193);
+        h2 ^= ch;
+        h2 = Math.imul(h2, 0x85ebca6b);
+      }
+      const hex1 = (h1 >>> 0).toString(16).padStart(8, "0");
+      const hex2 = (h2 >>> 0).toString(16).padStart(8, "0");
+      return `stu_u_${hex1}${hex2}`;
     }
 
     function createDefaultState() {
       return {
-        currentStep: 1,
+        activeStage: "stage1",
+        activeSubstep: "1.1",
         studentName: "",
         step1: {
           selectedPills: [],
@@ -452,43 +632,49 @@
         step3: {
           q1Flow: "",
           q2Curiosity: "",
-          q3Drain: ""
+          q3Drain: "",
+          interestSummary: ""
         },
         step4: {
-          // ratings: { [skillId]: { pref: 'love'|'like_lot'|'like'|'avoid'|'dislike', prof: 'highly_proficient'|'proficient'|'developing' } }
           ratings: {},
           abilitySummary: ""
         },
         step5: {
           initialDirection: "",
           smartGoal: "",
-          smartChecks: [] // ['S','M','A','R','T']
+          smartChecks: []
         },
-        step6: {
+        stage2: {
           currentStatus: "",
           devPath: "",
           helpDimensions: [],
           helpDetail: ""
         },
-        step7: {
+        stage3: {
           skillsCurrent: "",
           skillsFuture: "",
           skillsLongTerm: ""
         },
-        step8: {
-          planDate: getTodayISO()
+        onePager: {
+          planDate: getTodayISO(),
+          liveNotes: ""
         }
       };
     }
 
     let appState = createDefaultState();
 
-    // UI 临时交互状态
+    // UI 临时状态
     let activeValueGroup = "all";
     let valueSearchQuery = "";
-    let step4ViewMode = "swipe"; // 'swipe' | 'grid'
+    let step4ViewMode = "swipe"; // 'swipe' | 'list'
     let step4SwipeCardId = 1;
-    let step4GridFilter = "all"; // 'all' | 'unclassified' | prefId
+    let step4ListFilter = "all"; // 'all' | 'unclassified' | 'classified'
+    let step4SearchQuery = "";
+
+    function stripLegacyEmojis(str) {
+      return String(str || "").replace(/^[^\u4e00-\u9fa5A-Za-z0-9]+/, "").trim();
+    }
 
     function loadLocalState() {
       try {
@@ -496,21 +682,28 @@
         if (!raw) return;
         const parsed = JSON.parse(raw);
         const base = createDefaultState();
+        const migratedPills = Array.isArray(parsed.step1?.selectedPills)
+          ? parsed.step1.selectedPills.map(stripLegacyEmojis).filter(Boolean)
+          : [];
+
         appState = {
           ...base,
           ...parsed,
-          step1: { ...base.step1, ...(parsed.step1 || {}) },
+          step1: {
+            ...base.step1,
+            ...(parsed.step1 || {}),
+            selectedPills: migratedPills
+          },
           step2: { ...base.step2, ...(parsed.step2 || {}) },
           step3: { ...base.step3, ...(parsed.step3 || {}) },
           step4: { ...base.step4, ...(parsed.step4 || {}) },
           step5: { ...base.step5, ...(parsed.step5 || {}) },
-          step6: { ...base.step6, ...(parsed.step6 || {}) },
-          step7: { ...base.step7, ...(parsed.step7 || {}) },
-          step8: { ...base.step8, ...(parsed.step8 || {}) }
+          stage2: { ...base.stage2, ...(parsed.stage2 || {}) },
+          stage3: { ...base.stage3, ...(parsed.stage3 || {}) },
+          onePager: { ...base.onePager, ...(parsed.onePager || {}) }
         };
       } catch (e) {}
 
-      // 将快刷卡片初始定位到第一张尚未分类的卡片
       const firstUnclassified = MOTIVATED_SKILLS_51.find(s => !appState.step4.ratings[s.id]?.pref);
       step4SwipeCardId = firstUnclassified ? firstUnclassified.id : 1;
     }
@@ -522,15 +715,14 @@
     }
 
     // =========================================================================
-    // 5. 诺德尔四象限能力诊断实时计算引擎
+    // 6. 核心分析计算：诺德尔四象限 + 1.5 三叶草模型严选提取
     // =========================================================================
     function computeNodelQuadrants() {
       const ratings = appState.step4.ratings || {};
-      const motivated = [];     // ⚡ 动力技能（核心王牌区）
-      const developmental = []; // 🌱 发展技能（潜力成长区）
-      const burnout = [];       // 🔋 耗竭技能（警惕厌烦区）
-      const lowPriority = [];   // 📦 非重点技能（低优规避区）
-      const supporting = [];    // 喜欢使用 + 熟练/非常熟练（稳健支撑）
+      const motivated = [];     // 动力技能
+      const developmental = []; // 发展技能
+      const burnout = [];       // 耗竭技能
+      const lowPriority = [];   // 非重点技能
 
       MOTIVATED_SKILLS_51.forEach(skill => {
         const r = ratings[skill.id];
@@ -551,16 +743,64 @@
           burnout.push(skill.title);
         } else if (isNegPref && isDeveloping) {
           lowPriority.push(skill.title);
-        } else if (r.pref === "like" && isProficient) {
-          supporting.push(skill.title);
         }
       });
 
-      return { motivated, developmental, burnout, lowPriority, supporting };
+      return { motivated, developmental, burnout, lowPriority };
+    }
+
+    function getCloverAnchors() {
+      // 1. 核心价值（源自 1.2）
+      const s2 = appState.step2;
+      let valuesList = [];
+      let valueSourceNote = "";
+      if (s2.top3Values.length > 0) {
+        valuesList = s2.top3Values;
+        valueSourceNote = "Top 3 底线星标";
+      } else if (s2.selectedValues.length > 0) {
+        valuesList = s2.selectedValues.slice(0, 3);
+        valueSourceNote = "已选前 3 项（可在 1.2 点亮星标）";
+      }
+
+      // 2. 内在兴趣（源自 1.3）
+      const s3 = appState.step3;
+      let interestText = "";
+      let interestIsFallback = false;
+      if (s3.interestSummary && s3.interestSummary.trim()) {
+        interestText = s3.interestSummary.trim();
+      } else if (s3.q1Flow && s3.q1Flow.trim()) {
+        interestText = s3.q1Flow.trim();
+        interestIsFallback = true;
+      }
+
+      // 3. 优势能力（源自 1.4，严格只提取「非常熟练」）
+      const ratings = appState.step4.ratings || {};
+      const highlyProficientSkills = MOTIVATED_SKILLS_51
+        .filter(skill => ratings[skill.id]?.prof === "highly_proficient")
+        .map(skill => {
+          const pref = ratings[skill.id]?.pref || "";
+          const isLike = pref === "love" || pref === "like_lot" || pref === "like";
+          const isDislike = pref === "avoid" || pref === "dislike";
+          return {
+            id: skill.id,
+            title: skill.title,
+            tag: isLike ? "王牌动力" : isDislike ? "警惕耗竭" : "非常熟练",
+            isAce: isLike,
+            isBurnoutRisk: isDislike
+          };
+        });
+
+      return {
+        valuesList,
+        valueSourceNote,
+        interestText,
+        interestIsFallback,
+        highlyProficientSkills
+      };
     }
 
     // =========================================================================
-    // 6. 静默后台归档（学员端绝不出现任何“提交给导师”提示）
+    // 7. Google Sheet 后台静默双写（100% 兼容现有 25 列 Apps Script）
     // =========================================================================
     function getEffectiveArchiveUrl() {
       if (SHEET_WEBAPP_URL && SHEET_WEBAPP_URL.trim()) {
@@ -585,37 +825,58 @@
 
     function buildArchivePayload() {
       const quads = computeNodelQuadrants();
-      const helpLabels = STEP6_HELP_PILLS
-        .filter(p => appState.step6.helpDimensions.includes(p.id))
+      const clover = getCloverAnchors();
+      const helpLabels = STAGE2_HELP_PILLS
+        .filter(p => appState.stage2.helpDimensions.includes(p.id))
         .map(p => p.label)
         .join("、");
 
+      const summaryTrim = (appState.step3.interestSummary || "").trim();
+      const flowTrim = (appState.step3.q1Flow || "").trim();
+      let combinedFlowField = "";
+      if (summaryTrim && flowTrim) {
+        combinedFlowField = `【核心兴趣总结】${summaryTrim}\n【心流能量】${flowTrim}`;
+      } else if (summaryTrim) {
+        combinedFlowField = `【核心兴趣总结】${summaryTrim}`;
+      } else {
+        combinedFlowField = flowTrim;
+      }
+
+      const hpNames = clover.highlyProficientSkills.map(s => s.title).join("、");
+      const rawAbilitySummary = (appState.step4.abilitySummary || "").trim();
+      let combinedAbilitySummary = rawAbilitySummary;
+      if (hpNames && rawAbilitySummary) {
+        combinedAbilitySummary = `【非常熟练】${hpNames} ｜ ${rawAbilitySummary}`;
+      } else if (hpNames) {
+        combinedAbilitySummary = `【非常熟练】${hpNames}`;
+      }
+
       return {
-        student_uid: getOrCreateStudentUID(),
+        student_uid: computeDeterministicUID(appState.studentName),
         student_name: (appState.studentName || "").trim() || "未署名学员",
         updated_at: getFormattedTimestamp(),
         step1_pills: appState.step1.selectedPills.join("、"),
         step1_conversation_goal: appState.step1.conversationGoal || "",
         step2_values_10: appState.step2.selectedValues.join("、"),
         step2_values_top3: appState.step2.top3Values.join("、"),
-        step3_q1_flow: appState.step3.q1Flow || "",
+        step3_q1_flow: combinedFlowField,
         step3_q2_curiosity: appState.step3.q2Curiosity || "",
         step3_q3_drain: appState.step3.q3Drain || "",
         step4_motivated_skills: quads.motivated.join("、"),
         step4_developmental_skills: quads.developmental.join("、"),
         step4_burnout_skills: quads.burnout.join("、"),
         step4_low_priority_skills: quads.lowPriority.join("、"),
-        step4_ability_summary: appState.step4.abilitySummary || "",
+        step4_ability_summary: combinedAbilitySummary,
         step5_initial_direction: appState.step5.initialDirection || "",
         step5_smart_goal: appState.step5.smartGoal || "",
         step5_smart_checks: appState.step5.smartChecks.join("、"),
-        step6_current_status: appState.step6.currentStatus || "",
-        step6_dev_path: appState.step6.devPath || "",
+        step6_current_status: appState.stage2.currentStatus || "",
+        step6_dev_path: appState.stage2.devPath || "",
         step6_help_dimensions: helpLabels,
-        step6_help_detail: appState.step6.helpDetail || "",
-        step7_skills_current: appState.step7.skillsCurrent || "",
-        step7_skills_future: appState.step7.skillsFuture || "",
-        step7_skills_longterm: appState.step7.skillsLongTerm || ""
+        step6_help_detail: appState.stage2.helpDetail || "",
+        step7_skills_current: appState.stage3.skillsCurrent || "",
+        step7_skills_future: appState.stage3.skillsFuture || "",
+        step7_skills_longterm: appState.stage3.skillsLongTerm || ""
       };
     }
 
@@ -635,12 +896,21 @@
     }
 
     let saveDebounceTimer = null;
+    let saveColorTimer = null;
     function scheduleAutoSave(immediateCloud = false) {
       saveLocalState();
-      const label = document.getElementById("save-label");
-      if (label) {
+
+      const statusEl = document.getElementById("save-status-text");
+      if (statusEl) {
         const t = new Date().toTimeString().slice(0, 5);
-        label.textContent = `✓ 个人笔记已自动保存 (${t})`;
+        statusEl.textContent = `✓ 已保存 (${t})`;
+        statusEl.classList.remove("text-[#86868B]");
+        statusEl.classList.add("text-[#0F5C56]");
+        if (saveColorTimer) clearTimeout(saveColorTimer);
+        saveColorTimer = setTimeout(() => {
+          statusEl.classList.remove("text-[#0F5C56]");
+          statusEl.classList.add("text-[#86868B]");
+        }, 1200);
       }
 
       if (saveDebounceTimer) clearTimeout(saveDebounceTimer);
@@ -649,28 +919,25 @@
       } else {
         saveDebounceTimer = setTimeout(() => {
           syncCloudSilently();
-        }, 1500);
+        }, 1200);
       }
     }
 
     // =========================================================================
-    // 7. 轻提示与隐蔽后台配置
+    // 8. Apple 风格胶囊轻提示与隐蔽后台配置
     // =========================================================================
-    function showToast(msg, tone = "teal") {
+    function showToast(msg) {
       const box = document.getElementById("toast-box");
       if (!box) return;
       const el = document.createElement("div");
-      const cls = tone === "amber"
-        ? "bg-warmamber-600 text-white border-warmamber-500"
-        : "bg-calmteal-800 text-white border-calmteal-700";
-      el.className = `pointer-events-auto px-4 py-2.5 rounded-xl border shadow-md text-xs sm:text-sm font-medium transition-all duration-300 ${cls}`;
+      el.className = "pointer-events-auto px-4 py-2 rounded-full bg-[#1D1D1F]/90 backdrop-blur-md text-white text-[13px] font-medium shadow-[0_8px_24px_rgba(0,0,0,0.14)] transition-all duration-300";
       el.textContent = msg;
       box.appendChild(el);
       setTimeout(() => {
         el.style.opacity = "0";
         el.style.transform = "translateY(4px)";
         setTimeout(() => el.remove(), 250);
-      }, 2400);
+      }, 2200);
     }
 
     let footerClicks = 0;
@@ -715,33 +982,62 @@
     };
 
     // =========================================================================
-    // 8. 通用导航与输入事件
+    // 9. 导航完成度判断与切换控制
     // =========================================================================
-    function isStepCompleted(stepId) {
-      switch (stepId) {
-        case 1:
+    function isSubstepCompleted(subId) {
+      switch (subId) {
+        case "1.1":
           return Boolean(appState.step1.conversationGoal.trim() || appState.step1.selectedPills.length > 0);
-        case 2:
+        case "1.2":
           return appState.step2.selectedValues.length > 0;
-        case 3:
-          return Boolean(appState.step3.q1Flow.trim() || appState.step3.q2Curiosity.trim() || appState.step3.q3Drain.trim());
-        case 4:
+        case "1.3":
+          return Boolean(
+            appState.step3.interestSummary.trim() ||
+            appState.step3.q1Flow.trim() ||
+            appState.step3.q2Curiosity.trim() ||
+            appState.step3.q3Drain.trim()
+          );
+        case "1.4":
           return Object.keys(appState.step4.ratings).length > 0 || Boolean(appState.step4.abilitySummary.trim());
-        case 5:
+        case "1.5":
           return Boolean(appState.step5.initialDirection.trim() || appState.step5.smartGoal.trim());
-        case 6:
-          return Boolean(appState.step6.currentStatus.trim() || appState.step6.devPath.trim() || appState.step6.helpDimensions.length > 0 || appState.step6.helpDetail.trim());
-        case 7:
-          return Boolean(appState.step7.skillsCurrent.trim() || appState.step7.skillsFuture.trim() || appState.step7.skillsLongTerm.trim());
-        case 8:
-          return [1, 2, 3, 4, 5, 6, 7].some(id => isStepCompleted(id));
         default:
           return false;
       }
     }
 
-    window.switchStep = function(stepId) {
-      appState.currentStep = stepId;
+    function isStageCompleted(stageId) {
+      if (stageId === "stage1") {
+        return ["1.1", "1.2", "1.3", "1.4", "1.5"].some(id => isSubstepCompleted(id));
+      }
+      if (stageId === "stage2") {
+        return Boolean(
+          appState.stage2.currentStatus.trim() ||
+          appState.stage2.devPath.trim() ||
+          appState.stage2.helpDimensions.length > 0 ||
+          appState.stage2.helpDetail.trim()
+        );
+      }
+      if (stageId === "stage3") {
+        return Boolean(
+          appState.stage3.skillsCurrent.trim() ||
+          appState.stage3.skillsFuture.trim() ||
+          appState.stage3.skillsLongTerm.trim()
+        );
+      }
+      return false;
+    }
+
+    window.switchStage = function(stageId) {
+      appState.activeStage = stageId;
+      scheduleAutoSave(true);
+      renderApp();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
+    window.switchSubstep = function(subId) {
+      appState.activeStage = "stage1";
+      appState.activeSubstep = subId;
       scheduleAutoSave(true);
       renderApp();
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -750,44 +1046,41 @@
     window.onStudentNameChange = function(val) {
       appState.studentName = val;
       scheduleAutoSave(false);
-      if (appState.currentStep === 8) {
-        renderStepView();
-      }
     };
 
-    window.onFieldChange = function(stepKey, fieldKey, val) {
-      appState[stepKey][fieldKey] = val;
+    window.onFieldChange = function(groupKey, fieldKey, val) {
+      appState[groupKey][fieldKey] = val;
       scheduleAutoSave(false);
-      renderNavGrid();
+      renderNavigationBars();
     };
 
     // =========================================================================
-    // 9. 各步骤交互逻辑
+    // 10. 各步骤交互逻辑
     // =========================================================================
-    // --- Step 1 ---
-    window.toggleStep1Pill = function(pillText) {
+    // --- 1.1 谈话目标 ---
+    window.toggleStep1Pill = function(labelText) {
       const list = appState.step1.selectedPills;
-      const idx = list.indexOf(pillText);
-      const cleanLabel = pillText.replace(/^[^\u4e00-\u9fa5A-Za-z0-9]+/, "").trim();
+      const idx = list.indexOf(labelText);
       if (idx > -1) {
         list.splice(idx, 1);
       } else {
-        list.push(pillText);
+        list.push(labelText);
         const cur = appState.step1.conversationGoal.trim();
-        if (!cur.includes(cleanLabel)) {
+        if (!cur.includes(labelText)) {
           appState.step1.conversationGoal = cur
-            ? `${cur}\n• ${cleanLabel}：`
-            : `希望通过本次对话重点沟通「${cleanLabel}」，具体希望达成的共识是：`;
+            ? `${cur}\n• ${labelText}：`
+            : `希望通过本次对话重点沟通「${labelText}」，具体希望达成的共识是：`;
         }
       }
       scheduleAutoSave(false);
       renderApp();
     };
 
-    // --- Step 2: 核心价值观 ---
+    // --- 1.2 核心价值观 ---
     window.setValueGroup = function(groupId) {
       activeValueGroup = groupId;
       renderValuesPool();
+      renderStepView();
     };
 
     window.onValueSearchInput = function(val) {
@@ -806,10 +1099,10 @@
       const raw = valueSearchQuery.trim();
       if (!raw) return;
       if (raw.length > 14) {
-        showToast("建议将自定义价值观控制在 14 字以内", "amber");
+        showToast("建议将自定义价值观控制在 14 字以内");
         return;
       }
-      const universe = [...ALL_112_VALUES, ...appState.step2.customValues];
+      const universe = [...ALL_VALUES_LIST, ...appState.step2.customValues];
       if (!universe.includes(raw)) {
         appState.step2.customValues.unshift(raw);
       }
@@ -818,7 +1111,7 @@
           appState.step2.selectedValues.push(raw);
           showToast(`已添加并选中「${raw}」`);
         } else {
-          showToast("已选满 10 个价值观，可先取消 1 个后再勾选", "amber");
+          showToast("已选满 10 项核心价值观，可先取消 1 项再替换");
         }
       }
       valueSearchQuery = "";
@@ -834,7 +1127,7 @@
         appState.step2.top3Values = appState.step2.top3Values.filter(v => v !== word);
       } else {
         if (sel.length >= 10) {
-          showToast("已选满 10 个核心价值观，请先取消 1 个后再替换", "amber");
+          showToast("已选满 10 项核心价值观，请先取消 1 项后再替换");
           return;
         }
         sel.push(word);
@@ -851,7 +1144,7 @@
         top3.splice(idx, 1);
       } else {
         if (top3.length >= 3) {
-          showToast("最多标记 3 项核心底线星标，请先取消其中 1 颗星", "amber");
+          showToast("最多点亮 3 项核心底线星标，请先取消其中 1 颗星");
           return;
         }
         top3.push(word);
@@ -860,14 +1153,19 @@
       renderApp();
     };
 
-    // --- Step 4: 诺德尔 51 张动力技能卡牌 ---
+    // --- 1.4 诺德尔 51 张动力技能卡牌 ---
     window.setStep4ViewMode = function(mode) {
       step4ViewMode = mode;
       renderStepView();
     };
 
-    window.setStep4GridFilter = function(filterId) {
-      step4GridFilter = filterId;
+    window.setStep4ListFilter = function(filterId) {
+      step4ListFilter = filterId;
+      renderStepView();
+    };
+
+    window.onStep4SearchInput = function(val) {
+      step4SearchQuery = val;
       renderStepView();
     };
 
@@ -881,7 +1179,6 @@
 
     window.jumpToNextUnclassifiedSkill = function() {
       const ratings = appState.step4.ratings;
-      // 优先从当前卡片往后找，找不到再从头找
       let found = MOTIVATED_SKILLS_51.find(s => s.id > step4SwipeCardId && !ratings[s.id]?.pref);
       if (!found) {
         found = MOTIVATED_SKILLS_51.find(s => !ratings[s.id]?.pref);
@@ -890,7 +1187,7 @@
         step4SwipeCardId = found.id;
         renderStepView();
       } else {
-        showToast("太棒了！51 张技能卡已全部分类完成");
+        showToast("51 张技能卡已全部分类完成");
       }
     };
 
@@ -920,9 +1217,12 @@
 
     window.classifySkillProf = function(skillId, profId) {
       if (!appState.step4.ratings[skillId]) return;
-      // 点击已选中的熟练度支持切换/取消或直接设置
-      appState.step4.ratings[skillId].prof =
-        appState.step4.ratings[skillId].prof === profId ? "" : profId;
+      const prev = appState.step4.ratings[skillId].prof;
+      const next = prev === profId ? "" : profId;
+      appState.step4.ratings[skillId].prof = next;
+      if (next === "highly_proficient") {
+        showToast("已标记为「非常熟练」，将自动同步至 1.5 三叶草优势锚点");
+      }
       scheduleAutoSave(false);
       renderApp();
     };
@@ -932,15 +1232,18 @@
       if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
     };
 
-    // 键盘快捷键（Step 4 快刷模式支持 1-5 分类与左右方向键切换）
     document.addEventListener("keydown", (e) => {
-      if (appState.currentStep !== 4 || step4ViewMode !== "swipe") return;
+      if (e.key === "Escape") {
+        closeOnePagerModal();
+        closeArchiveConfig();
+        closeResetModal();
+        return;
+      }
+      if (appState.activeStage !== "stage1" || appState.activeSubstep !== "1.4" || step4ViewMode !== "swipe") return;
       const tag = document.activeElement?.tagName;
       if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
-      const resetModal = document.getElementById("reset-confirm-modal");
-      const cfgModal = document.getElementById("archive-config-modal");
-      if ((resetModal && !resetModal.classList.contains("hidden")) ||
-          (cfgModal && !cfgModal.classList.contains("hidden"))) return;
+      const opModal = document.getElementById("onepager-modal");
+      if (opModal && !opModal.classList.contains("hidden")) return;
 
       if (["1", "2", "3", "4", "5"].includes(e.key)) {
         e.preventDefault();
@@ -957,7 +1260,7 @@
       }
     });
 
-    // --- Step 5: 职业方向与 SMART ---
+    // --- 1.5 职业方向与 SMART ---
     window.selectDirectionPill = function(text) {
       appState.step5.initialDirection = text;
       scheduleAutoSave(false);
@@ -976,9 +1279,9 @@
       renderStepView();
     };
 
-    // --- Step 6: 寻求帮助胶囊 ---
-    window.toggleStep6Help = function(pillId) {
-      const list = appState.step6.helpDimensions;
+    // --- 阶段二：寻求帮助胶囊 ---
+    window.toggleStage2Help = function(pillId) {
+      const list = appState.stage2.helpDimensions;
       const idx = list.indexOf(pillId);
       if (idx > -1) {
         list.splice(idx, 1);
@@ -989,66 +1292,91 @@
       renderApp();
     };
 
-    // --- Step 8: 复制完整文本摘要 & 打印 & 重置 ---
+    // =========================================================================
+    // 11. 瑞士刊物级《职业发展对话准备单》弹窗、复制与重置
+    // =========================================================================
+    window.openOnePagerModal = function() {
+      scheduleAutoSave(true);
+      renderOnePagerContent();
+      const modal = document.getElementById("onepager-modal");
+      if (modal) {
+        modal.classList.remove("hidden");
+        document.body.style.overflow = "hidden";
+      }
+    };
+
+    window.closeOnePagerModal = function() {
+      const modal = document.getElementById("onepager-modal");
+      if (modal) {
+        modal.classList.add("hidden");
+        document.body.style.overflow = "";
+      }
+    };
+
+    window.triggerPrintOnePager = function() {
+      scheduleAutoSave(true);
+      window.print();
+    };
+
     function generatePlainSummaryText() {
+      const clover = getCloverAnchors();
       const quads = computeNodelQuadrants();
       const s1 = appState.step1;
       const s2 = appState.step2;
-      const s3 = appState.step3;
       const s4 = appState.step4;
       const s5 = appState.step5;
-      const s6 = appState.step6;
-      const s7 = appState.step7;
-      const s8 = appState.step8;
+      const st2 = appState.stage2;
+      const st3 = appState.stage3;
+      const op = appState.onePager;
 
-      const helpText = STEP6_HELP_PILLS
-        .filter(p => s6.helpDimensions.includes(p.id))
+      const helpText = STAGE2_HELP_PILLS
+        .filter(p => st2.helpDimensions.includes(p.id))
         .map(p => p.label)
-        .join("、") || "—";
+        .join("、") || "（待会议中沟通）";
 
       const checkedSmart = SMART_CHECK_ITEMS
         .filter(i => s5.smartChecks.includes(i.id))
         .map(i => i.id)
         .join(" / ") || "未勾选";
 
+      const hpSkillsStr = clover.highlyProficientSkills.length
+        ? clover.highlyProficientSkills.map(s => `${s.title}（${s.tag}）`).join("、")
+        : "—";
+
       return [
-        `【职业发展对话准备单 · 一页纸汇总】`,
-        `姓名/昵称：${(appState.studentName || "").trim() || "—"}   |   日期：${s8.planDate || getTodayISO()}`,
-        `==================================================`,
-        `一、【对话前】本次谈话的核心目标`,
+        `我的《职业发展对话准备单》`,
+        `Opentalk · 职业发展对话实战与应用`,
+        `学员：${(appState.studentName || "").trim() || "—"}   |   日期：${op.planDate || getTodayISO()}`,
+        `--------------------------------------------------`,
+        `【三叶草自我认知盘点】`,
+        `• 核心价值（源自 1.2）：${clover.valuesList.length ? clover.valuesList.join("、") : "—"}（全部已选：${s2.selectedValues.join("、") || "—"}）`,
+        `• 内在兴趣（源自 1.3）：${clover.interestText || "—"}`,
+        `• 优势能力（源自 1.4 非常熟练）：${hpSkillsStr}`,
+        `• 动力技能速览：${quads.motivated.join("、") || "—"}`,
+        `• 能力战果总结：${s4.abilitySummary.trim() || "—"}`,
+        ``,
+        `一、【对话前】本次谈话核心目标`,
         `• 关注主题：${s1.selectedPills.length ? s1.selectedPills.join("、") : "—"}`,
         `• 谈话目标：${s1.conversationGoal.trim() || "—"}`,
         ``,
-        `二、【三叶草自我认知】价值 · 兴趣 · 能力`,
-        `1. 核心价值观`,
-        `   - Top 3 底线价值观：${s2.top3Values.length ? s2.top3Values.join("、") : "—"}`,
-        `   - 已选 10 项价值观：${s2.selectedValues.length ? s2.selectedValues.join("、") : "—"}`,
-        `2. 内在兴趣与动力`,
-        `   - 心流与能量来源：${s3.q1Flow.trim() || "—"}`,
-        `   - 好奇与主动探索：${s3.q2Curiosity.trim() || "—"}`,
-        `   - 消耗与排斥边界：${s3.q3Drain.trim() || "—"}`,
-        `3. 诺德尔动力技能盘点`,
-        `   - ⚡ 动力技能（核心王牌）：${quads.motivated.length ? quads.motivated.join("、") : "—"}`,
-        `   - 🌱 发展技能（潜力成长）：${quads.developmental.length ? quads.developmental.join("、") : "—"}`,
-        `   - 🔋 耗竭技能（警惕厌烦）：${quads.burnout.length ? quads.burnout.join("、") : "—"}`,
-        `   - 能力一句话总结：${s4.abilitySummary.trim() || "—"}`,
+        `二、【对话前】职业方向与 SMART 目标`,
+        `• 初始方向：${s5.initialDirection.trim() || "—"}`,
+        `• SMART 目标：${s5.smartGoal.trim() || "—"}`,
+        `• 自检要素：${checkedSmart}`,
         ``,
-        `三、【对话前】职业发展方向与 SMART 目标`,
-        `• 初始方向想法：${s5.initialDirection.trim() || "—"}`,
-        `• 完整 SMART 目标：${s5.smartGoal.trim() || "—"}`,
-        `• 已核对 SMART 要素：${checkedSmart}`,
+        `三、【对话中】与上级探讨的三维提纲`,
+        `• 现状分析：${st2.currentStatus.trim() || "（面谈现场补充）"}`,
+        `• 发展路径：${st2.devPath.trim() || "（面谈现场补充）"}`,
+        `• 寻求帮助：${helpText} ｜ ${st2.helpDetail.trim() || "（面谈现场补充）"}`,
         ``,
-        `四、【对话中】与上级的三个沟通角度`,
-        `• 现状分析：${s6.currentStatus.trim() || "—"}`,
-        `• 发展路径：${s6.devPath.trim() || "—"}`,
-        `• 寻求帮助维度：${helpText}`,
-        `• 具体支持请求：${s6.helpDetail.trim() || "—"}`,
+        `四、【对话后】三层能力发展清单`,
+        `• 在当前岗位上：${st3.skillsCurrent.trim() || "（会后沉淀补充）"}`,
+        `• 未来的职位：${st3.skillsFuture.trim() || "（会后沉淀补充）"}`,
+        `• 保持长期竞争力：${st3.skillsLongTerm.trim() || "（会后沉淀补充）"}`,
         ``,
-        `五、【对话后】能力与知识行动清单`,
-        `• 在当前岗位上：${s7.skillsCurrent.trim() || "—"}`,
-        `• 未来的职位：${s7.skillsFuture.trim() || "—"}`,
-        `• 保持长期竞争力：${s7.skillsLongTerm.trim() || "—"}`,
-        `==================================================`
+        `五、【面谈现场记录】主管反馈与 Next Steps`,
+        `${op.liveNotes.trim() || "（留白用于面谈现场记录主管反馈与下一步行动）"}`,
+        `--------------------------------------------------`
       ].join("\n");
     }
 
@@ -1070,15 +1398,10 @@
       }
       document.body.removeChild(ta);
       if (ok) {
-        showToast("✓ 已复制完整文本摘要，可直接粘贴至 Notion / 微信 / Docs");
+        showToast("已复制完整文本摘要，可直接粘贴至文档或聊天窗口");
       } else {
-        showToast("当前浏览器限制自动复制，请使用「打印 / 保存为 PDF」", "amber");
+        showToast("当前浏览器限制自动复制，请直接点击「导出 PDF / 打印」");
       }
-    };
-
-    window.triggerPrintOnePager = function() {
-      scheduleAutoSave(true);
-      window.print();
     };
 
     window.openResetModal = function() {
@@ -1103,10 +1426,12 @@
       valueSearchQuery = "";
       step4ViewMode = "swipe";
       step4SwipeCardId = 1;
-      step4GridFilter = "all";
+      step4ListFilter = "all";
+      step4SearchQuery = "";
       const headerInp = document.getElementById("header-student-name");
       if (headerInp) headerInp.value = "";
       closeResetModal();
+      closeOnePagerModal();
       saveLocalState();
       renderApp();
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -1114,7 +1439,7 @@
     };
 
     // =========================================================================
-    // 10. HTML 转义与共用组件渲染
+    // 12. HTML 转义与双层极简导航渲染
     // =========================================================================
     function esc(str) {
       if (str === null || str === undefined) return "";
@@ -1126,203 +1451,222 @@
         .replace(/'/g, "&#39;");
     }
 
-    function renderNavGrid() {
-      const grid = document.getElementById("step-nav-grid");
-      if (!grid) return;
+    function renderNavigationBars() {
+      const segCtrl = document.getElementById("stage-segmented-control");
+      const substepBar = document.getElementById("substep-underline-bar");
+      if (!segCtrl || !substepBar) return;
 
-      grid.innerHTML = NAV_STEPS.map(step => {
-        const isActive = appState.currentStep === step.id;
-        const done = isStepCompleted(step.id);
+      // Apple Segmented Control（阶段分段控制器）
+      segCtrl.innerHTML = STAGES.map(st => {
+        const isActive = appState.activeStage === st.id;
+        const done = isStageCompleted(st.id);
 
-        let btnStyle = "bg-white text-slate-600 border-[#E2E8F0] hover:border-calmteal-600 hover:text-calmteal-800";
-        if (isActive) {
-          btnStyle = "bg-calmteal-700 text-white border-calmteal-700 shadow-2xs font-bold";
-        } else if (done) {
-          btnStyle = "bg-calmteal-50/70 text-calmteal-900 border-calmteal-200 hover:border-calmteal-600 font-semibold";
-        }
-
-        const dotHtml = done
-          ? `<span class="w-1.5 h-1.5 rounded-full shrink-0 ${isActive ? "bg-warmamber-300" : "bg-calmteal-600"}"></span>`
-          : `<span class="w-1.5 h-1.5 rounded-full shrink-0 ${isActive ? "bg-white/40" : "bg-slate-200"}"></span>`;
+        const cls = isActive
+          ? "bg-white text-[#1D1D1F] font-semibold shadow-[0_1px_4px_rgba(0,0,0,0.08)]"
+          : "text-[#6E6E73] hover:text-[#1D1D1F] font-medium";
 
         return `
-          <button type="button" onclick="switchStep(${step.id})"
-            class="px-2.5 py-2 rounded-xl border text-[11px] sm:text-xs font-medium flex items-center justify-between gap-1.5 transition-all cursor-pointer ${btnStyle}">
-            <span class="truncate">${step.label}</span>
-            ${dotHtml}
+          <button type="button" role="tab" aria-selected="${isActive}" onclick="switchStage('${st.id}')"
+            class="flex-1 sm:flex-initial shrink-0 whitespace-nowrap px-4 py-1.5 rounded-[8px] text-[13px] inline-flex items-center justify-center gap-1.5 transition-all cursor-pointer ${cls}">
+            <span>${st.label}</span>
+            ${done ? `<span class="w-1 h-1 rounded-full ${isActive ? "bg-[#0F5C56]" : "bg-[#86868B]"}"></span>` : ""}
           </button>
         `;
       }).join("");
+
+      // Safari / Apple Music 风格极简子步骤导航（仅在阶段一展开）
+      if (appState.activeStage === "stage1") {
+        substepBar.classList.remove("hidden");
+        substepBar.innerHTML = STAGE1_SUBSTEPS.map(sub => {
+          const isCur = appState.activeSubstep === sub.id;
+          const done = isSubstepCompleted(sub.id);
+
+          return `
+            <button type="button" onclick="switchSubstep('${sub.id}')"
+              class="relative shrink-0 whitespace-nowrap pb-2.5 text-[13px] inline-flex items-center gap-1.5 transition-colors cursor-pointer ${
+                isCur ? "text-[#1D1D1F] font-semibold" : "text-[#86868B] hover:text-[#1D1D1F] font-medium"
+              }">
+              <span>${sub.label}</span>
+              ${done ? `<span class="w-1 h-1 rounded-full bg-[#0F5C56]"></span>` : ""}
+              ${isCur ? `<span class="absolute bottom-0 left-0 right-0 h-[2px] bg-[#0F5C56] rounded-full"></span>` : ""}
+            </button>
+          `;
+        }).join("");
+      } else {
+        substepBar.classList.add("hidden");
+        substepBar.innerHTML = "";
+      }
     }
 
-    function renderCloverBanner(activeLeaf, insightText) {
+    function renderCloverNote(activeLeaf, insightText) {
       const leaves = [
-        { key: "value", label: "① 价值" },
-        { key: "interest", label: "② 兴趣" },
-        { key: "ability", label: "③ 能力" }
+        { key: "value", label: "价值" },
+        { key: "interest", label: "兴趣" },
+        { key: "ability", label: "能力" }
       ];
       return `
-        <div class="mt-4 p-3.5 sm:p-4 rounded-2xl bg-calmteal-50/65 border border-calmteal-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div class="mt-5 p-4 rounded-[14px] bg-[#F5F5F7] flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
           <div class="flex items-center gap-1.5 flex-wrap shrink-0">
-            <span class="text-xs font-bold text-calmteal-900 mr-1">🍀 三叶草模型：</span>
+            <span class="text-[#0F5C56] inline-flex items-center gap-1 text-[12px] font-semibold mr-1">
+              ${svgIcon("clover", "w-3.5 h-3.5")}
+              <span>三叶草模型</span>
+            </span>
             ${leaves.map(l => {
               const isCur = l.key === activeLeaf;
-              return `<span class="px-2.5 py-0.5 rounded-full text-xs font-semibold ${
+              return `<span class="px-2.5 py-0.5 rounded-full text-[12px] font-medium ${
                 isCur
-                  ? "bg-calmteal-700 text-white shadow-2xs"
-                  : "bg-white text-calmteal-800 border border-calmteal-200"
+                  ? "bg-[#0F5C56] text-white"
+                  : "bg-white text-[#6E6E73]"
               }">${l.label}</span>`;
             }).join("")}
-            <span class="text-xs font-semibold text-warmamber-700 ml-0.5">= 完美事业</span>
           </div>
-          <p class="text-xs sm:text-[13px] text-slate-700 leading-relaxed">${insightText}</p>
+          <p class="text-[13px] text-[#6E6E73] leading-relaxed">${insightText}</p>
         </div>
       `;
     }
 
-    function renderStepFooterNav(stepId) {
-      const prevBtn = stepId > 1
-        ? `<button type="button" onclick="switchStep(${stepId - 1})"
-             class="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-medium text-slate-600 bg-[#F8F7F4] hover:bg-slate-200/70 border border-[#E2E8F0] transition">
-             ← 上一步
-           </button>`
-        : `<div></div>`;
-
-      const nextBtn = stepId < 8
-        ? `<button type="button" onclick="switchStep(${stepId + 1})"
-             class="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-white bg-calmteal-700 hover:bg-calmteal-800 transition shadow-2xs">
-             继续下一步 →
-           </button>`
-        : `<div></div>`;
-
+    function renderBottomNav(prevAction, nextAction, nextLabel) {
       return `
-        <div class="no-print mt-8 pt-5 border-t border-[#E2E8F0] flex items-center justify-between gap-3">
-          ${prevBtn}
-          ${nextBtn}
+        <div class="mt-9 pt-6 hairline-t flex items-center justify-between gap-3">
+          ${prevAction
+            ? `<button type="button" onclick="${prevAction}"
+                 class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full text-[13px] font-medium text-[#6E6E73] hover:text-[#1D1D1F] bg-[#F5F5F7] hover:bg-[#E8E8ED] transition cursor-pointer">
+                 ${svgIcon("arrowLeft", "w-3.5 h-3.5")}
+                 <span>上一步</span>
+               </button>`
+            : `<div></div>`
+          }
+          ${nextAction
+            ? `<button type="button" onclick="${nextAction}"
+                 class="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full text-[13px] font-medium text-white bg-[#0F5C56] hover:bg-[#0B4641] transition shadow-[0_2px_8px_rgba(15,92,86,0.16)] cursor-pointer">
+                 <span>${nextLabel || "继续下一步"}</span>
+                 ${svgIcon("arrowRight", "w-3.5 h-3.5")}
+               </button>`
+            : `<div></div>`
+          }
         </div>
       `;
     }
 
     // =========================================================================
-    // 11. 八大步骤视图渲染函数
+    // 13. 各步骤主体视图渲染（Apple 纯白无边框大卡片 + 极简排印）
     // =========================================================================
-    // --- Step 1: 明确本次谈话的目标 ---
-    function renderStep1() {
+    // --- 1.1 明确本次谈话的目标 ---
+    function renderSubstep1_1() {
       const s1 = appState.step1;
       return `
-        <div class="bg-white rounded-2xl border border-[#E2E8F0] p-6 sm:p-8 shadow-2xs">
-          <div class="pb-4 border-b border-[#E2E8F0]">
-            <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold bg-calmteal-50 text-calmteal-700 mb-2">
-              对话前准备 · Step 1 / 7
-            </span>
-            <h2 class="text-xl sm:text-2xl font-bold text-slateink">明确本次谈话的目标</h2>
-            <p class="text-sm text-slate-600 mt-2 leading-relaxed">
-              在和上级或导师开启对话前，先聚焦这一次沟通本身：你最希望通过这次谈话达成什么具体目的？（长期职业发展方向将在第 5 步结合自我认知来锚定）
+        <div class="bg-white rounded-[20px] p-6 sm:p-10 shadow-[0_4px_24px_rgba(0,0,0,0.03)]">
+          <div class="pb-6 hairline-b">
+            <div class="text-[12px] font-medium tracking-[0.06em] uppercase text-[#86868B] mb-1.5">
+              事前准备 · 1.1
+            </div>
+            <h2 class="text-[24px] sm:text-[28px] font-bold tracking-[-0.02em] text-[#1D1D1F] leading-tight">
+              明确本次谈话的目标
+            </h2>
+            <p class="text-[14px] sm:text-[15px] text-[#6E6E73] mt-2 leading-relaxed">
+              在开启 1 对 1 对话前，先聚焦这一次沟通本身：你最希望通过本次谈话达成什么具体目的？（长期职业发展方向将在 1.5 结合三叶草模型来锚定）
             </p>
           </div>
 
-          <!-- 灵感胶囊 -->
-          <div class="mt-6">
-            <div class="text-xs font-semibold text-slate-500 mb-2.5">
-              常见谈话目的灵感胶囊（点击快速填入或追加）：
+          <div class="mt-7">
+            <div class="text-[12px] font-medium text-[#86868B] mb-3">
+              常见谈话目的灵感（点击快速填入或追加）
             </div>
             <div class="flex flex-wrap gap-2">
-              ${STEP1_GOAL_PILLS.map(pill => {
-                const active = s1.selectedPills.includes(pill);
+              ${STEP1_GOAL_PILLS.map(item => {
+                const active = s1.selectedPills.includes(item.label);
                 return `
-                  <button type="button" onclick="toggleStep1Pill('${esc(pill)}')"
-                    class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-medium border transition-all ${
+                  <button type="button" onclick="toggleStep1Pill('${esc(item.label)}')"
+                    class="inline-flex items-center gap-2 px-3.5 py-2 rounded-full text-[13px] font-medium transition-all cursor-pointer ${
                       active
-                        ? "bg-calmteal-700 text-white border-calmteal-700 shadow-2xs"
-                        : "bg-[#F8F7F4] text-slate-700 border-[#E2E8F0] hover:border-calmteal-600 hover:text-calmteal-800"
+                        ? "bg-[#0F5C56]/[0.10] text-[#0F5C56] font-semibold ring-1 ring-[#0F5C56]/30"
+                        : "bg-[#F5F5F7] text-[#1D1D1F] hover:bg-[#E8E8ED]"
                     }">
-                    ${esc(pill)}
+                    <span class="${active ? "text-[#0F5C56]" : "text-[#6E6E73]"}">${svgIcon(item.icon, "w-3.5 h-3.5")}</span>
+                    <span>${esc(item.label)}</span>
                   </button>
                 `;
               }).join("")}
             </div>
           </div>
 
-          <!-- 核心谈话目标输入框 -->
-          <div class="mt-6">
-            <label for="s1-goal-textarea" class="block text-sm font-bold text-slateink mb-2">
+          <div class="mt-7">
+            <label for="s1-goal-textarea" class="block text-[14px] font-semibold text-[#1D1D1F] mb-2.5">
               本次谈话的核心目标
             </label>
             <textarea id="s1-goal-textarea" rows="5"
               oninput="onFieldChange('step1', 'conversationGoal', this.value)"
-              placeholder="例如：希望和主管对齐我距离下一职级还差哪些关键能力，并争取在 Q3 参与一个跨部门项目。"
-              class="w-full rounded-xl border border-[#E2E8F0] bg-[#F8F7F4]/60 p-4 text-sm text-slateink placeholder-slate-400 editorial-input leading-relaxed">${esc(s1.conversationGoal)}</textarea>
+              placeholder="例如：希望和主管对齐我距离下一职级还差哪些关键能力，并争取在 Q3 参与一个跨部门核心项目。"
+              class="w-full p-4 text-[15px] apple-field leading-relaxed">${esc(s1.conversationGoal)}</textarea>
           </div>
 
-          ${renderStepFooterNav(1)}
+          ${renderBottomNav("", "switchSubstep('1.2')", "下一步：1.2 价值观")}
         </div>
       `;
     }
 
-    // --- Step 2: 认知自我 · 价值 ---
-    function renderStep2() {
+    // --- 1.2 核心价值观 ---
+    function renderSubstep1_2() {
       const s2 = appState.step2;
       const count = s2.selectedValues.length;
       const top3Count = s2.top3Values.length;
 
       return `
-        <div class="bg-white rounded-2xl border border-[#E2E8F0] p-6 sm:p-8 shadow-2xs">
-          <div class="pb-4 border-b border-[#E2E8F0]">
-            <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold bg-calmteal-50 text-calmteal-700 mb-2">
-              自我认知（1/3 · 价值）
-            </span>
-            <h2 class="text-xl sm:text-2xl font-bold text-slateink">探索你的核心价值观</h2>
-            ${renderCloverBanner("value", "价值观回答的是「什么对我有意义」。缺乏价值感的工作容易让人产生「失落感」。")}
+        <div class="bg-white rounded-[20px] p-6 sm:p-10 shadow-[0_4px_24px_rgba(0,0,0,0.03)]">
+          <div class="pb-6 hairline-b">
+            <div class="text-[12px] font-medium tracking-[0.06em] uppercase text-[#86868B] mb-1.5">
+              事前准备 · 1.2
+            </div>
+            <h2 class="text-[24px] sm:text-[28px] font-bold tracking-[-0.02em] text-[#1D1D1F] leading-tight">
+              探索你的核心价值观
+            </h2>
+            ${renderCloverNote("value", "价值观回答的是「什么对我有意义」。缺乏价值感的工作容易让人产生「失落感」。")}
           </div>
 
-          <!-- Stage B 顶部高亮托盘：已选 10 项 & 聚焦 Top 3 底线 -->
-          <div class="mt-6 p-4 sm:p-5 rounded-2xl bg-[#F8F7F4] border border-[#E2E8F0]">
+          <!-- 已选 10 项 & 聚焦 Top 3 底线托盘（无边框浅灰圆角块） -->
+          <div class="mt-7 p-5 rounded-[16px] bg-[#F5F5F7]">
             <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
-              <div class="flex flex-wrap items-center gap-2">
-                <span class="text-sm font-bold text-slateink">已选核心价值观</span>
-                <span class="px-2.5 py-0.5 rounded-full text-xs font-bold border ${
-                  count === 10
-                    ? "bg-calmteal-50 text-calmteal-800 border-calmteal-300"
-                    : "bg-white text-slate-700 border-[#E2E8F0]"
+              <div class="flex flex-wrap items-center gap-2.5">
+                <span class="text-[14px] font-semibold text-[#1D1D1F]">已选核心价值观</span>
+                <span class="px-2.5 py-0.5 rounded-full text-[12px] font-medium ${
+                  count === 10 ? "bg-[#0F5C56] text-white" : "bg-white text-[#6E6E73]"
                 }">
-                  已选 ${count} / 10 个
+                  ${count} / 10 项
                 </span>
-                <span class="px-2.5 py-0.5 rounded-full text-xs font-bold border ${
-                  top3Count === 3
-                    ? "bg-warmamber-100 text-warmamber-800 border-warmamber-300"
-                    : "bg-warmamber-50 text-warmamber-700 border-warmamber-200"
+                <span class="px-2.5 py-0.5 rounded-full text-[12px] font-medium ${
+                  top3Count === 3 ? "bg-[#B45309] text-white" : "bg-white text-[#B45309]"
                 }">
-                  Top 3 底线星标: ${top3Count} / 3
+                  Top 3 星标：${top3Count} / 3
                 </span>
               </div>
-              <span class="text-xs text-slate-500">
-                点击胶囊最左侧 <strong>☆</strong> 标记最不可妥协的 Top 3
+              <span class="text-[12px] text-[#86868B]">
+                点击胶囊左侧星标点亮最不可妥协的 Top 3
               </span>
             </div>
 
             ${count === 0
-              ? `<div class="py-5 text-center text-xs text-slate-400 bg-white rounded-xl border border-dashed border-[#E2E8F0]">
-                   阶段 A（海选）：请从下方 112 个价值观词库中先挑选出 10 个最能代表你的词汇
+              ? `<div class="py-6 text-center text-[13px] text-[#86868B] bg-white/70 rounded-[12px]">
+                   第一步：请从下方价值观词库中先挑选出 10 个最能代表你的词汇
                  </div>`
               : `<div class="flex flex-wrap gap-2">
                    ${s2.selectedValues.map(word => {
                      const isStar = s2.top3Values.includes(word);
                      return `
-                       <div class="inline-flex items-center gap-3 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-semibold border transition-all ${
+                       <div class="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-full text-[13px] font-medium transition-all ${
                          isStar
-                           ? "bg-warmamber-500 text-white border-warmamber-600 shadow-2xs"
-                           : "bg-calmteal-700 text-white border-calmteal-700 shadow-2xs"
+                           ? "bg-[#B45309] text-white shadow-[0_2px_8px_rgba(180,83,9,0.22)]"
+                           : "bg-[#0F5C56] text-white shadow-[0_2px_8px_rgba(15,92,86,0.16)]"
                        }">
                          <button type="button" onclick="toggleTop3Star('${esc(word)}', event)"
-                           title="${isStar ? "取消 Top 3 底线星标" : "标记为 Top 3 底线星标"}"
-                           class="w-6 h-6 -ml-1 rounded-lg flex items-center justify-center text-base leading-none hover:bg-black/15 transition">
-                           ${isStar ? "★" : "☆"}
+                           title="${isStar ? "取消 Top 3 底线星标" : "点亮 Top 3 底线星标"}"
+                           class="w-5 h-5 -ml-1 rounded-full flex items-center justify-center hover:bg-black/15 transition cursor-pointer">
+                           ${isStar ? svgIcon("starFilled", "w-3.5 h-3.5") : svgIcon("star", "w-3.5 h-3.5")}
                          </button>
                          <span>${esc(word)}</span>
                          <button type="button" onclick="toggleValueWord('${esc(word)}')"
                            title="移除此项"
-                           class="w-6 h-6 -mr-1 rounded-lg flex items-center justify-center text-sm leading-none opacity-80 hover:opacity-100 hover:bg-black/15 transition">
-                           ×
+                           class="w-5 h-5 -mr-1 rounded-full flex items-center justify-center opacity-80 hover:opacity-100 hover:bg-black/15 transition cursor-pointer">
+                           ${svgIcon("close", "w-3 h-3")}
                          </button>
                        </div>
                      `;
@@ -1331,32 +1675,36 @@
             }
           </div>
 
-          <!-- Stage A：智能搜索创建框 + 4 分类标签 + 无内部滚动词库 -->
-          <div class="mt-6">
+          <!-- 智能搜索创建栏 + 4 心智维度筛选 -->
+          <div class="mt-7">
             <div class="relative">
+              <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#86868B] pointer-events-none">
+                ${svgIcon("search", "w-4 h-4")}
+              </span>
               <input type="text" id="value-smart-search" value="${esc(valueSearchQuery)}"
                 oninput="onValueSearchInput(this.value)"
                 onkeydown="if(event.key==='Enter'){event.preventDefault();addCustomValueWord();}"
-                placeholder="输入关键词筛选 112 个价值观，或直接回车添加自定义词..."
-                class="w-full rounded-xl border border-[#E2E8F0] bg-white pl-4 pr-10 py-3 text-sm text-slateink placeholder-slate-400 editorial-input" />
+                placeholder="输入关键词实时筛选词库，或直接回车添加自定义价值观..."
+                class="w-full pl-10 pr-10 py-3 text-[14px] apple-field" />
               ${valueSearchQuery
-                ? `<button type="button" onclick="clearValueSearch()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 text-base font-bold">×</button>`
+                ? `<button type="button" onclick="clearValueSearch()" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#86868B] hover:text-[#1D1D1F] cursor-pointer">
+                     ${svgIcon("close", "w-4 h-4")}
+                   </button>`
                 : ""
               }
             </div>
 
-            <!-- 4 分类筛选标签 -->
-            <div class="mt-3.5 flex flex-wrap items-center gap-1.5">
+            <div class="mt-4 flex flex-wrap items-center gap-1.5">
               ${VALUE_GROUPS.map(g => {
-                const totalCount = ALL_112_VALUES.length + s2.customValues.length;
+                const totalCount = ALL_VALUES_LIST.length + s2.customValues.length;
                 const label = g.id === "all" ? `全部 (${totalCount})` : g.label;
                 const isCur = activeValueGroup === g.id;
                 return `
                   <button type="button" onclick="setValueGroup('${g.id}')"
-                    class="px-3.5 py-1.5 rounded-xl text-xs font-semibold border transition-all ${
+                    class="px-3.5 py-1.5 rounded-full text-[12px] font-medium transition-all cursor-pointer ${
                       isCur
-                        ? "bg-slateink text-white border-slateink"
-                        : "bg-[#F8F7F4] text-slate-600 border-[#E2E8F0] hover:border-slate-400"
+                        ? "bg-[#1D1D1F] text-white"
+                        : "bg-[#F5F5F7] text-[#6E6E73] hover:text-[#1D1D1F] hover:bg-[#E8E8ED]"
                     }">
                     ${label}
                   </button>
@@ -1364,13 +1712,12 @@
               }).join("")}
             </div>
 
-            <!-- 开放式响应式词库展示（无任何内部滚动框） -->
             <div id="values-pool-container" class="mt-4">
               ${buildValuesPoolHTML()}
             </div>
           </div>
 
-          ${renderStepFooterNav(2)}
+          ${renderBottomNav("switchSubstep('1.1')", "switchSubstep('1.3')", "下一步：1.3 兴趣")}
         </div>
       `;
     }
@@ -1378,7 +1725,7 @@
     function buildValuesPoolHTML() {
       const s2 = appState.step2;
       const isFull = s2.selectedValues.length >= 10;
-      const allWords = [...s2.customValues, ...ALL_112_VALUES];
+      const allWords = [...s2.customValues, ...ALL_VALUES_LIST];
 
       let baseList = allWords;
       if (activeValueGroup !== "all") {
@@ -1393,11 +1740,11 @@
       let customBanner = "";
       if (q && !exactMatch) {
         customBanner = `
-          <div class="mb-3 p-3 rounded-xl bg-calmteal-50 border border-calmteal-200 flex flex-wrap items-center justify-between gap-2">
-            <span class="text-xs text-calmteal-900">词库中暂无「<strong>${esc(q)}</strong>」，按回车或点击右侧按钮添加：</span>
+          <div class="mb-3.5 p-3.5 rounded-[14px] bg-[#0F5C56]/[0.06] flex flex-wrap items-center justify-between gap-2">
+            <span class="text-[13px] text-[#1D1D1F]">词库中暂无「<strong>${esc(q)}</strong>」，按回车或点击右侧添加：</span>
             <button type="button" onclick="addCustomValueWord()"
-              class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-calmteal-700 text-white hover:bg-calmteal-800 transition">
-              + 添加「${esc(q)}」
+              class="px-3.5 py-1.5 rounded-full text-[12px] font-medium bg-[#0F5C56] text-white hover:bg-[#0B4641] transition cursor-pointer">
+              + 添加自定义价值观「${esc(q)}」
             </button>
           </div>
         `;
@@ -1410,19 +1757,20 @@
             const selected = s2.selectedValues.includes(word);
             const starred = s2.top3Values.includes(word);
 
-            let cls = "bg-[#F8F7F4] text-slateink border-[#E2E8F0] hover:border-calmteal-600 hover:bg-calmteal-50/70";
+            let cls = "bg-[#F5F5F7] text-[#1D1D1F] hover:bg-[#E8E8ED]";
             if (starred) {
-              cls = "bg-warmamber-500 text-white border-warmamber-600 font-bold shadow-2xs";
+              cls = "bg-[#B45309] text-white font-semibold";
             } else if (selected) {
-              cls = "bg-calmteal-700 text-white border-calmteal-700 font-semibold shadow-2xs";
+              cls = "bg-[#0F5C56] text-white font-semibold";
             } else if (isFull) {
-              cls = "bg-[#F8F7F4] text-slate-400 border-[#E2E8F0] opacity-50 hover:opacity-80";
+              cls = "bg-[#F5F5F7] text-[#86868B] opacity-45 hover:opacity-75";
             }
 
             return `
               <button type="button" onclick="toggleValueWord('${esc(word)}')"
-                class="px-3.5 py-2 rounded-xl text-xs sm:text-sm border transition-all ${cls}">
-                ${starred ? "★ " : selected ? "✓ " : ""}${esc(word)}
+                class="inline-flex items-center gap-1 px-3.5 py-2 rounded-full text-[13px] transition-all cursor-pointer ${cls}">
+                ${starred ? svgIcon("starFilled", "w-3 h-3") : selected ? svgIcon("check", "w-3 h-3") : ""}
+                <span>${esc(word)}</span>
               </button>
             `;
           }).join("")}
@@ -1439,266 +1787,283 @@
       }
     }
 
-    // --- Step 3: 认知自我 · 兴趣 ---
-    function renderStep3() {
+    // --- 1.3 探索内在兴趣 ---
+    function renderSubstep1_3() {
       const s3 = appState.step3;
       const questions = [
         {
           num: "01",
-          title: "心流与能量来源",
-          prompt: "在过去的工作或学习中，做哪类事情会让你忘记时间、越做越有精神？",
-          placeholder: "记录那些让你感到全神贯注、兴奋且越做越有能量的具体任务或场景...",
+          title: "心流与能量时刻",
+          prompt: "近期哪类工作或任务让你忘记时间、做完反而觉得精力充沛？",
+          placeholder: "记录那些让你全神贯注、做完反而更有能量的具体任务或工作场景...",
           field: "q1Flow",
           val: s3.q1Flow
         },
         {
           num: "02",
-          title: "好奇与主动探索",
-          prompt: "如果没有考核和头衔限制，你平时最愿意主动花时间研究、请教或尝试的领域是什么？",
-          placeholder: "写下令你产生持续好奇心的新课题、业务方向或想深入探索的专业领域...",
+          title: "好奇与探索欲",
+          prompt: "如果不受当前岗位限制，你最想主动钻研什么新领域或新课题？",
+          placeholder: "写下令你产生持续好奇心的新课题、业务方向或想主动研究探索的专业领域...",
           field: "q2Curiosity",
           val: s3.q2Curiosity
         },
         {
           num: "03",
           title: "消耗与排斥边界",
-          prompt: "日常工作中的哪些任务最让你感到疲惫、拖延或提不起劲？",
-          placeholder: "诚实梳理长期消耗你精力、让你感到内耗的工作类型，帮助识别职业边界...",
+          prompt: "哪些重复性或特定类型的工作最容易消耗你的热情？",
+          placeholder: "诚实梳理长期消耗你精力、让你提不起劲的工作类型，帮助看清职业边界...",
           field: "q3Drain",
           val: s3.q3Drain
         }
       ];
 
       return `
-        <div class="bg-white rounded-2xl border border-[#E2E8F0] p-6 sm:p-8 shadow-2xs">
-          <div class="pb-4 border-b border-[#E2E8F0]">
-            <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold bg-calmteal-50 text-calmteal-700 mb-2">
-              自我认知（2/3 · 兴趣）
-            </span>
-            <h2 class="text-xl sm:text-2xl font-bold text-slateink">发掘你的内在兴趣与动力</h2>
-            ${renderCloverBanner("interest", "兴趣回答的是「什么让我感到有趣和好奇」。有能力、有价值但缺乏兴趣，容易陷入「厌烦」。")}
+        <div class="bg-white rounded-[20px] p-6 sm:p-10 shadow-[0_4px_24px_rgba(0,0,0,0.03)]">
+          <div class="pb-6 hairline-b">
+            <div class="text-[12px] font-medium tracking-[0.06em] uppercase text-[#86868B] mb-1.5">
+              事前准备 · 1.3
+            </div>
+            <h2 class="text-[24px] sm:text-[28px] font-bold tracking-[-0.02em] text-[#1D1D1F] leading-tight">
+              发掘你的内在兴趣与动力
+            </h2>
+            ${renderCloverNote("interest", "兴趣回答的是「什么让我感到有趣和好奇」。有能力、有价值但缺乏兴趣，容易陷入「厌烦」。")}
           </div>
 
-          <div class="mt-6 space-y-5">
+          <div class="mt-7 space-y-5">
             ${questions.map(q => `
-              <div class="p-4 sm:p-5 rounded-2xl bg-[#F8F7F4] border border-[#E2E8F0]">
-                <div class="flex items-center gap-2 mb-1.5">
-                  <span class="px-2 py-0.5 rounded-md bg-calmteal-700 text-white text-xs font-bold">${q.num}</span>
-                  <h3 class="text-sm sm:text-base font-bold text-slateink">${q.title}</h3>
+              <div class="p-5 rounded-[16px] bg-[#F5F5F7]">
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="text-[12px] font-semibold text-[#0F5C56] tabular-nums">${q.num}</span>
+                  <h3 class="text-[15px] font-semibold text-[#1D1D1F]">${q.title}</h3>
                 </div>
-                <p class="text-xs sm:text-sm text-slate-600 mb-3 leading-relaxed">${q.prompt}</p>
+                <p class="text-[13px] text-[#6E6E73] mb-3 leading-relaxed">${q.prompt}</p>
                 <textarea rows="3"
                   oninput="onFieldChange('step3', '${q.field}', this.value)"
                   placeholder="${q.placeholder}"
-                  class="w-full rounded-xl border border-[#E2E8F0] bg-white p-3.5 text-sm text-slateink placeholder-slate-400 editorial-input leading-relaxed">${esc(q.val)}</textarea>
+                  class="w-full p-3.5 rounded-[12px] bg-white text-[14px] text-[#1D1D1F] placeholder-[#86868B] focus:outline-none focus:ring-2 focus:ring-[#0F5C56]/25 leading-relaxed">${esc(q.val)}</textarea>
               </div>
             `).join("")}
+
+            <!-- 底部核心一句话总结框（自动同步至 1.5 三叶草模型及一页纸） -->
+            <div class="p-5 sm:p-6 rounded-[16px] bg-[#0F5C56]/[0.05]">
+              <div class="flex flex-wrap items-center justify-between gap-2 mb-1.5">
+                <label for="s3-interest-summary" class="inline-flex items-center gap-1.5 text-[15px] font-semibold text-[#0F5C56]">
+                  ${svgIcon("sparkles", "w-4 h-4")}
+                  <span>一句话提炼：我最感兴趣的工作内容或场景是？</span>
+                </label>
+                <span class="text-[12px] text-[#6E6E73]">
+                  自动同步至 1.5 三叶草与一页纸
+                </span>
+              </div>
+              <p class="text-[13px] text-[#6E6E73] mb-3">
+                综合上面 3 个回答的线索，用一句简练的话概括最能点燃你内在兴趣的工作方向或场景：
+              </p>
+              <input type="text" id="s3-interest-summary" value="${esc(s3.interestSummary)}"
+                oninput="onFieldChange('step3', 'interestSummary', this.value)"
+                placeholder="例如：从 0 到 1 搭建标准化学习项目、解决复杂业务痛点、赋能团队成长"
+                class="w-full px-4 py-3 rounded-[12px] bg-white text-[14px] font-medium text-[#1D1D1F] placeholder-[#86868B] focus:outline-none focus:ring-2 focus:ring-[#0F5C56]/25" />
+            </div>
           </div>
 
-          ${renderStepFooterNav(3)}
+          ${renderBottomNav("switchSubstep('1.2')", "switchSubstep('1.4')", "下一步：1.4 优势能力")}
         </div>
       `;
     }
 
-    // --- Step 4: 认知自我 · 能力（内置《诺德尔动力技能卡牌分类》51 张卡） ---
-    function renderStep4() {
+    // --- 1.4 梳理优势能力（诺德尔 51 张动力技能卡牌） ---
+    function renderSubstep1_4() {
       const ratings = appState.step4.ratings;
       const classifiedIds = Object.keys(ratings).filter(id => ratings[id]?.pref);
       const totalClassified = classifiedIds.length;
-      const loveCount = classifiedIds.filter(id => ratings[id].pref === "love").length;
-      const dislikeCount = classifiedIds.filter(id => ratings[id].pref === "dislike").length;
+      const hpCount = classifiedIds.filter(id => ratings[id].prof === "highly_proficient").length;
       const quads = computeNodelQuadrants();
 
       const currentCard = MOTIVATED_SKILLS_51.find(s => s.id === step4SwipeCardId) || MOTIVATED_SKILLS_51[0];
       const currentCardPref = ratings[currentCard.id]?.pref || "";
 
-      // 全览网格筛选列表
-      const gridCards = MOTIVATED_SKILLS_51.filter(skill => {
+      const qSkill = step4SearchQuery.trim();
+      const filteredListSkills = MOTIVATED_SKILLS_51.filter(skill => {
         const p = ratings[skill.id]?.pref || "";
-        if (step4GridFilter === "all") return true;
-        if (step4GridFilter === "unclassified") return !p;
-        return p === step4GridFilter;
+        if (step4ListFilter === "unclassified" && p) return false;
+        if (step4ListFilter === "classified" && !p) return false;
+        if (qSkill && !skill.title.includes(qSkill) && !skill.desc.includes(qSkill)) return false;
+        return true;
       });
 
       return `
         <div class="space-y-6">
-          <!-- 顶部标题与三叶草提示卡片 -->
-          <div class="bg-white rounded-2xl border border-[#E2E8F0] p-6 sm:p-8 shadow-2xs">
-            <div class="pb-4 border-b border-[#E2E8F0]">
-              <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold bg-calmteal-50 text-calmteal-700 mb-2">
-                自我认知（3/3 · 能力）
-              </span>
-              <h2 class="text-xl sm:text-2xl font-bold text-slateink">诺德尔动力技能卡牌分类</h2>
-              ${renderCloverBanner("ability", "能力回答的是「我擅长什么、拥有哪些资源和天赋」。有价值有兴趣但缺乏能力支撑，容易产生「焦虑」。")}
+          <div class="bg-white rounded-[20px] p-6 sm:p-10 shadow-[0_4px_24px_rgba(0,0,0,0.03)]">
+            <div class="pb-6 hairline-b">
+              <div class="text-[12px] font-medium tracking-[0.06em] uppercase text-[#86868B] mb-1.5">
+                事前准备 · 1.4
+              </div>
+              <h2 class="text-[24px] sm:text-[28px] font-bold tracking-[-0.02em] text-[#1D1D1F] leading-tight">
+                梳理优势能力 · 诺德尔动力技能卡牌
+              </h2>
+              ${renderCloverNote("ability", "能力回答的是「我擅长什么、拥有哪些资源和天赋」。有价值有兴趣但缺乏能力支撑，容易产生「焦虑」。")}
             </div>
 
-            <!-- ==================== 第一轮：按喜欢程度分类（5 档） ==================== -->
-            <div class="mt-6">
+            <!-- 第一轮：按喜欢程度分类（5 档） -->
+            <div class="mt-7">
               <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
                 <div>
-                  <h3 class="text-base sm:text-lg font-bold text-slateink">
+                  <h3 class="text-[16px] font-semibold text-[#1D1D1F]">
                     第一轮：按「你有多喜欢使用这项技能」分类（5 档）
                   </h3>
-                  <p class="text-xs text-slate-500 mt-1">
-                    共 51 张技能卡 · 已分类 <strong>${totalClassified} / 51</strong> 张（提示：「非常喜欢使用」建议至少 5 张，当前 ${loveCount} 张；「非常不喜欢使用」建议至少 5 张，当前 ${dislikeCount} 张）
+                  <p class="text-[13px] text-[#86868B] mt-0.5 tabular-nums">
+                    已分类 ${totalClassified} / 51 项
                   </p>
                 </div>
 
-                <!-- 快刷模式 vs 全览网格模式切换 -->
-                <div class="inline-flex p-1 rounded-xl bg-[#F8F7F4] border border-[#E2E8F0]">
+                <!-- Apple 分段切换器：逐张快刷 / 全览列表 -->
+                <div class="inline-flex bg-[#E8E8ED] p-[3px] rounded-[9px]">
                   <button type="button" onclick="setStep4ViewMode('swipe')"
-                    class="px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+                    class="px-3 py-1 rounded-[7px] text-[12px] font-medium transition cursor-pointer ${
                       step4ViewMode === "swipe"
-                        ? "bg-calmteal-700 text-white shadow-2xs"
-                        : "text-slate-600 hover:text-slateink"
+                        ? "bg-white text-[#1D1D1F] font-semibold shadow-[0_1px_3px_rgba(0,0,0,0.08)]"
+                        : "text-[#6E6E73] hover:text-[#1D1D1F]"
                     }">
-                    快刷卡牌模式
+                    逐张快刷
                   </button>
-                  <button type="button" onclick="setStep4ViewMode('grid')"
-                    class="px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
-                      step4ViewMode === "grid"
-                        ? "bg-calmteal-700 text-white shadow-2xs"
-                        : "text-slate-600 hover:text-slateink"
+                  <button type="button" onclick="setStep4ViewMode('list')"
+                    class="px-3 py-1 rounded-[7px] text-[12px] font-medium transition cursor-pointer ${
+                      step4ViewMode === "list"
+                        ? "bg-white text-[#1D1D1F] font-semibold shadow-[0_1px_3px_rgba(0,0,0,0.08)]"
+                        : "text-[#6E6E73] hover:text-[#1D1D1F]"
                     }">
-                    全览网格模式
+                    全览列表
                   </button>
                 </div>
               </div>
 
-              <!-- 进度条 -->
-              <div class="w-full h-2 rounded-full bg-slate-100 overflow-hidden mb-5">
-                <div class="h-full bg-calmteal-600 transition-all duration-300" style="width: ${Math.round((totalClassified / 51) * 100)}%"></div>
+              <!-- 极细进度条 -->
+              <div class="w-full h-1 rounded-full bg-[#E8E8ED] overflow-hidden mb-6">
+                <div class="h-full bg-[#0F5C56] transition-all duration-300" style="width: ${Math.round((totalClassified / 51) * 100)}%"></div>
               </div>
 
               ${step4ViewMode === "swipe"
-                ? `<!-- 模式 1：单张沉浸式快刷卡牌 -->
-                   <div class="p-5 sm:p-7 rounded-2xl bg-[#F8F7F4] border border-[#E2E8F0]">
-                     <div class="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500 mb-4">
-                       <span class="font-bold text-calmteal-800">技能卡牌 #${currentCard.id} / 51</span>
-                       <div class="flex items-center gap-2">
+                ? `<div class="p-5 sm:p-8 rounded-[18px] bg-[#F5F5F7]">
+                     <div class="flex flex-wrap items-center justify-between gap-2 text-[12px] text-[#86868B] mb-5">
+                       <span class="font-medium text-[#1D1D1F] tabular-nums">卡牌 ${currentCard.id} / 51</span>
+                       <div class="flex items-center gap-3">
                          ${currentCardPref
-                           ? `<span class="px-2.5 py-0.5 rounded-full font-semibold bg-calmteal-100 text-calmteal-800">
+                           ? `<span class="text-[#0F5C56] font-medium">
                                 当前归类：${PREF_LEVELS.find(p => p.id === currentCardPref)?.label || ""}
                               </span>`
-                           : `<span class="px-2.5 py-0.5 rounded-full bg-white border border-[#E2E8F0] text-slate-500">尚未分类</span>`
+                           : `<span>待分类</span>`
                          }
                          ${totalClassified < 51
-                           ? `<button type="button" onclick="jumpToNextUnclassifiedSkill()" class="text-calmteal-700 hover:underline font-medium">跳至下一张未分类 →</button>`
+                           ? `<button type="button" onclick="jumpToNextUnclassifiedSkill()" class="text-[#0F5C56] hover:underline font-medium cursor-pointer">跳至下一张待分类</button>`
                            : ""
                          }
                        </div>
                      </div>
 
-                     <!-- 实体质感技能卡片 -->
-                     <div class="bg-white rounded-2xl border border-[#E2E8F0] p-6 sm:p-8 text-center shadow-2xs max-w-xl mx-auto">
-                       <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Motivated Skill Card</div>
-                       <h4 class="text-xl sm:text-2xl font-bold text-slateink">${esc(currentCard.title)}</h4>
-                       <p class="text-sm sm:text-base text-slate-600 mt-3 leading-relaxed">${esc(currentCard.desc)}</p>
+                     <!-- 纯白焦点卡片（无边框微浮起） -->
+                     <div class="bg-white rounded-[16px] p-7 sm:p-9 text-center shadow-[0_2px_12px_rgba(0,0,0,0.03)] max-w-lg mx-auto">
+                       <div class="text-[11px] font-medium tracking-[0.08em] uppercase text-[#86868B] mb-2">Motivated Skill</div>
+                       <h4 class="text-[22px] sm:text-[24px] font-bold tracking-[-0.015em] text-[#1D1D1F]">${esc(currentCard.title)}</h4>
+                       <p class="text-[14px] text-[#6E6E73] mt-2.5 leading-relaxed">${esc(currentCard.desc)}</p>
                      </div>
 
-                     <!-- 5 档一键分类大按钮 -->
+                     <!-- 5 档偏好选择胶囊 -->
                      <div class="mt-6 grid grid-cols-1 sm:grid-cols-5 gap-2">
                        ${PREF_LEVELS.map(lvl => {
                          const isSelected = currentCardPref === lvl.id;
                          return `
                            <button type="button" onclick="classifySkillPref(${currentCard.id}, '${lvl.id}', true)"
-                             class="px-3 py-3 rounded-xl border text-center transition-all flex flex-col items-center justify-center gap-1 ${
+                             class="px-3 py-3 rounded-[12px] text-center transition-all flex flex-col items-center justify-center gap-0.5 cursor-pointer ${
                                isSelected
-                                 ? "bg-calmteal-700 text-white border-calmteal-700 shadow-xs font-bold"
-                                 : "bg-white text-slateink border-[#E2E8F0] hover:border-calmteal-600 hover:bg-calmteal-50/50 font-semibold"
+                                 ? "bg-[#0F5C56] text-white font-semibold shadow-[0_2px_8px_rgba(15,92,86,0.2)]"
+                                 : "bg-white text-[#1D1D1F] hover:bg-[#E8E8ED]/80 font-medium"
                              }">
-                             <span class="text-xs sm:text-sm">${lvl.label}</span>
-                             <span class="text-[10px] ${isSelected ? "text-calmteal-100" : "text-slate-400"}">
-                               快捷键 [${lvl.keyNum}]${lvl.tip ? ` · ${lvl.tip}` : ""}
+                             <span class="text-[13px]">${lvl.label}</span>
+                             <span class="text-[11px] ${isSelected ? "text-white/75" : "text-[#86868B]"}">
+                               按键 ${lvl.keyNum}${lvl.tip ? ` · ${lvl.tip}` : ""}
                              </span>
                            </button>
                          `;
                        }).join("")}
                      </div>
 
-                     <!-- 上一张 / 跳过下一张 导航 -->
-                     <div class="mt-5 flex items-center justify-between text-xs">
+                     <div class="mt-5 flex items-center justify-between text-[12px]">
                        <button type="button" onclick="navigateSwipeCard(-1)"
-                         class="px-3.5 py-2 rounded-xl bg-white border border-[#E2E8F0] text-slate-600 hover:border-slate-400 font-medium transition">
-                         ← 上一张 (#${currentCard.id === 1 ? 51 : currentCard.id - 1})
+                         class="inline-flex items-center gap-1 px-3.5 py-2 rounded-full bg-white text-[#6E6E73] hover:text-[#1D1D1F] font-medium transition cursor-pointer">
+                         ${svgIcon("arrowLeft", "w-3.5 h-3.5")}
+                         <span>上一张</span>
                        </button>
-                       <span class="text-slate-400 hidden sm:inline">提示：键盘按 1–5 可秒速分类，← / → 切换卡片</span>
+                       <span class="text-[#86868B] hidden sm:inline">键盘按 1–5 快速分类，左右方向键切换</span>
                        <button type="button" onclick="navigateSwipeCard(1)"
-                         class="px-3.5 py-2 rounded-xl bg-white border border-[#E2E8F0] text-slate-600 hover:border-slate-400 font-medium transition">
-                         跳过下一张 (#${currentCard.id === 51 ? 1 : currentCard.id + 1}) →
+                         class="inline-flex items-center gap-1 px-3.5 py-2 rounded-full bg-white text-[#6E6E73] hover:text-[#1D1D1F] font-medium transition cursor-pointer">
+                         <span>下一张</span>
+                         ${svgIcon("arrowRight", "w-3.5 h-3.5")}
                        </button>
                      </div>
 
-                     ${totalClassified === 51
-                       ? `<div class="mt-5 p-4 rounded-xl bg-calmteal-50 border border-calmteal-200 flex flex-wrap items-center justify-between gap-3">
-                            <span class="text-xs sm:text-sm font-semibold text-calmteal-900">🎉 全部 51 张卡牌已完成第一轮偏好分类！</span>
+                     ${totalClassified >= 5
+                       ? `<div class="mt-5 pt-4 hairline-t flex flex-wrap items-center justify-between gap-3">
+                            <span class="text-[13px] text-[#6E6E73]">
+                              已分类 ${totalClassified} 张卡牌，可继续向下完成「第二轮：标定熟练程度」
+                            </span>
                             <button type="button" onclick="scrollToRound2()"
-                              class="px-4 py-2 rounded-xl text-xs font-bold bg-calmteal-700 text-white hover:bg-calmteal-800 transition">
-                              前往第二轮：评估熟练程度 ↓
+                              class="px-4 py-1.5 rounded-full text-[12px] font-medium bg-[#0F5C56] text-white hover:bg-[#0B4641] transition cursor-pointer">
+                              前往第二轮定级
                             </button>
                           </div>`
                        : ""
                      }
                    </div>`
-                : `<!-- 模式 2：51 张卡牌全览网格（无内部滚动条） -->
-                   <div>
-                     <div class="flex flex-wrap gap-1.5 mb-4">
-                       <button type="button" onclick="setStep4GridFilter('all')"
-                         class="px-3 py-1.5 rounded-xl text-xs font-semibold border transition ${
-                           step4GridFilter === "all" ? "bg-slateink text-white border-slateink" : "bg-[#F8F7F4] text-slate-600 border-[#E2E8F0]"
-                         }">
-                         全部 (51)
-                       </button>
-                       <button type="button" onclick="setStep4GridFilter('unclassified')"
-                         class="px-3 py-1.5 rounded-xl text-xs font-semibold border transition ${
-                           step4GridFilter === "unclassified" ? "bg-slateink text-white border-slateink" : "bg-[#F8F7F4] text-slate-600 border-[#E2E8F0]"
-                         }">
-                         未分类 (${51 - totalClassified})
-                       </button>
-                       ${PREF_LEVELS.map(lvl => {
-                         const cnt = classifiedIds.filter(id => ratings[id].pref === lvl.id).length;
-                         return `
-                           <button type="button" onclick="setStep4GridFilter('${lvl.id}')"
-                             class="px-3 py-1.5 rounded-xl text-xs font-semibold border transition ${
-                               step4GridFilter === lvl.id ? "bg-calmteal-700 text-white border-calmteal-700" : "bg-[#F8F7F4] text-slate-600 border-[#E2E8F0]"
+                : `<div>
+                     <!-- 筛选与搜索栏 -->
+                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                       <div class="flex items-center gap-1.5">
+                         ${[
+                           { id: "all", label: `全部 (51)` },
+                           { id: "unclassified", label: `待分类 (${51 - totalClassified})` },
+                           { id: "classified", label: `已分类 (${totalClassified})` }
+                         ].map(tab => `
+                           <button type="button" onclick="setStep4ListFilter('${tab.id}')"
+                             class="px-3.5 py-1.5 rounded-full text-[12px] font-medium transition cursor-pointer ${
+                               step4ListFilter === tab.id
+                                 ? "bg-[#1D1D1F] text-white"
+                                 : "bg-[#F5F5F7] text-[#6E6E73] hover:text-[#1D1D1F]"
                              }">
-                             ${lvl.label} (${cnt})
+                             ${tab.label}
                            </button>
-                         `;
-                       }).join("")}
+                         `).join("")}
+                       </div>
+
+                       <div class="relative w-full sm:w-60">
+                         <span class="absolute left-3 top-1/2 -translate-y-1/2 text-[#86868B] pointer-events-none">
+                           ${svgIcon("search", "w-3.5 h-3.5")}
+                         </span>
+                         <input type="text" value="${esc(step4SearchQuery)}"
+                           oninput="onStep4SearchInput(this.value)"
+                           placeholder="搜索技能关键词..."
+                           class="w-full pl-8 pr-3 py-1.5 text-[13px] apple-field rounded-full" />
+                       </div>
                      </div>
 
                      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
-                       ${gridCards.map(skill => {
+                       ${filteredListSkills.map(skill => {
                          const p = ratings[skill.id]?.pref || "";
                          return `
-                           <div class="p-3.5 rounded-xl border transition-all flex flex-col justify-between ${
-                             p ? "bg-white border-calmteal-200" : "bg-[#F8F7F4] border-[#E2E8F0]"
-                           }">
+                           <div class="p-4 rounded-[14px] bg-[#F5F5F7] flex flex-col justify-between">
                              <div>
-                               <div class="flex items-center justify-between gap-2">
-                                 <span class="text-sm font-bold text-slateink">${skill.id}. ${esc(skill.title)}</span>
-                               </div>
-                               <p class="text-xs text-slate-500 mt-1 leading-relaxed">${esc(skill.desc)}</p>
+                               <div class="text-[14px] font-semibold text-[#1D1D1F]">${skill.id}. ${esc(skill.title)}</div>
+                               <p class="text-[12px] text-[#6E6E73] mt-1 leading-relaxed">${esc(skill.desc)}</p>
                              </div>
-                             <div class="mt-3 pt-2.5 border-t border-slate-100 flex flex-wrap gap-1">
+                             <div class="mt-3 pt-2.5 hairline-t flex flex-wrap gap-1">
                                ${PREF_LEVELS.map(lvl => {
                                  const active = p === lvl.id;
-                                 const shortNames = {
-                                   love: "非常喜欢",
-                                   like_lot: "很喜欢",
-                                   like: "喜欢",
-                                   avoid: "尽量不想",
-                                   dislike: "非常不喜欢"
-                                 };
                                  return `
                                    <button type="button" onclick="classifySkillPref(${skill.id}, '${lvl.id}', false)"
-                                     class="px-2 py-1 rounded-lg text-[11px] font-medium border transition ${
+                                     class="px-2 py-1 rounded-md text-[11px] font-medium transition cursor-pointer ${
                                        active
-                                         ? "bg-calmteal-700 text-white border-calmteal-700 font-semibold"
-                                         : "bg-[#F8F7F4] text-slate-600 border-[#E2E8F0] hover:border-calmteal-600"
+                                         ? "bg-[#0F5C56] text-white"
+                                         : "bg-white text-[#6E6E73] hover:text-[#1D1D1F]"
                                      }">
-                                     ${shortNames[lvl.id]}
+                                     ${lvl.shortLabel}
                                    </button>
                                  `;
                                }).join("")}
@@ -1712,56 +2077,64 @@
             </div>
           </div>
 
-          <!-- ==================== 第二轮：按「你目前的熟练程度」定级（3 档） ==================== -->
-          <div id="step4-round2-section" class="bg-white rounded-2xl border border-[#E2E8F0] p-6 sm:p-8 shadow-2xs">
-            <div class="pb-4 border-b border-[#E2E8F0]">
-              <h3 class="text-base sm:text-lg font-bold text-slateink">
-                第二轮：按「你目前的熟练程度」定级（3 档）
-              </h3>
-              <p class="text-xs sm:text-sm text-slate-500 mt-1">
-                针对第一轮已分类的技能，快速标注你当下的熟练程度（提示：「非常熟练」「熟练」「尚未达到期望水平」每一类建议至少有 1 张）。
-              </p>
+          <!-- 第二轮：按「你目前的熟练程度」定级 -->
+          <div id="step4-round2-section" class="bg-white rounded-[20px] p-6 sm:p-10 shadow-[0_4px_24px_rgba(0,0,0,0.03)]">
+            <div class="pb-5 hairline-b flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <h3 class="text-[18px] font-semibold text-[#1D1D1F]">
+                  第二轮：按「你目前的熟练程度」定级（3 档）
+                </h3>
+                <p class="text-[13px] text-[#6E6E73] mt-1">
+                  标记为 <strong class="text-[#0F5C56] font-semibold">「非常熟练」</strong> 的技能（已选 ${hpCount} 项），将自动同步至 1.5 三叶草模型作为你的优势能力锚点。
+                </p>
+              </div>
+              <span class="px-3 py-1 rounded-full text-[12px] font-medium bg-[#0F5C56]/[0.08] text-[#0F5C56] shrink-0 tabular-nums">
+                非常熟练：${hpCount} 项
+              </span>
             </div>
 
             ${totalClassified === 0
-              ? `<div class="mt-5 py-8 text-center text-xs sm:text-sm text-slate-400 bg-[#F8F7F4] rounded-2xl border border-dashed border-[#E2E8F0]">
-                   请先在上方「第一轮」中至少对几张技能卡进行偏好分类，随后即可在此处标注熟练度。
+              ? `<div class="mt-6 py-8 text-center text-[13px] text-[#86868B] bg-[#F5F5F7] rounded-[14px]">
+                   请先在上方「第一轮」中对技能卡进行偏好分类，随后即可在此处标定熟练程度。
                  </div>`
-              : `<div class="mt-5 space-y-5">
+              : `<div class="mt-6 space-y-5">
                    ${PREF_LEVELS.map(lvl => {
                      const bucketSkills = MOTIVATED_SKILLS_51.filter(s => ratings[s.id]?.pref === lvl.id);
                      if (bucketSkills.length === 0) return "";
                      return `
-                       <div class="p-4 rounded-2xl bg-[#F8F7F4] border border-[#E2E8F0]">
-                         <div class="flex items-center justify-between mb-3">
-                           <span class="px-2.5 py-1 rounded-lg text-xs font-bold border ${lvl.badgeClass}">
-                             ${lvl.label}（${bucketSkills.length} 张）
-                           </span>
+                       <div class="p-4 sm:p-5 rounded-[16px] bg-[#F5F5F7]">
+                         <div class="text-[13px] font-semibold text-[#1D1D1F] mb-3">
+                           ${lvl.label} <span class="text-[#86868B] font-normal">(${bucketSkills.length})</span>
                          </div>
                          <div class="space-y-2">
                            ${bucketSkills.map(skill => {
                              const curProf = ratings[skill.id]?.prof || "";
                              return `
-                               <div class="p-3 rounded-xl bg-white border border-[#E2E8F0] flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
-                                 <div>
-                                   <span class="text-sm font-bold text-slateink">${esc(skill.title)}</span>
-                                   <span class="text-xs text-slate-400 ml-2 hidden md:inline">${esc(skill.desc)}</span>
+                               <div class="p-3 rounded-[12px] bg-white flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                                 <div class="flex items-center flex-wrap gap-2">
+                                   <span class="text-[14px] font-medium text-[#1D1D1F]">${esc(skill.title)}</span>
+                                   ${curProf === "highly_proficient"
+                                     ? `<span class="px-2 py-0.5 rounded-full text-[11px] font-medium bg-[#0F5C56]/[0.10] text-[#0F5C56]">
+                                          已同步至 1.5
+                                        </span>`
+                                     : ""
+                                   }
                                  </div>
                                  <div class="flex flex-wrap items-center gap-1.5 shrink-0">
                                    ${PROF_LEVELS.map(pf => {
                                      const active = curProf === pf.id;
-                                     let activeCls = "bg-calmteal-700 text-white border-calmteal-700";
-                                     if (active && pf.id === "developing") {
-                                       activeCls = "bg-warmamber-600 text-white border-warmamber-600";
+                                     let activeCls = "bg-[#1D1D1F] text-white";
+                                     if (active && pf.id === "highly_proficient") {
+                                       activeCls = "bg-[#0F5C56] text-white";
                                      }
                                      return `
                                        <button type="button" onclick="classifySkillProf(${skill.id}, '${pf.id}')"
-                                         class="px-2.5 py-1.5 rounded-lg text-xs font-semibold border transition ${
+                                         class="px-3 py-1.5 rounded-full text-[12px] font-medium transition cursor-pointer ${
                                            active
                                              ? activeCls
-                                             : "bg-[#F8F7F4] text-slate-600 border-[#E2E8F0] hover:border-calmteal-600"
+                                             : "bg-[#F5F5F7] text-[#6E6E73] hover:text-[#1D1D1F]"
                                          }">
-                                         ${active ? "✓ " : ""}${pf.label}
+                                         ${pf.label}
                                        </button>
                                      `;
                                    }).join("")}
@@ -1777,158 +2150,257 @@
             }
           </div>
 
-          <!-- ==================== 实时《诺德尔四象限能力诊断看板》 ==================== -->
-          <div class="bg-white rounded-2xl border border-[#E2E8F0] p-6 sm:p-8 shadow-2xs">
-            <div class="pb-4 border-b border-[#E2E8F0]">
-              <h3 class="text-base sm:text-lg font-bold text-slateink">实时《诺德尔四象限能力诊断看板》</h3>
-              <p class="text-xs text-slate-500 mt-1">
+          <!-- 诺德尔四象限能力诊断看板 + 战果证据总结 -->
+          <div class="bg-white rounded-[20px] p-6 sm:p-10 shadow-[0_4px_24px_rgba(0,0,0,0.03)]">
+            <div class="pb-5 hairline-b">
+              <h3 class="text-[18px] font-semibold text-[#1D1D1F]">诺德尔四象限能力诊断看板</h3>
+              <p class="text-[13px] text-[#6E6E73] mt-1">
                 同时完成「喜欢程度」与「熟练程度」标注的卡牌，将自动归入以下四大能力象限：
               </p>
             </div>
 
-            <div class="mt-5 grid grid-cols-1 md:grid-cols-2 gap-4">
-              <!-- 象限 1：动力技能 -->
-              <div class="p-4 sm:p-5 rounded-2xl bg-calmteal-50/75 border border-calmteal-200">
+            <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="p-5 rounded-[16px] bg-[#0F5C56]/[0.05]">
                 <div class="flex items-center justify-between mb-1">
-                  <h4 class="text-sm sm:text-base font-bold text-calmteal-900">⚡ 动力技能（核心王牌区）</h4>
-                  <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-calmteal-700 text-white">${quads.motivated.length}</span>
+                  <h4 class="inline-flex items-center gap-1.5 text-[14px] font-semibold text-[#0F5C56]">
+                    ${svgIcon("bolt", "w-4 h-4")}
+                    <span>动力技能（核心王牌区）</span>
+                  </h4>
+                  <span class="text-[12px] font-semibold text-[#0F5C56] tabular-nums">${quads.motivated.length}</span>
                 </div>
-                <p class="text-xs text-calmteal-800/80 mb-3">既热爱又擅长，是职业发展的核心引擎。</p>
+                <p class="text-[12px] text-[#6E6E73] mb-3">既热爱又擅长，是职业发展的核心引擎。</p>
                 <div class="flex flex-wrap gap-1.5">
                   ${quads.motivated.length
-                    ? quads.motivated.map(t => `<span class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-white text-calmteal-900 border border-calmteal-200 shadow-2xs">${esc(t)}</span>`).join("")
-                    : `<span class="text-xs text-slate-400">暂无（在第一轮选「非常/很喜欢」且第二轮选「非常熟练/熟练」即自动汇总）</span>`
+                    ? quads.motivated.map(t => `<span class="px-2.5 py-1 rounded-full text-[12px] font-medium bg-white text-[#0F5C56]">${esc(t)}</span>`).join("")
+                    : `<span class="text-[12px] text-[#86868B]">暂无（非常/很喜欢 + 非常熟练/熟练）</span>`
                   }
                 </div>
               </div>
 
-              <!-- 象限 2：发展技能 -->
-              <div class="p-4 sm:p-5 rounded-2xl bg-warmamber-50/75 border border-warmamber-200">
+              <div class="p-5 rounded-[16px] bg-[#F5F5F7]">
                 <div class="flex items-center justify-between mb-1">
-                  <h4 class="text-sm sm:text-base font-bold text-warmamber-900">🌱 发展技能（潜力成长区）</h4>
-                  <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-warmamber-600 text-white">${quads.developmental.length}</span>
+                  <h4 class="inline-flex items-center gap-1.5 text-[14px] font-semibold text-[#1D1D1F]">
+                    ${svgIcon("sprout", "w-4 h-4")}
+                    <span>发展技能（潜力成长区）</span>
+                  </h4>
+                  <span class="text-[12px] font-semibold text-[#6E6E73] tabular-nums">${quads.developmental.length}</span>
                 </div>
-                <p class="text-xs text-warmamber-800/80 mb-3">有热情但待打磨，最值得向主管争取资源培养。</p>
+                <p class="text-[12px] text-[#6E6E73] mb-3">有热情但待打磨，最值得向主管争取资源培养。</p>
                 <div class="flex flex-wrap gap-1.5">
                   ${quads.developmental.length
-                    ? quads.developmental.map(t => `<span class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-white text-warmamber-900 border border-warmamber-200 shadow-2xs">${esc(t)}</span>`).join("")
-                    : `<span class="text-xs text-slate-400">暂无（在第一轮选「喜欢类」且第二轮选「尚未达到期望水平」即自动汇总）</span>`
+                    ? quads.developmental.map(t => `<span class="px-2.5 py-1 rounded-full text-[12px] font-medium bg-white text-[#1D1D1F]">${esc(t)}</span>`).join("")
+                    : `<span class="text-[12px] text-[#86868B]">暂无（喜欢类 + 尚未达到期望水平）</span>`
                   }
                 </div>
               </div>
 
-              <!-- 象限 3：耗竭技能 -->
-              <div class="p-4 sm:p-5 rounded-2xl bg-[#F8F7F4] border border-[#E2E8F0]">
+              <div class="p-5 rounded-[16px] bg-[#F5F5F7]">
                 <div class="flex items-center justify-between mb-1">
-                  <h4 class="text-sm sm:text-base font-bold text-slateink">🔋 耗竭技能（警惕厌烦区）</h4>
-                  <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-slate-600 text-white">${quads.burnout.length}</span>
+                  <h4 class="inline-flex items-center gap-1.5 text-[14px] font-semibold text-[#1D1D1F]">
+                    ${svgIcon("battery", "w-4 h-4")}
+                    <span>耗竭技能（警惕厌烦区）</span>
+                  </h4>
+                  <span class="text-[12px] font-semibold text-[#6E6E73] tabular-nums">${quads.burnout.length}</span>
                 </div>
-                <p class="text-xs text-slate-500 mb-3">虽然能做好但消耗能量，长期依赖易倦怠。</p>
+                <p class="text-[12px] text-[#6E6E73] mb-3">虽然能做好但消耗能量，长期依赖易倦怠。</p>
                 <div class="flex flex-wrap gap-1.5">
                   ${quads.burnout.length
-                    ? quads.burnout.map(t => `<span class="px-2.5 py-1 rounded-lg text-xs font-medium bg-white text-slate-700 border border-[#E2E8F0]">${esc(t)}</span>`).join("")
-                    : `<span class="text-xs text-slate-400">暂无（第一轮选「尽量不想用/非常不喜欢」且第二轮选「熟练类」）</span>`
+                    ? quads.burnout.map(t => `<span class="px-2.5 py-1 rounded-full text-[12px] font-medium bg-white text-[#6E6E73]">${esc(t)}</span>`).join("")
+                    : `<span class="text-[12px] text-[#86868B]">暂无（不想用/不喜欢 + 熟练类）</span>`
                   }
                 </div>
               </div>
 
-              <!-- 象限 4：非重点技能 -->
-              <div class="p-4 sm:p-5 rounded-2xl bg-[#F8F7F4] border border-[#E2E8F0]">
+              <div class="p-5 rounded-[16px] bg-[#F5F5F7]">
                 <div class="flex items-center justify-between mb-1">
-                  <h4 class="text-sm sm:text-base font-bold text-slateink">📦 非重点技能（低优规避区）</h4>
-                  <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-slate-400 text-white">${quads.lowPriority.length}</span>
+                  <h4 class="inline-flex items-center gap-1.5 text-[14px] font-semibold text-[#1D1D1F]">
+                    ${svgIcon("archive", "w-4 h-4")}
+                    <span>非重点技能（低优规避区）</span>
+                  </h4>
+                  <span class="text-[12px] font-semibold text-[#6E6E73] tabular-nums">${quads.lowPriority.length}</span>
                 </div>
-                <p class="text-xs text-slate-500 mb-3">非核心优势区，可借助工具或协作补位。</p>
+                <p class="text-[12px] text-[#6E6E73] mb-3">非核心优势区，可借助工具或协作补位。</p>
                 <div class="flex flex-wrap gap-1.5">
                   ${quads.lowPriority.length
-                    ? quads.lowPriority.map(t => `<span class="px-2.5 py-1 rounded-lg text-xs font-medium bg-white text-slate-500 border border-[#E2E8F0]">${esc(t)}</span>`).join("")
-                    : `<span class="text-xs text-slate-400">暂无（第一轮选「尽量不想用/非常不喜欢」且第二轮选「尚未达到期望水平」）</span>`
+                    ? quads.lowPriority.map(t => `<span class="px-2.5 py-1 rounded-full text-[12px] font-medium bg-white text-[#86868B]">${esc(t)}</span>`).join("")
+                    : `<span class="text-[12px] text-[#86868B]">暂无（不想用/不喜欢 + 尚未达到期望水平）</span>`
                   }
                 </div>
               </div>
             </div>
 
-            ${quads.supporting.length > 0
-              ? `<div class="mt-3 text-xs text-slate-500">
-                   另有 ${quads.supporting.length} 项「喜欢使用且熟练」的稳健支撑技能：${esc(quads.supporting.join("、"))}
-                 </div>`
-              : ""
-            }
-
-            <!-- 一句话总结 -->
-            <div class="mt-6 pt-5 border-t border-[#E2E8F0]">
-              <label for="s4-summary" class="block text-sm font-bold text-slateink mb-2">
-                我的能力盘点一句话总结（可选）
+            <div class="mt-7 pt-6 hairline-t">
+              <label for="s4-summary" class="block text-[14px] font-semibold text-[#1D1D1F] mb-2.5">
+                能力与战果一句话总结（可选）
               </label>
               <input type="text" id="s4-summary" value="${esc(appState.step4.abilitySummary)}"
                 oninput="onFieldChange('step4', 'abilitySummary', this.value)"
-                placeholder="例如：擅长分析与执行落地，希望重点补强战略思考与推动变革"
-                class="w-full rounded-xl border border-[#E2E8F0] bg-[#F8F7F4]/60 px-4 py-3 text-sm text-slateink placeholder-slate-400 editorial-input" />
+                placeholder="例如：擅长分析与执行落地（曾主导 Q2 流程优化项目），希望重点补强战略思考与推动变革"
+                class="w-full px-4 py-3 text-[14px] apple-field" />
             </div>
 
-            ${renderStepFooterNav(4)}
+            ${renderBottomNav("switchSubstep('1.3')", "switchSubstep('1.5')", "下一步：1.5 职业方向")}
           </div>
         </div>
       `;
     }
 
-    // --- Step 5: 锚定职业发展方向 · SMART 目标设定 ---
-    function renderStep5() {
+    // --- 1.5 锚定职业发展方向 · SMART 目标 ---
+    function renderSubstep1_5() {
       const s5 = appState.step5;
-      const quads = computeNodelQuadrants();
-      const valTags = appState.step2.top3Values.length > 0
-        ? appState.step2.top3Values
-        : appState.step2.selectedValues.slice(0, 3);
+      const clover = getCloverAnchors();
 
       return `
-        <div class="bg-white rounded-2xl border border-[#E2E8F0] p-6 sm:p-8 shadow-2xs">
-          <div class="pb-4 border-b border-[#E2E8F0]">
-            <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold bg-calmteal-50 text-calmteal-700 mb-2">
-              对话前准备 · Step 5 / 7
-            </span>
-            <h2 class="text-xl sm:text-2xl font-bold text-slateink">锚定职业发展方向 · SMART 目标</h2>
-            <p class="text-sm text-slate-600 mt-1.5 leading-relaxed">
-              结合前面梳理的三叶草自我认知，先把脑海中的初步职业想法写下来，再将它提炼为一整句清晰可落地的 SMART 目标。
+        <div class="bg-white rounded-[20px] p-6 sm:p-10 shadow-[0_4px_24px_rgba(0,0,0,0.03)]">
+          <div class="pb-6 hairline-b">
+            <div class="text-[12px] font-medium tracking-[0.06em] uppercase text-[#86868B] mb-1.5">
+              事前准备 · 1.5
+            </div>
+            <h2 class="text-[24px] sm:text-[28px] font-bold tracking-[-0.02em] text-[#1D1D1F] leading-tight">
+              锚定职业发展方向 · SMART 目标
+            </h2>
+            <p class="text-[14px] sm:text-[15px] text-[#6E6E73] mt-2 leading-relaxed">
+              对照下方自动汇集的「三叶草自我认知」三片叶子，寻找三者交集（或通过优势能力转化），将初步想法升级为一整句可落地的 SMART 目标。
             </p>
           </div>
 
-          <!-- 三叶草自我认知回显参考条 -->
-          <div class="mt-5 p-4 rounded-2xl bg-[#F8F7F4] border border-[#E2E8F0] space-y-2.5">
-            <div class="text-xs font-bold text-slate-500">🍀 你的三叶草自我认知锚点（制定目标时可对照参考）：</div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-2.5 text-xs">
-              <div class="p-2.5 rounded-xl bg-white border border-[#E2E8F0]">
-                <span class="font-bold text-warmamber-700 block mb-1">Top 3 核心价值观</span>
-                <span class="text-slate-700">${valTags.length ? esc(valTags.join("、")) : "尚未在 Step 2 选择"}</span>
+          <!-- 三叶草模型对照看板（无边框浅灰底 + 3 张纯白无边框卡片） -->
+          <div class="mt-7 p-5 sm:p-6 rounded-[18px] bg-[#F5F5F7]">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-3.5">
+              <span class="inline-flex items-center gap-1.5 text-[13px] font-semibold text-[#1D1D1F]">
+                <span class="text-[#0F5C56]">${svgIcon("clover", "w-4 h-4")}</span>
+                <span>你的三叶草自我认知锚点</span>
+              </span>
+              <span class="text-[12px] text-[#86868B]">数据源自动同步，点击卡片右上角可返回修改</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <!-- 卡片 1：核心价值（源自 1.2） -->
+              <div class="p-4 rounded-[14px] bg-white shadow-[0_1px_4px_rgba(0,0,0,0.02)] flex flex-col justify-between">
+                <div>
+                  <div class="flex items-center justify-between gap-2 mb-2.5">
+                    <span class="text-[12px] font-semibold text-[#1D1D1F]">
+                      核心价值 <span class="text-[#86868B] font-normal">· 1.2</span>
+                    </span>
+                    <button type="button" onclick="switchSubstep('1.2')"
+                      class="inline-flex items-center gap-1 text-[12px] text-[#86868B] hover:text-[#0F5C56] transition cursor-pointer shrink-0">
+                      ${svgIcon("pencil", "w-3 h-3")}
+                      <span>去修改</span>
+                    </button>
+                  </div>
+
+                  ${clover.valuesList.length > 0
+                    ? `<div class="flex flex-wrap gap-1.5">
+                         ${clover.valuesList.map(v => `
+                           <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[12px] font-medium bg-[#B45309]/[0.10] text-[#B45309]">
+                             ${svgIcon("starFilled", "w-3 h-3")}
+                             <span>${esc(v)}</span>
+                           </span>
+                         `).join("")}
+                       </div>`
+                    : `<button type="button" onclick="switchSubstep('1.2')"
+                         class="inline-flex items-center gap-1 text-[13px] text-[#0F5C56] hover:underline font-medium text-left cursor-pointer">
+                         <span>尚未标定，去完成</span>
+                         ${svgIcon("arrowRight", "w-3.5 h-3.5")}
+                       </button>`
+                  }
+                </div>
+                ${clover.valueSourceNote
+                  ? `<div class="mt-3 pt-2 hairline-t text-[11px] text-[#86868B]">${clover.valueSourceNote}</div>`
+                  : ""
+                }
               </div>
-              <div class="p-2.5 rounded-xl bg-white border border-[#E2E8F0]">
-                <span class="font-bold text-calmteal-700 block mb-1">⚡ 动力技能（核心王牌）</span>
-                <span class="text-slate-700">${quads.motivated.length ? esc(quads.motivated.join("、")) : "尚未在 Step 4 标定"}</span>
+
+              <!-- 卡片 2：内在兴趣（源自 1.3） -->
+              <div class="p-4 rounded-[14px] bg-white shadow-[0_1px_4px_rgba(0,0,0,0.02)] flex flex-col justify-between">
+                <div>
+                  <div class="flex items-center justify-between gap-2 mb-2.5">
+                    <span class="text-[12px] font-semibold text-[#1D1D1F]">
+                      内在兴趣 <span class="text-[#86868B] font-normal">· 1.3</span>
+                    </span>
+                    <button type="button" onclick="switchSubstep('1.3')"
+                      class="inline-flex items-center gap-1 text-[12px] text-[#86868B] hover:text-[#0F5C56] transition cursor-pointer shrink-0">
+                      ${svgIcon("pencil", "w-3 h-3")}
+                      <span>去修改</span>
+                    </button>
+                  </div>
+
+                  ${clover.interestText
+                    ? `<p class="text-[13px] text-[#1D1D1F] leading-relaxed">${esc(clover.interestText)}</p>`
+                    : `<button type="button" onclick="switchSubstep('1.3')"
+                         class="inline-flex items-center gap-1 text-[13px] text-[#0F5C56] hover:underline font-medium text-left cursor-pointer">
+                         <span>尚未标定，去完成</span>
+                         ${svgIcon("arrowRight", "w-3.5 h-3.5")}
+                       </button>`
+                  }
+                </div>
+                ${clover.interestIsFallback
+                  ? `<div class="mt-3 pt-2 hairline-t text-[11px] text-[#86868B]">引自心流能量（建议去 1.3 补充一句话提炼）</div>`
+                  : clover.interestText
+                    ? `<div class="mt-3 pt-2 hairline-t text-[11px] text-[#86868B]">一句话兴趣提炼</div>`
+                    : ""
+                }
               </div>
-              <div class="p-2.5 rounded-xl bg-white border border-[#E2E8F0]">
-                <span class="font-bold text-warmamber-700 block mb-1">🌱 发展技能（潜力成长）</span>
-                <span class="text-slate-700">${quads.developmental.length ? esc(quads.developmental.join("、")) : "尚未在 Step 4 标定"}</span>
+
+              <!-- 卡片 3：优势能力（源自 1.4 非常熟练） -->
+              <div class="p-4 rounded-[14px] bg-white shadow-[0_1px_4px_rgba(0,0,0,0.02)] flex flex-col justify-between">
+                <div>
+                  <div class="flex items-center justify-between gap-2 mb-2.5">
+                    <span class="text-[12px] font-semibold text-[#1D1D1F]">
+                      优势能力 <span class="text-[#86868B] font-normal">· 1.4 非常熟练</span>
+                    </span>
+                    <button type="button" onclick="switchSubstep('1.4')"
+                      class="inline-flex items-center gap-1 text-[12px] text-[#86868B] hover:text-[#0F5C56] transition cursor-pointer shrink-0">
+                      ${svgIcon("pencil", "w-3 h-3")}
+                      <span>去修改</span>
+                    </button>
+                  </div>
+
+                  ${clover.highlyProficientSkills.length > 0
+                    ? `<div class="flex flex-wrap gap-1.5">
+                         ${clover.highlyProficientSkills.map(sk => `
+                           <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[12px] font-medium ${
+                             sk.isAce
+                               ? "bg-[#0F5C56]/[0.10] text-[#0F5C56]"
+                               : sk.isBurnoutRisk
+                                 ? "bg-[#F5F5F7] text-[#6E6E73]"
+                                 : "bg-[#F5F5F7] text-[#1D1D1F]"
+                           }">
+                             <span>${esc(sk.title)}</span>
+                             <span class="text-[10px] opacity-75">· ${sk.tag}</span>
+                           </span>
+                         `).join("")}
+                       </div>`
+                    : `<button type="button" onclick="switchSubstep('1.4')"
+                         class="inline-flex items-center gap-1 text-[13px] text-[#0F5C56] hover:underline font-medium text-left cursor-pointer">
+                         <span>暂未标记「非常熟练」技能，去标定</span>
+                         ${svgIcon("arrowRight", "w-3.5 h-3.5")}
+                       </button>`
+                  }
+                </div>
+                ${clover.highlyProficientSkills.length > 0
+                  ? `<div class="mt-3 pt-2 hairline-t text-[11px] text-[#86868B]">优先用「王牌动力」技能设定目标</div>`
+                  : ""
+                }
               </div>
             </div>
           </div>
 
-          <!-- 第一步：初始职业发展方向 / 想法 -->
-          <div class="mt-6">
-            <div class="flex items-center gap-2 mb-2">
-              <span class="px-2 py-0.5 rounded-md bg-slateink text-white text-xs font-bold">第一步</span>
-              <label for="s5-initial-dir" class="text-sm sm:text-base font-bold text-slateink">
-                写下你的初始职业发展方向 / 想法
-              </label>
-            </div>
+          <!-- 第一步：写下初始职业发展方向 -->
+          <div class="mt-8">
+            <label for="s5-initial-dir" class="block text-[14px] font-semibold text-[#1D1D1F] mb-2.5">
+              第一步 · 写下你的初始职业发展方向 / 想法
+            </label>
 
             <div class="flex flex-wrap gap-1.5 mb-3">
               ${STEP5_DIRECTION_PILLS.map(pill => {
                 const active = s5.initialDirection.trim() === pill;
                 return `
                   <button type="button" onclick="selectDirectionPill('${esc(pill)}')"
-                    class="px-3 py-1.5 rounded-xl text-xs font-medium border transition ${
+                    class="px-3.5 py-1.5 rounded-full text-[12px] font-medium transition cursor-pointer ${
                       active
-                        ? "bg-calmteal-700 text-white border-calmteal-700"
-                        : "bg-[#F8F7F4] text-slate-600 border-[#E2E8F0] hover:border-calmteal-600 hover:text-calmteal-800"
+                        ? "bg-[#0F5C56] text-white"
+                        : "bg-[#F5F5F7] text-[#6E6E73] hover:text-[#1D1D1F] hover:bg-[#E8E8ED]"
                     }">
                     ${esc(pill)}
                   </button>
@@ -1938,49 +2410,36 @@
 
             <input type="text" id="s5-initial-dir" value="${esc(s5.initialDirection)}"
               oninput="onFieldChange('step5', 'initialDirection', this.value)"
-              placeholder="例如：我想晋升"
-              class="w-full rounded-xl border border-[#E2E8F0] bg-[#F8F7F4]/60 px-4 py-3 text-sm text-slateink placeholder-slate-400 editorial-input" />
+              placeholder="例如：我想晋升到下一职级"
+              class="w-full px-4 py-3 text-[15px] apple-field" />
           </div>
 
-          <!-- 转化连接器 -->
-          <div class="my-5 flex items-center justify-center">
-            <div class="px-4 py-2 rounded-full bg-calmteal-50 border border-calmteal-200 text-xs sm:text-sm font-semibold text-calmteal-800">
-              ↓ 结合三叶草认知，把初始想法升级为一整句可落地的 SMART 目标
-            </div>
-          </div>
-
-          <!-- 第二步：一整句完整的 SMART 目标 + 五维自检胶囊 -->
-          <div>
-            <div class="flex items-center gap-2 mb-2">
-              <span class="px-2 py-0.5 rounded-md bg-calmteal-700 text-white text-xs font-bold">第二步</span>
-              <label for="s5-smart-goal" class="text-sm sm:text-base font-bold text-slateink">
-                我的 SMART 职业发展目标
-              </label>
-            </div>
+          <!-- 第二步：升级为一整句完整的 SMART 职业目标 -->
+          <div class="mt-8 pt-7 hairline-t">
+            <label for="s5-smart-goal" class="block text-[14px] font-semibold text-[#1D1D1F] mb-2.5">
+              第二步 · 结合三叶草认知，将它升级为一整句完整的 SMART 职业目标
+            </label>
 
             <textarea id="s5-smart-goal" rows="4"
               oninput="onFieldChange('step5', 'smartGoal', this.value)"
-              placeholder="例如：我希望在 3 年内达到下一职级的项目管理能力，并主导完成 1 个相关重点项目，获得业务方与主管的达标评估。"
-              class="w-full rounded-xl border border-[#E2E8F0] bg-[#F8F7F4]/60 p-4 text-sm text-slateink placeholder-slate-400 editorial-input leading-relaxed">${esc(s5.smartGoal)}</textarea>
+              placeholder="例如：我希望在 3 年内达到下一职级的项目管理能力，独立主导至少 1 个跨部门核心项目并达成预期业务指标。"
+              class="w-full p-4 text-[15px] apple-field leading-relaxed">${esc(s5.smartGoal)}</textarea>
 
-            <!-- SMART 五维自检小胶囊 -->
-            <div class="mt-4 p-4 rounded-2xl bg-[#F8F7F4] border border-[#E2E8F0]">
-              <div class="text-xs font-semibold text-slate-600 mb-2.5">
-                SMART 五维自检（对照你上面写的那一整句话，点击点亮已涵盖的要素）：
+            <div class="mt-4">
+              <div class="text-[12px] font-medium text-[#86868B] mb-2.5">
+                SMART 五维自检（点击点亮该句话已涵盖的要素）：
               </div>
               <div class="flex flex-wrap gap-2">
                 ${SMART_CHECK_ITEMS.map(item => {
                   const checked = s5.smartChecks.includes(item.id);
                   return `
                     <button type="button" onclick="toggleSmartCheck('${item.id}')"
-                      class="px-3 py-2 rounded-xl text-xs font-semibold border transition-all flex items-center gap-1.5 ${
+                      class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[13px] font-medium transition-all cursor-pointer ${
                         checked
-                          ? "bg-calmteal-700 text-white border-calmteal-700 shadow-2xs"
-                          : "bg-white text-slate-600 border-[#E2E8F0] hover:border-calmteal-600"
+                          ? "bg-[#0F5C56] text-white"
+                          : "bg-[#F5F5F7] text-[#6E6E73] hover:text-[#1D1D1F] hover:bg-[#E8E8ED]"
                       }">
-                      <span class="w-4 h-4 rounded-full flex items-center justify-center text-[10px] ${
-                        checked ? "bg-white text-calmteal-800 font-bold" : "bg-slate-100 text-slate-400"
-                      }">${checked ? "✓" : item.id}</span>
+                      ${checked ? svgIcon("check", "w-3.5 h-3.5") : ""}
                       <span>${item.label}</span>
                     </button>
                   `;
@@ -1989,432 +2448,509 @@
             </div>
           </div>
 
-          ${renderStepFooterNav(5)}
+          ${renderBottomNav("switchSubstep('1.4')", "switchStage('stage2')", "完成事前准备 · 进入阶段二：开展对话")}
         </div>
       `;
     }
 
-    // --- Step 6: 对话中 · 沟通提纲 ---
-    function renderStep6() {
-      const s6 = appState.step6;
-      const selectedHints = STEP6_HELP_PILLS
-        .filter(p => s6.helpDimensions.includes(p.id))
-        .map(p => `${p.label}（${p.hint}）`)
+    // --- 阶段二：开展对话（单页直出，无二级 Tab） ---
+    function renderStage2() {
+      const st2 = appState.stage2;
+      const selectedHints = STAGE2_HELP_PILLS
+        .filter(p => st2.helpDimensions.includes(p.id))
+        .map(p => `${p.label}：${p.hint}`)
         .join("；");
 
       return `
-        <div class="bg-white rounded-2xl border border-[#E2E8F0] p-6 sm:p-8 shadow-2xs">
-          <div class="pb-4 border-b border-[#E2E8F0]">
-            <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold bg-warmamber-50 text-warmamber-700 mb-2">
-              对话进行中 · Step 6 / 7
-            </span>
-            <h2 class="text-xl sm:text-2xl font-bold text-slateink">与上级的三个沟通角度</h2>
-            <p class="text-sm text-slate-600 mt-1.5 leading-relaxed">
-              围绕「现状分析 — 发展路径 — 寻求帮助」三个结构化视角展开对话，让沟通既有事实依据又有明确请求。
+        <div class="bg-white rounded-[20px] p-6 sm:p-10 shadow-[0_4px_24px_rgba(0,0,0,0.03)]">
+          <div class="pb-6 hairline-b">
+            <div class="text-[12px] font-medium tracking-[0.06em] uppercase text-[#86868B] mb-1.5">
+              阶段二 · 开展对话
+            </div>
+            <h2 class="text-[24px] sm:text-[28px] font-bold tracking-[-0.02em] text-[#1D1D1F] leading-tight">
+              与上级的三个沟通角度
+            </h2>
+            <p class="text-[14px] sm:text-[15px] text-[#6E6E73] mt-2 leading-relaxed">
+              围绕「现状分析 — 发展路径 — 寻求帮助」三个结构化视角展开 1 对 1 对话，让沟通既有事实依据又有清晰诉求。
             </p>
           </div>
 
-          <div class="mt-6 space-y-5">
-            <!-- 角度 1：现状分析 -->
-            <div class="p-4 sm:p-5 rounded-2xl bg-[#F8F7F4] border border-[#E2E8F0]">
-              <h3 class="text-sm sm:text-base font-bold text-calmteal-800 mb-1">【现状分析】</h3>
-              <p class="text-xs sm:text-sm text-slate-600 mb-3">
-                在当前岗位上有效工作所需的技能和知识是什么？我目前的表现与目标是什么？
-              </p>
+          <div class="mt-7 space-y-6">
+            <div>
+              <h3 class="text-[15px] font-semibold text-[#1D1D1F] mb-1">【现状分析】当前岗位核心能力与目标差距</h3>
+              <p class="text-[13px] text-[#6E6E73] mb-3">在当前岗位上有效工作所需的技能和知识？目标与差距是什么？</p>
               <textarea rows="3"
-                oninput="onFieldChange('step6', 'currentStatus', this.value)"
-                placeholder="梳理当前岗位的核心要求，以及你现阶段的优势表现与最聚焦的工作目标..."
-                class="w-full rounded-xl border border-[#E2E8F0] bg-white p-3.5 text-sm text-slateink placeholder-slate-400 editorial-input leading-relaxed">${esc(s6.currentStatus)}</textarea>
+                oninput="onFieldChange('stage2', 'currentStatus', this.value)"
+                placeholder="梳理当前岗位的核心要求，以及你现阶段的优势表现与距离目标的关键差距..."
+                class="w-full p-4 text-[14px] apple-field leading-relaxed">${esc(st2.currentStatus)}</textarea>
             </div>
 
-            <!-- 角度 2：发展路径 -->
-            <div class="p-4 sm:p-5 rounded-2xl bg-[#F8F7F4] border border-[#E2E8F0]">
-              <h3 class="text-sm sm:text-base font-bold text-calmteal-800 mb-1">【发展路径】</h3>
-              <p class="text-xs sm:text-sm text-slate-600 mb-3">
-                为了靠近 SMART 目标，我已经做了什么？接下来还需要做什么、怎样做？
-              </p>
+            <div class="pt-6 hairline-t">
+              <h3 class="text-[15px] font-semibold text-[#1D1D1F] mb-1">【发展路径】已做沉淀、待补短板与行动方式</h3>
+              <p class="text-[13px] text-[#6E6E73] mb-3">过去做了什么积累？还需要做什么？打算怎样做？</p>
               <textarea rows="3"
-                oninput="onFieldChange('step6', 'devPath', this.value)"
+                oninput="onFieldChange('stage2', 'devPath', this.value)"
                 placeholder="盘点你已做出的努力与阶段成果，明确下一阶段的关键行动与能力补齐计划..."
-                class="w-full rounded-xl border border-[#E2E8F0] bg-white p-3.5 text-sm text-slateink placeholder-slate-400 editorial-input leading-relaxed">${esc(s6.devPath)}</textarea>
+                class="w-full p-4 text-[14px] apple-field leading-relaxed">${esc(st2.devPath)}</textarea>
             </div>
 
-            <!-- 角度 3：寻求帮助 -->
-            <div class="p-4 sm:p-5 rounded-2xl bg-[#F8F7F4] border border-[#E2E8F0]">
-              <h3 class="text-sm sm:text-base font-bold text-calmteal-800 mb-1">【寻求帮助】</h3>
-              <p class="text-xs sm:text-sm text-slate-600 mb-3">
-                勾选你希望获得的支持维度（可多选），并具体写下希望上级/导师提供的帮助：
-              </p>
+            <div class="pt-6 hairline-t">
+              <h3 class="text-[15px] font-semibold text-[#1D1D1F] mb-1">【寻求帮助】需要上级提供的支持</h3>
+              <p class="text-[13px] text-[#6E6E73] mb-3">勾选希望获得的支持维度（可多选），并写下具体诉求：</p>
 
               <div class="flex flex-wrap gap-2 mb-3.5">
-                ${STEP6_HELP_PILLS.map(pill => {
-                  const active = s6.helpDimensions.includes(pill.id);
+                ${STAGE2_HELP_PILLS.map(pill => {
+                  const active = st2.helpDimensions.includes(pill.id);
                   return `
-                    <button type="button" onclick="toggleStep6Help('${pill.id}')"
-                      class="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold border transition-all ${
+                    <button type="button" onclick="toggleStage2Help('${pill.id}')"
+                      class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[13px] font-medium transition-all cursor-pointer ${
                         active
-                          ? "bg-calmteal-700 text-white border-calmteal-700 shadow-2xs"
-                          : "bg-white text-slate-700 border-[#E2E8F0] hover:border-calmteal-600"
+                          ? "bg-[#0F5C56] text-white"
+                          : "bg-[#F5F5F7] text-[#1D1D1F] hover:bg-[#E8E8ED]"
                       }">
-                      ${active ? "✓ " : ""}${pill.label}
+                      ${svgIcon(pill.icon, "w-3.5 h-3.5")}
+                      <span>${pill.label}</span>
                     </button>
                   `;
                 }).join("")}
               </div>
 
               ${selectedHints
-                ? `<div class="mb-3 px-3 py-2 rounded-xl bg-warmamber-50 border border-warmamber-200 text-xs text-warmamber-800 leading-relaxed">
-                     参考提示：${esc(selectedHints)}
+                ? `<div class="mb-3.5 px-4 py-2.5 rounded-[12px] bg-[#F5F5F7] text-[12px] text-[#6E6E73] leading-relaxed">
+                     参考方向：${esc(selectedHints)}
                    </div>`
                 : ""
               }
 
               <textarea rows="3"
-                oninput="onFieldChange('step6', 'helpDetail', this.value)"
-                placeholder="写下希望上级或导师提供的具体支持、资源协调或反馈频率..."
-                class="w-full rounded-xl border border-[#E2E8F0] bg-white p-3.5 text-sm text-slateink placeholder-slate-400 editorial-input leading-relaxed">${esc(s6.helpDetail)}</textarea>
+                oninput="onFieldChange('stage2', 'helpDetail', this.value)"
+                placeholder="写下希望上级或导师提供的具体支持、项目机会、资源协调或反馈频率..."
+                class="w-full p-4 text-[14px] apple-field leading-relaxed">${esc(st2.helpDetail)}</textarea>
             </div>
           </div>
 
-          ${renderStepFooterNav(6)}
+          ${renderBottomNav("switchSubstep('1.5')", "switchStage('stage3')", "进入阶段三：事后跟进")}
         </div>
       `;
     }
 
-    // --- Step 7: 对话后 · 技能沉淀清单 ---
-    function renderStep7() {
-      const s7 = appState.step7;
+    // --- 阶段三：事后跟进（单页直出，无二级 Tab） ---
+    function renderStage3() {
+      const st3 = appState.stage3;
       const cards = [
         {
-          badge: "当下胜任",
+          eyebrow: "当下胜任",
           title: "在当前岗位上",
-          desc: "有效履行当下核心职责所需的技能和知识",
+          desc: "有效履行职责所需技能与知识",
           placeholder: "记录对话后确认的、在当前岗位上需要精进或巩固的关键技能与业务知识...",
           field: "skillsCurrent",
-          val: s7.skillsCurrent
+          val: st3.skillsCurrent
         },
         {
-          badge: "进阶储备",
+          eyebrow: "进阶储备",
           title: "未来的职位",
-          desc: "为迈向目标岗位/下一职级需要提前储备的技能和知识",
+          desc: "迈向目标岗位需储备的能力",
           placeholder: "记录与上级对齐后，为下一职级或目标岗位需要提前锻炼的能力与项目经验...",
           field: "skillsFuture",
-          val: s7.skillsFuture
+          val: st3.skillsFuture
         },
         {
-          badge: "长期壁垒",
+          eyebrow: "长期壁垒",
           title: "保持长期竞争力",
-          desc: "跨越单一岗位周期、值得持续投入的底层能力",
+          desc: "跨周期底层迁移能力",
           placeholder: "沉淀不局限于单一岗位的长期竞争力（如跨界整合、复杂决策、AI 赋能等）...",
           field: "skillsLongTerm",
-          val: s7.skillsLongTerm
+          val: st3.skillsLongTerm
         }
       ];
 
       return `
-        <div class="bg-white rounded-2xl border border-[#E2E8F0] p-6 sm:p-8 shadow-2xs">
-          <div class="pb-4 border-b border-[#E2E8F0]">
-            <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold bg-warmamber-50 text-warmamber-700 mb-2">
-              对话后复盘 · Step 7 / 7
-            </span>
-            <h2 class="text-xl sm:text-2xl font-bold text-slateink">能力与知识行动清单</h2>
-            <p class="text-sm text-slate-600 mt-1.5 leading-relaxed">
+        <div class="bg-white rounded-[20px] p-6 sm:p-10 shadow-[0_4px_24px_rgba(0,0,0,0.03)]">
+          <div class="pb-6 hairline-b">
+            <div class="text-[12px] font-medium tracking-[0.06em] uppercase text-[#86868B] mb-1.5">
+              阶段三 · 事后跟进
+            </div>
+            <h2 class="text-[24px] sm:text-[28px] font-bold tracking-[-0.02em] text-[#1D1D1F] leading-tight">
+              三层能力与知识行动清单
+            </h2>
+            <p class="text-[14px] sm:text-[15px] text-[#6E6E73] mt-2 leading-relaxed">
               将职业对话中的共识转化为分层次的能力发展清单，让每一次成长都有清晰抓手。
             </p>
           </div>
 
-          <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-            ${cards.map((c, idx) => `
-              <div class="p-4 sm:p-5 rounded-2xl bg-[#F8F7F4] border border-[#E2E8F0] flex flex-col">
-                <span class="inline-block w-fit px-2.5 py-0.5 rounded-md text-[11px] font-bold mb-2 ${
-                  idx === 0 ? "bg-slate-200/80 text-slate-700" : idx === 1 ? "bg-calmteal-100 text-calmteal-800" : "bg-warmamber-100 text-warmamber-800"
-                }">
-                  ${c.badge}
-                </span>
-                <h3 class="text-base font-bold text-slateink">${c.title}</h3>
-                <p class="text-xs text-slate-500 mt-1 mb-3 leading-relaxed">${c.desc}</p>
+          <div class="mt-7 grid grid-cols-1 md:grid-cols-3 gap-4">
+            ${cards.map(c => `
+              <div class="p-5 rounded-[16px] bg-[#F5F5F7] flex flex-col">
+                <div class="text-[11px] font-medium tracking-[0.06em] uppercase text-[#86868B] mb-1">${c.eyebrow}</div>
+                <h3 class="text-[16px] font-semibold text-[#1D1D1F]">${c.title}</h3>
+                <p class="text-[12px] text-[#6E6E73] mt-1 mb-3.5 leading-relaxed">${c.desc}</p>
                 <textarea rows="6"
-                  oninput="onFieldChange('step7', '${c.field}', this.value)"
+                  oninput="onFieldChange('stage3', '${c.field}', this.value)"
                   placeholder="${c.placeholder}"
-                  class="w-full flex-1 rounded-xl border border-[#E2E8F0] bg-white p-3.5 text-sm text-slateink placeholder-slate-400 editorial-input leading-relaxed">${esc(c.val)}</textarea>
+                  class="w-full flex-1 p-3.5 rounded-[12px] bg-white text-[13px] text-[#1D1D1F] placeholder-[#86868B] focus:outline-none focus:ring-2 focus:ring-[#0F5C56]/25 leading-relaxed">${esc(c.val)}</textarea>
               </div>
             `).join("")}
           </div>
 
-          ${renderStepFooterNav(7)}
+          <div class="mt-9 pt-6 hairline-t flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+            <button type="button" onclick="switchStage('stage2')"
+              class="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full text-[13px] font-medium text-[#6E6E73] hover:text-[#1D1D1F] bg-[#F5F5F7] hover:bg-[#E8E8ED] transition cursor-pointer">
+              ${svgIcon("arrowLeft", "w-3.5 h-3.5")}
+              <span>返回阶段二：开展对话</span>
+            </button>
+
+            <div class="flex flex-wrap items-center justify-end gap-3">
+              <button type="button" onclick="openResetModal()"
+                class="px-3.5 py-2 rounded-full text-[13px] font-medium text-[#86868B] hover:text-[#D70015] transition cursor-pointer">
+                清空重置
+              </button>
+
+              <button type="button" onclick="openOnePagerModal()"
+                class="inline-flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-full text-[13px] font-medium text-white bg-[#0F5C56] hover:bg-[#0B4641] transition shadow-[0_2px_8px_rgba(15,92,86,0.18)] cursor-pointer">
+                ${svgIcon("printer", "w-4 h-4")}
+                <span>预览并导出《职业发展对话准备单》</span>
+              </button>
+            </div>
+          </div>
         </div>
       `;
     }
 
-    // --- Step 8: 我的职业对话准备单（One-Pager） ---
-    function renderTextOrDash(text) {
-      if (text && text.trim()) {
-        return `<div class="text-sm text-slateink whitespace-pre-line leading-relaxed">${esc(text.trim())}</div>`;
+    // =========================================================================
+    // 14. 瑞士网格刊物级《职业发展对话准备单》渲染（纯白报头 + 35%/65% 不对称双栏 + 选项 A 留白）
+    // =========================================================================
+    function renderRuledLines(guideHint, lineCount = 2) {
+      let linesHtml = "";
+      for (let i = 0; i < lineCount; i++) {
+        linesHtml += `<div class="h-6 border-b border-black/[0.12]"></div>`;
       }
-      return `<div class="text-sm text-slate-400">—</div>`;
+      return `
+        <div class="mt-1">
+          <div class="text-[11px] text-[#86868B] italic">${esc(guideHint)}</div>
+          ${linesHtml}
+        </div>
+      `;
     }
 
-    function renderStep8() {
+    function renderOnePagerContent() {
+      const container = document.getElementById("onepager-printable");
+      if (!container) return;
+
+      const clover = getCloverAnchors();
       const quads = computeNodelQuadrants();
       const s1 = appState.step1;
-      const s2 = appState.step2;
-      const s3 = appState.step3;
       const s4 = appState.step4;
       const s5 = appState.step5;
-      const s6 = appState.step6;
-      const s7 = appState.step7;
-      const s8 = appState.step8;
+      const st2 = appState.stage2;
+      const st3 = appState.stage3;
+      const op = appState.onePager;
 
-      const selectedHelpObjects = STEP6_HELP_PILLS.filter(p => s6.helpDimensions.includes(p.id));
+      const selectedHelpObjects = STAGE2_HELP_PILLS.filter(p => st2.helpDimensions.includes(p.id));
       const checkedSmartObjs = SMART_CHECK_ITEMS.filter(i => s5.smartChecks.includes(i.id));
 
-      return `
-        <div>
-          <!-- 顶部操作栏（打印时隐藏） -->
-          <div class="no-print mb-5 bg-white rounded-2xl border border-[#E2E8F0] p-4 flex flex-wrap items-center justify-between gap-3 shadow-2xs">
-            <button type="button" onclick="switchStep(7)"
-              class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-medium text-slate-600 bg-[#F8F7F4] hover:bg-slate-200/70 border border-[#E2E8F0] transition">
-              ← 返回修改
-            </button>
-
-            <div class="flex flex-wrap items-center gap-2">
-              <button type="button" onclick="copyFullSummaryText()"
-                class="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-white bg-calmteal-700 hover:bg-calmteal-800 transition shadow-2xs">
-                📋 复制完整文本摘要
-              </button>
-
-              <button type="button" onclick="triggerPrintOnePager()"
-                class="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-warmamber-800 bg-warmamber-50 hover:bg-warmamber-100 border border-warmamber-200 transition">
-                🖨️ 打印 / 保存为 PDF
-              </button>
-
-              <button type="button" onclick="openResetModal()"
-                class="px-3 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:text-rose-600 transition">
-                清空重置
-              </button>
+      container.innerHTML = `
+        <!-- 纯白瑞士刊物级报头 + 1.5px 实心墨黑分割线 -->
+        <header class="border-b-[1.5px] border-[#1D1D1F] pb-5 mb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+          <div>
+            <div class="text-[11px] font-medium tracking-[0.08em] uppercase text-[#86868B] mb-1">
+              EXECUTIVE ONE-PAGER · CAREER DEVELOPMENT CONVERSATION
             </div>
+            <h2 class="text-[22px] sm:text-[24px] font-bold tracking-[-0.02em] text-[#1D1D1F] leading-tight">
+              我的《职业发展对话准备单》
+            </h2>
+            <p class="text-[12px] text-[#86868B] mt-1">
+              Opentalk · 职业发展对话实战与应用
+            </p>
           </div>
 
-          <!-- ==================== A4 行政摘要风《职业发展对话准备单》 ==================== -->
-          <div class="one-pager-card bg-white rounded-2xl border border-[#E2E8F0] shadow-xs overflow-hidden">
-            <!-- 抬头 -->
-            <div class="bg-calmteal-800 text-white px-6 py-6 sm:px-8">
-              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                  <div class="text-[11px] uppercase tracking-widest text-calmteal-200 font-semibold mb-1">
-                    Career Development Conversation · Executive One-Pager
-                  </div>
-                  <h2 class="text-xl sm:text-2xl font-bold tracking-tight">我的《职业发展对话准备单》</h2>
-                </div>
+          <div class="flex flex-wrap items-center gap-4 text-[12px] text-[#6E6E73] tabular-nums shrink-0">
+            <div>
+              <span class="text-[#86868B]">学员：</span>
+              <span class="font-semibold text-[#1D1D1F]">${esc((appState.studentName || "").trim()) || "________________"}</span>
+            </div>
+            <span class="text-black/15">|</span>
+            <div class="flex items-center gap-1">
+              <label for="op-date-input" class="text-[#86868B]">日期：</label>
+              <input type="date" id="op-date-input" value="${esc(op.planDate)}"
+                oninput="onFieldChange('onePager', 'planDate', this.value)"
+                class="bg-transparent font-semibold text-[#1D1D1F] focus:outline-none text-[12px]" />
+            </div>
+          </div>
+        </header>
 
-                <div class="flex flex-wrap items-center gap-3 bg-calmteal-900/60 px-4 py-2.5 rounded-xl border border-calmteal-700 text-xs sm:text-sm">
-                  <div>
-                    <span class="text-calmteal-200">姓名/昵称：</span>
-                    <span class="font-bold">${esc((appState.studentName || "").trim()) || "—"}</span>
-                  </div>
-                  <span class="text-calmteal-600">|</span>
-                  <div class="flex items-center gap-1.5">
-                    <label for="s8-date" class="text-calmteal-200">日期：</label>
-                    <input type="date" id="s8-date" value="${esc(s8.planDate)}"
-                      oninput="onFieldChange('step8', 'planDate', this.value)"
-                      class="bg-transparent text-white font-semibold focus:outline-none" />
-                  </div>
+        <!-- 不对称瑞士双栏网格：左侧 35% 三叶草盘点 / 右侧 65% 对话全流程 -->
+        <div class="swiss-print-grid grid grid-cols-1 md:grid-cols-[35%_1fr] gap-6 md:gap-8">
+
+          <!-- 左侧栏（35%）：三叶草自我认知盘点 -->
+          <aside class="swiss-left-col md:border-r md:border-black/[0.08] md:pr-6 space-y-5">
+            <div>
+              <div class="text-[11px] font-semibold tracking-[0.06em] uppercase text-[#0F5C56]">
+                CLOVER SELF-DISCOVERY
+              </div>
+              <h3 class="text-[15px] font-bold text-[#1D1D1F] mt-0.5">三叶草自我认知盘点</h3>
+            </div>
+
+            <!-- 01 核心价值 -->
+            <div class="pb-4 hairline-b print-avoid-break">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-[12px] font-semibold text-[#1D1D1F]">01 核心价值（Top 3 底线）</span>
+                <button type="button" onclick="closeOnePagerModal(); switchSubstep('1.2');"
+                  class="no-print text-[11px] text-[#86868B] hover:text-[#0F5C56] cursor-pointer">编辑</button>
+              </div>
+              ${clover.valuesList.length > 0
+                ? `<div class="flex flex-wrap gap-1.5">
+                     ${clover.valuesList.map(w => `
+                       <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#B45309]/[0.10] text-[#B45309]">
+                         ${svgIcon("starFilled", "w-2.5 h-2.5")}
+                         <span>${esc(w)}</span>
+                       </span>
+                     `).join("")}
+                   </div>`
+                : `<div class="text-[12px] text-[#86868B]">暂未标定核心价值观</div>`
+              }
+            </div>
+
+            <!-- 02 内在兴趣 -->
+            <div class="pb-4 hairline-b print-avoid-break">
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-[12px] font-semibold text-[#1D1D1F]">02 内在兴趣聚焦</span>
+                <button type="button" onclick="closeOnePagerModal(); switchSubstep('1.3');"
+                  class="no-print text-[11px] text-[#86868B] hover:text-[#0F5C56] cursor-pointer">编辑</button>
+              </div>
+              ${clover.interestText
+                ? `<p class="text-[12px] text-[#1D1D1F] leading-relaxed">${esc(clover.interestText)}</p>`
+                : `<div class="text-[12px] text-[#86868B]">暂未提炼核心兴趣</div>`
+              }
+            </div>
+
+            <!-- 03 优势能力（非常熟练） -->
+            <div class="pb-4 hairline-b print-avoid-break">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-[12px] font-semibold text-[#1D1D1F]">03 优势能力（非常熟练）</span>
+                <button type="button" onclick="closeOnePagerModal(); switchSubstep('1.4');"
+                  class="no-print text-[11px] text-[#86868B] hover:text-[#0F5C56] cursor-pointer">编辑</button>
+              </div>
+              ${clover.highlyProficientSkills.length > 0
+                ? `<div class="flex flex-wrap gap-1">
+                     ${clover.highlyProficientSkills.map(sk => `
+                       <span class="px-2 py-0.5 rounded-md text-[11px] font-medium ${
+                         sk.isAce
+                           ? "bg-[#0F5C56]/[0.10] text-[#0F5C56]"
+                           : "bg-[#F5F5F7] text-[#6E6E73]"
+                       }">
+                         ${esc(sk.title)}
+                       </span>
+                     `).join("")}
+                   </div>`
+                : `<div class="text-[12px] text-[#86868B]">暂未标定「非常熟练」技能</div>`
+              }
+              ${s4.abilitySummary.trim()
+                ? `<p class="mt-2.5 text-[11px] text-[#6E6E73] leading-relaxed">
+                     <strong class="text-[#1D1D1F]">战果总结：</strong>${esc(s4.abilitySummary.trim())}
+                   </p>`
+                : ""
+              }
+            </div>
+
+            <!-- 04 能力四象限速览 -->
+            <div class="print-avoid-break">
+              <div class="text-[12px] font-semibold text-[#1D1D1F] mb-2">04 能力四象限速览</div>
+              <div class="space-y-1.5 text-[11px] leading-relaxed">
+                <div>
+                  <span class="font-semibold text-[#0F5C56]">动力技能：</span>
+                  <span class="text-[#6E6E73]">${quads.motivated.join("、") || "—"}</span>
+                </div>
+                <div>
+                  <span class="font-semibold text-[#1D1D1F]">发展技能：</span>
+                  <span class="text-[#6E6E73]">${quads.developmental.join("、") || "—"}</span>
+                </div>
+                <div>
+                  <span class="font-semibold text-[#86868B]">警惕耗竭：</span>
+                  <span class="text-[#86868B]">${quads.burnout.join("、") || "—"}</span>
                 </div>
               </div>
             </div>
+          </aside>
 
-            <!-- 汇总主体 -->
-            <div class="p-6 sm:p-8 space-y-6">
+          <!-- 右侧栏（65%）：谈话目标、SMART 方向、三维提纲、三层清单与现场记录 -->
+          <div class="space-y-5">
 
-              <!-- 一、本次谈话目标 -->
-              <section class="print-avoid-break">
-                <div class="flex items-center justify-between border-b border-[#E2E8F0] pb-2 mb-3">
-                  <h3 class="text-sm sm:text-base font-bold text-calmteal-800">一、【对话前】本次谈话的核心目标</h3>
-                  <button type="button" onclick="switchStep(1)" class="no-print text-xs text-slate-400 hover:text-calmteal-700">编辑</button>
+            <!-- 一、【对话前】本次谈话核心目标 -->
+            <section class="pb-4 hairline-b print-avoid-break">
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="text-[14px] font-bold text-[#1D1D1F]">一、【对话前】本次谈话核心目标</h3>
+                <button type="button" onclick="closeOnePagerModal(); switchSubstep('1.1');"
+                  class="no-print text-[11px] text-[#86868B] hover:text-[#0F5C56] cursor-pointer">编辑</button>
+              </div>
+              ${s1.selectedPills.length
+                ? `<div class="flex flex-wrap gap-1.5 mb-2">
+                     ${s1.selectedPills.map(p => `<span class="px-2 py-0.5 rounded-md text-[11px] font-medium bg-[#0F5C56]/[0.08] text-[#0F5C56]">${esc(p)}</span>`).join("")}
+                   </div>`
+                : ""
+              }
+              ${s1.conversationGoal.trim()
+                ? `<div class="text-[13px] text-[#1D1D1F] whitespace-pre-line leading-relaxed">${esc(s1.conversationGoal.trim())}</div>`
+                : renderRuledLines("引导提示：写下希望通过本次 1 对 1 对话达成的具体共识或目标…", 2)
+              }
+            </section>
+
+            <!-- 二、【对话前】职业方向与 SMART 目标 -->
+            <section class="pb-4 hairline-b print-avoid-break">
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="text-[14px] font-bold text-[#1D1D1F]">二、【对话前】职业方向与 SMART 目标</h3>
+                <button type="button" onclick="closeOnePagerModal(); switchSubstep('1.5');"
+                  class="no-print text-[11px] text-[#86868B] hover:text-[#0F5C56] cursor-pointer">编辑</button>
+              </div>
+              <div class="text-[12px] mb-1.5">
+                <span class="text-[#86868B]">初始方向：</span>
+                <span class="font-medium text-[#1D1D1F]">${esc(s5.initialDirection.trim()) || "—"}</span>
+              </div>
+              ${s5.smartGoal.trim()
+                ? `<div class="text-[13px] font-medium text-[#1D1D1F] whitespace-pre-line leading-relaxed">${esc(s5.smartGoal.trim())}</div>`
+                : renderRuledLines("引导提示：结合左侧三叶草锚点，写下一句具体、可衡量、有时限的职业发展目标…", 2)
+              }
+              ${checkedSmartObjs.length
+                ? `<div class="flex flex-wrap gap-1.5 mt-2">
+                     ${checkedSmartObjs.map(i => `<span class="px-2 py-0.5 rounded-md text-[10px] font-medium bg-[#F5F5F7] text-[#0F5C56]">✓ ${esc(i.label)}</span>`).join("")}
+                   </div>`
+                : ""
+              }
+            </section>
+
+            <!-- 三、【对话中】与上级探讨的三维提纲 -->
+            <section class="pb-4 hairline-b print-avoid-break">
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="text-[14px] font-bold text-[#1D1D1F]">三、【对话中】与上级探讨的三维提纲</h3>
+                <button type="button" onclick="closeOnePagerModal(); switchStage('stage2');"
+                  class="no-print text-[11px] text-[#86868B] hover:text-[#0F5C56] cursor-pointer">编辑</button>
+              </div>
+              <div class="space-y-2.5">
+                <div>
+                  <div class="text-[12px] font-semibold text-[#6E6E73]">1. 现状分析（岗位核心要求 / 目标与差距）</div>
+                  ${st2.currentStatus.trim()
+                    ? `<div class="text-[12px] text-[#1D1D1F] whitespace-pre-line leading-relaxed mt-0.5">${esc(st2.currentStatus.trim())}</div>`
+                    : renderRuledLines("引导提示：当前岗位所需关键技能及现阶段差距…", 1)
+                  }
                 </div>
-                <div class="p-4 rounded-xl bg-[#F8F7F4] border border-[#E2E8F0] space-y-2">
-                  ${s1.selectedPills.length
-                    ? `<div class="flex flex-wrap gap-1.5 mb-1">
-                         ${s1.selectedPills.map(p => `<span class="px-2.5 py-0.5 rounded-lg text-xs font-semibold bg-calmteal-100 text-calmteal-800">${esc(p)}</span>`).join("")}
+                <div>
+                  <div class="text-[12px] font-semibold text-[#6E6E73]">2. 发展路径（已做积累 / 下一步行动）</div>
+                  ${st2.devPath.trim()
+                    ? `<div class="text-[12px] text-[#1D1D1F] whitespace-pre-line leading-relaxed mt-0.5">${esc(st2.devPath.trim())}</div>`
+                    : renderRuledLines("引导提示：已做准备与下一步能力补齐路径…", 1)
+                  }
+                </div>
+                <div>
+                  <div class="text-[12px] font-semibold text-[#6E6E73]">3. 寻求帮助（时间 / 理念 / 机会 / 情绪 / 关系 / 经验）</div>
+                  ${selectedHelpObjects.length
+                    ? `<div class="flex flex-wrap gap-1 mt-1 mb-0.5">
+                         ${selectedHelpObjects.map(h => `<span class="px-2 py-0.5 rounded-md text-[10px] font-medium bg-[#0F5C56]/[0.08] text-[#0F5C56]">${h.label}</span>`).join("")}
                        </div>`
                     : ""
                   }
-                  ${renderTextOrDash(s1.conversationGoal)}
-                </div>
-              </section>
-
-              <!-- 二、三叶草自我认知画像 -->
-              <section class="print-avoid-break">
-                <div class="flex items-center justify-between border-b border-[#E2E8F0] pb-2 mb-3">
-                  <h3 class="text-sm sm:text-base font-bold text-calmteal-800">二、【三叶草自我认知画像】价值 · 兴趣 · 能力</h3>
-                  <div class="no-print flex items-center gap-2 text-xs text-slate-400">
-                    <button type="button" onclick="switchStep(2)" class="hover:text-calmteal-700">价值</button>
-                    <span>·</span>
-                    <button type="button" onclick="switchStep(3)" class="hover:text-calmteal-700">兴趣</button>
-                    <span>·</span>
-                    <button type="button" onclick="switchStep(4)" class="hover:text-calmteal-700">能力</button>
-                  </div>
-                </div>
-
-                <div class="space-y-3">
-                  <!-- 价值 -->
-                  <div class="p-4 rounded-xl bg-[#F8F7F4] border border-[#E2E8F0]">
-                    <div class="text-xs font-bold text-slate-500 mb-2">1. 核心价值观（★ 暖琥珀标星为 Top 3 底线）</div>
-                    ${s2.selectedValues.length === 0
-                      ? `<div class="text-sm text-slate-400">—</div>`
-                      : `<div class="flex flex-wrap gap-1.5">
-                           ${s2.selectedValues.map(w => {
-                             const star = s2.top3Values.includes(w);
-                             return `<span class="px-2.5 py-1 rounded-lg text-xs font-semibold ${
-                               star
-                                 ? "bg-warmamber-500 text-white"
-                                 : "bg-white text-slateink border border-[#E2E8F0]"
-                             }">${star ? "★ " : ""}${esc(w)}</span>`;
-                           }).join("")}
-                         </div>`
-                    }
-                  </div>
-
-                  <!-- 兴趣 -->
-                  <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                    <div class="p-3.5 rounded-xl bg-[#F8F7F4] border border-[#E2E8F0]">
-                      <div class="text-xs font-bold text-slate-500 mb-1">2.1 心流与能量来源</div>
-                      ${renderTextOrDash(s3.q1Flow)}
-                    </div>
-                    <div class="p-3.5 rounded-xl bg-[#F8F7F4] border border-[#E2E8F0]">
-                      <div class="text-xs font-bold text-slate-500 mb-1">2.2 好奇与主动探索</div>
-                      ${renderTextOrDash(s3.q2Curiosity)}
-                    </div>
-                    <div class="p-3.5 rounded-xl bg-[#F8F7F4] border border-[#E2E8F0]">
-                      <div class="text-xs font-bold text-slate-500 mb-1">2.3 消耗与排斥边界</div>
-                      ${renderTextOrDash(s3.q3Drain)}
-                    </div>
-                  </div>
-
-                  <!-- 能力四象限 -->
-                  <div class="p-4 rounded-xl bg-[#F8F7F4] border border-[#E2E8F0] space-y-2.5">
-                    <div class="text-xs font-bold text-slate-500">3. 诺德尔动力技能盘点</div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-2.5 text-xs">
-                      <div class="p-3 rounded-lg bg-white border border-calmteal-200">
-                        <div class="font-bold text-calmteal-800 mb-1">⚡ 动力技能（核心王牌）</div>
-                        <div class="text-slateink leading-relaxed">${quads.motivated.length ? esc(quads.motivated.join("、")) : "—"}</div>
-                      </div>
-                      <div class="p-3 rounded-lg bg-white border border-warmamber-200">
-                        <div class="font-bold text-warmamber-800 mb-1">🌱 发展技能（潜力成长）</div>
-                        <div class="text-slateink leading-relaxed">${quads.developmental.length ? esc(quads.developmental.join("、")) : "—"}</div>
-                      </div>
-                      <div class="p-3 rounded-lg bg-white border border-[#E2E8F0]">
-                        <div class="font-bold text-slate-600 mb-1">🔋 耗竭技能（警惕厌烦）</div>
-                        <div class="text-slate-600 leading-relaxed">${quads.burnout.length ? esc(quads.burnout.join("、")) : "—"}</div>
-                      </div>
-                    </div>
-                    ${s4.abilitySummary.trim()
-                      ? `<div class="pt-1 text-xs text-slate-700"><strong>一句话总结：</strong>${esc(s4.abilitySummary.trim())}</div>`
-                      : ""
-                    }
-                  </div>
-                </div>
-              </section>
-
-              <!-- 三、职业发展方向与 SMART 目标 -->
-              <section class="print-avoid-break">
-                <div class="flex items-center justify-between border-b border-[#E2E8F0] pb-2 mb-3">
-                  <h3 class="text-sm sm:text-base font-bold text-calmteal-800">三、【对话前】职业发展方向与 SMART 目标</h3>
-                  <button type="button" onclick="switchStep(5)" class="no-print text-xs text-slate-400 hover:text-calmteal-700">编辑</button>
-                </div>
-                <div class="p-4 rounded-xl bg-[#F8F7F4] border border-[#E2E8F0] space-y-2.5">
-                  <div>
-                    <span class="text-xs font-bold text-slate-500">初始职业发展方向：</span>
-                    <span class="text-sm font-semibold text-slateink">${esc(s5.initialDirection.trim()) || "—"}</span>
-                  </div>
-                  <div>
-                    <div class="text-xs font-bold text-slate-500 mb-1">完整 SMART 职业发展目标：</div>
-                    ${renderTextOrDash(s5.smartGoal)}
-                  </div>
-                  ${checkedSmartObjs.length
-                    ? `<div class="flex flex-wrap gap-1.5 pt-1">
-                         ${checkedSmartObjs.map(i => `<span class="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-calmteal-100 text-calmteal-800">✓ ${esc(i.label)}</span>`).join("")}
-                       </div>`
-                    : ""
+                  ${st2.helpDetail.trim()
+                    ? `<div class="text-[12px] text-[#1D1D1F] whitespace-pre-line leading-relaxed mt-0.5">${esc(st2.helpDetail.trim())}</div>`
+                    : renderRuledLines("引导提示：写下希望上级提供的项目机会、反馈与资源支持…", 1)
                   }
                 </div>
-              </section>
+              </div>
+            </section>
 
-              <!-- 四、对话中沟通提纲 & 五、对话后技能沉淀清单 -->
-              <section class="print-avoid-break grid grid-cols-1 md:grid-cols-2 gap-5">
+            <!-- 四、【对话后】三层能力发展清单 -->
+            <section class="pb-4 hairline-b print-avoid-break">
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="text-[14px] font-bold text-[#1D1D1F]">四、【对话后】三层能力发展清单</h3>
+                <button type="button" onclick="closeOnePagerModal(); switchStage('stage3');"
+                  class="no-print text-[11px] text-[#86868B] hover:text-[#0F5C56] cursor-pointer">编辑</button>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
-                  <div class="flex items-center justify-between border-b border-[#E2E8F0] pb-2 mb-3">
-                    <h3 class="text-sm sm:text-base font-bold text-calmteal-800">四、【对话中】沟通提纲</h3>
-                    <button type="button" onclick="switchStep(6)" class="no-print text-xs text-slate-400 hover:text-calmteal-700">编辑</button>
-                  </div>
-                  <div class="p-4 rounded-xl bg-[#F8F7F4] border border-[#E2E8F0] space-y-3">
-                    <div>
-                      <div class="text-xs font-bold text-slate-500 mb-0.5">现状分析</div>
-                      ${renderTextOrDash(s6.currentStatus)}
-                    </div>
-                    <div>
-                      <div class="text-xs font-bold text-slate-500 mb-0.5">发展路径</div>
-                      ${renderTextOrDash(s6.devPath)}
-                    </div>
-                    <div>
-                      <div class="text-xs font-bold text-slate-500 mb-1">寻求帮助</div>
-                      ${selectedHelpObjects.length
-                        ? `<div class="flex flex-wrap gap-1 mb-1.5">
-                             ${selectedHelpObjects.map(h => `<span class="px-2 py-0.5 rounded-md text-xs font-semibold bg-calmteal-100 text-calmteal-800">${h.label}</span>`).join("")}
-                           </div>`
-                        : ""
-                      }
-                      ${renderTextOrDash(s6.helpDetail)}
-                    </div>
-                  </div>
+                  <div class="text-[11px] font-semibold text-[#6E6E73]">在当前岗位上</div>
+                  ${st3.skillsCurrent.trim()
+                    ? `<div class="text-[12px] text-[#1D1D1F] whitespace-pre-line leading-relaxed mt-0.5">${esc(st3.skillsCurrent.trim())}</div>`
+                    : renderRuledLines("当下胜任所需…", 2)
+                  }
                 </div>
-
                 <div>
-                  <div class="flex items-center justify-between border-b border-[#E2E8F0] pb-2 mb-3">
-                    <h3 class="text-sm sm:text-base font-bold text-calmteal-800">五、【对话后】技能沉淀清单</h3>
-                    <button type="button" onclick="switchStep(7)" class="no-print text-xs text-slate-400 hover:text-calmteal-700">编辑</button>
-                  </div>
-                  <div class="p-4 rounded-xl bg-[#F8F7F4] border border-[#E2E8F0] space-y-3">
-                    <div>
-                      <div class="text-xs font-bold text-slate-500 mb-0.5">在当前岗位上</div>
-                      ${renderTextOrDash(s7.skillsCurrent)}
-                    </div>
-                    <div>
-                      <div class="text-xs font-bold text-slate-500 mb-0.5">未来的职位</div>
-                      ${renderTextOrDash(s7.skillsFuture)}
-                    </div>
-                    <div>
-                      <div class="text-xs font-bold text-slate-500 mb-0.5">保持长期竞争力</div>
-                      ${renderTextOrDash(s7.skillsLongTerm)}
-                    </div>
-                  </div>
+                  <div class="text-[11px] font-semibold text-[#6E6E73]">未来的职位</div>
+                  ${st3.skillsFuture.trim()
+                    ? `<div class="text-[12px] text-[#1D1D1F] whitespace-pre-line leading-relaxed mt-0.5">${esc(st3.skillsFuture.trim())}</div>`
+                    : renderRuledLines("目标岗位储备…", 2)
+                  }
                 </div>
-              </section>
+                <div>
+                  <div class="text-[11px] font-semibold text-[#6E6E73]">保持长期竞争力</div>
+                  ${st3.skillsLongTerm.trim()
+                    ? `<div class="text-[12px] text-[#1D1D1F] whitespace-pre-line leading-relaxed mt-0.5">${esc(st3.skillsLongTerm.trim())}</div>`
+                    : renderRuledLines("长期能力护城河…", 2)
+                  }
+                </div>
+              </div>
+            </section>
 
-            </div>
+            <!-- 五、【面谈现场记录】主管反馈与 Next Steps -->
+            <section class="print-avoid-break">
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="text-[14px] font-bold text-[#0F5C56]">五、【面谈现场记录】主管反馈与 Next Steps</h3>
+                <span class="text-[11px] text-[#86868B]">支持现场输入或导出 PDF 后手写记录</span>
+              </div>
+
+              <textarea rows="3"
+                oninput="onFieldChange('onePager', 'liveNotes', this.value)"
+                placeholder="记录主管/导师的核心反馈、双方达成的关键共识、具体行动项（Action Items）及下次跟进时间节点..."
+                class="no-print w-full p-3.5 text-[13px] apple-field leading-relaxed">${esc(op.liveNotes)}</textarea>
+
+              <div class="hidden print:block">
+                ${op.liveNotes.trim()
+                  ? `<div class="text-[12px] text-[#1D1D1F] whitespace-pre-line leading-relaxed">${esc(op.liveNotes.trim())}</div>`
+                  : renderRuledLines("主管反馈、关键共识与下一步行动计划（Next Steps）：", 3)
+                }
+              </div>
+            </section>
+
           </div>
         </div>
       `;
+    }
+
+    // =========================================================================
+    // 15. 主视图路由分发与初始化
+    // =========================================================================
+    function injectStaticIcons() {
+      const slots = {
+        "brand-icon-slot": svgIcon("compass", "w-4 h-4"),
+        "header-pencil-slot": svgIcon("pencil", "w-3.5 h-3.5"),
+        "header-print-icon-slot": svgIcon("printer", "w-3.5 h-3.5"),
+        "modal-copy-icon": svgIcon("copy", "w-3.5 h-3.5"),
+        "modal-print-icon": svgIcon("printer", "w-3.5 h-3.5"),
+        "modal-close-icon": svgIcon("close", "w-4 h-4")
+      };
+      Object.entries(slots).forEach(([id, svg]) => {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = svg;
+      });
     }
 
     function renderStepView() {
       const view = document.getElementById("step-view");
       if (!view) return;
 
-      view.classList.remove("animate-reveal");
+      view.classList.remove("animate-apple-in");
       void view.offsetWidth;
-      view.classList.add("animate-reveal");
+      view.classList.add("animate-apple-in");
 
-      switch (appState.currentStep) {
-        case 1: view.innerHTML = renderStep1(); break;
-        case 2: view.innerHTML = renderStep2(); break;
-        case 3: view.innerHTML = renderStep3(); break;
-        case 4: view.innerHTML = renderStep4(); break;
-        case 5: view.innerHTML = renderStep5(); break;
-        case 6: view.innerHTML = renderStep6(); break;
-        case 7: view.innerHTML = renderStep7(); break;
-        case 8: view.innerHTML = renderStep8(); break;
-        default: view.innerHTML = renderStep1();
+      if (appState.activeStage === "stage2") {
+        view.innerHTML = renderStage2();
+      } else if (appState.activeStage === "stage3") {
+        view.innerHTML = renderStage3();
+      } else {
+        switch (appState.activeSubstep) {
+          case "1.1": view.innerHTML = renderSubstep1_1(); break;
+          case "1.2": view.innerHTML = renderSubstep1_2(); break;
+          case "1.3": view.innerHTML = renderSubstep1_3(); break;
+          case "1.4": view.innerHTML = renderSubstep1_4(); break;
+          case "1.5": view.innerHTML = renderSubstep1_5(); break;
+          default: view.innerHTML = renderSubstep1_1();
+        }
       }
     }
 
@@ -2423,14 +2959,13 @@
       if (nameInput && nameInput.value !== appState.studentName) {
         nameInput.value = appState.studentName || "";
       }
-      renderNavGrid();
+      renderNavigationBars();
       renderStepView();
     }
 
-    // 初始化启动
     window.addEventListener("DOMContentLoaded", () => {
+      injectStaticIcons();
       checkQueryArchiveParam();
-      getOrCreateStudentUID();
       loadLocalState();
       renderApp();
     });
