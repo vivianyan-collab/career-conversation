@@ -1,0 +1,2439 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>职业发展对话 · 个人练习工作台</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter & Noto Sans SC -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            warmpaper: '#F8F7F4',
+            slateink: '#1E293B',
+            calmteal: {
+              50: '#F0FDFA',
+              100: '#CCFBF1',
+              200: '#99F6E4',
+              600: '#0D9488',
+              700: '#0F766E',
+              800: '#115E59',
+              900: '#134E4A',
+            },
+            warmamber: {
+              50: '#FFFBEB',
+              100: '#FEF3C7',
+              200: '#FDE68A',
+              500: '#F59E0B',
+              600: '#D97706',
+              700: '#B45309',
+              800: '#92400E',
+            }
+          },
+          fontFamily: {
+            sans: ['"Inter"', '"Noto Sans SC"', '-apple-system', 'BlinkMacSystemFont', '"PingFang SC"', '"Microsoft YaHei"', 'sans-serif'],
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    body {
+      background-color: #F8F7F4;
+      color: #1E293B;
+      font-family: "Inter", "Noto Sans SC", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* 沉静青绿输入焦点光晕 */
+    .editorial-input:focus {
+      outline: none;
+      border-color: #0F766E;
+      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
+    }
+
+    /* 卡片平滑切换动画 */
+    @keyframes gentleReveal {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .animate-reveal {
+      animation: gentleReveal 0.22s ease-out forwards;
+    }
+
+    /* 打印与导出 PDF 专属排版 */
+    @media print {
+      body {
+        background-color: #FFFFFF !important;
+        color: #0F172A !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .print-wrapper {
+        max-width: 100% !important;
+        width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      .one-pager-card {
+        box-shadow: none !important;
+        border: 1px solid #CBD5E1 !important;
+        border-radius: 10px !important;
+      }
+      .print-avoid-break {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- ==================== 顶部固定导航区（打印时隐藏） ==================== -->
+  <header class="no-print sticky top-0 z-30 bg-[#F8F7F4]/95 backdrop-blur-md border-b border-[#E2E8F0]">
+    <div class="max-w-[960px] mx-auto px-4 sm:px-6 pt-3.5 pb-3">
+      <!-- 顶部栏：左侧标题 + 右侧姓名/昵称与自动保存胶囊 -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-calmteal-700 text-white flex items-center justify-center shadow-2xs shrink-0">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+          </div>
+          <div>
+            <h1 class="text-base sm:text-lg font-bold text-slateink tracking-tight leading-tight">
+              职业发展对话 · 个人练习工作台
+            </h1>
+            <p class="text-xs text-slate-500 mt-0.5">
+              基于「三叶草模型」的课前准备、对话框架与课后沉淀
+            </p>
+          </div>
+        </div>
+
+        <!-- 右侧可选姓名输入框 + 隐私安心自动保存指示 -->
+        <div class="flex flex-wrap items-center gap-2">
+          <div class="flex items-center bg-white border border-[#E2E8F0] rounded-xl px-2.5 py-1.5 shadow-2xs focus-within:border-calmteal-700">
+            <label for="header-student-name" class="text-xs text-slate-400 mr-1.5 shrink-0">你的姓名/昵称</label>
+            <input type="text" id="header-student-name" placeholder="选填"
+              oninput="onStudentNameChange(this.value)"
+              class="w-24 sm:w-28 text-xs font-medium text-slateink placeholder-slate-300 bg-transparent focus:outline-none" />
+          </div>
+
+          <div id="save-badge" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-[#E2E8F0] text-xs font-medium text-calmteal-700 shadow-2xs">
+            <span id="save-label">✓ 个人笔记已自动保存</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 8 步自由切换导航栏（无逐步锁定，所有阶段随时点击） -->
+      <nav aria-label="练习步骤导航" class="mt-3">
+        <div id="step-nav-grid" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-1.5">
+          <!-- 由 JS 动态渲染 8 个自由切换标签 -->
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ==================== 主内容工作区 ==================== -->
+  <main class="flex-1 max-w-[960px] w-full mx-auto px-4 sm:px-6 pt-6 sm:pt-8 pb-24 print-wrapper">
+    <div id="step-view" class="animate-reveal">
+      <!-- 动态渲染当前步骤内容 -->
+    </div>
+  </main>
+
+  <!-- ==================== 极简页脚（连续点击 3 次版权文字可配置后台归档地址） ==================== -->
+  <footer class="no-print py-6 border-t border-[#E2E8F0] bg-[#F8F7F4] text-center text-xs text-slate-400 select-none">
+    <span id="footer-secret-trigger" class="cursor-default">
+      © 职业发展对话 · 课堂互动练习工作台 · 所有练习内容仅保存在你的本地设备中
+    </span>
+  </footer>
+
+  <!-- ==================== 轻提示 Toast ==================== -->
+  <div id="toast-box" class="no-print fixed bottom-6 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- ==================== 隐蔽后台配置弹窗（仅三击页脚时呼出，学员默认不可见） ==================== -->
+  <div id="archive-config-modal" class="no-print fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/40 backdrop-blur-xs p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 border border-[#E2E8F0] shadow-xl animate-reveal">
+      <h3 class="text-base font-bold text-slateink">课程归档端点配置（讲师高级设置）</h3>
+      <p class="text-xs text-slate-500 mt-1.5 leading-relaxed">
+        粘贴 Google Apps Script 部署后的 Web App URL，工作台将在后台静默同步结构化 JSON 数据。留空则仅保存在本地浏览器。
+      </p>
+      <div class="mt-4">
+        <label for="config-sheet-url" class="block text-xs font-semibold text-slate-700 mb-1.5">Web App URL</label>
+        <input type="url" id="config-sheet-url" placeholder="https://script.google.com/macros/s/.../exec"
+          class="w-full rounded-xl border border-[#E2E8F0] bg-[#F8F7F4] px-3.5 py-2.5 text-xs text-slateink editorial-input" />
+      </div>
+      <div class="mt-5 flex items-center justify-end gap-2">
+        <button type="button" onclick="closeArchiveConfig()"
+          class="px-3.5 py-2 rounded-xl text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 transition">
+          取消
+        </button>
+        <button type="button" onclick="saveArchiveConfig()"
+          class="px-4 py-2 rounded-xl text-xs font-semibold text-white bg-calmteal-700 hover:bg-calmteal-800 transition">
+          保存配置
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 清空重置二次确认弹窗 ==================== -->
+  <div id="reset-confirm-modal" class="no-print fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/40 backdrop-blur-xs p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 border border-[#E2E8F0] shadow-xl animate-reveal">
+      <h3 class="text-base font-bold text-slateink">确认清空当前练习内容？</h3>
+      <p class="text-sm text-slate-600 mt-2 leading-relaxed">
+        清空后，所有步骤中已填写的笔记、价值观与技能卡牌分类将被重置。建议先点击「复制完整文本摘要」或「打印 / 保存为 PDF」留存副本。
+      </p>
+      <div class="mt-6 flex items-center justify-end gap-2.5">
+        <button type="button" onclick="closeResetModal()"
+          class="px-4 py-2 rounded-xl text-sm font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 transition">
+          取消
+        </button>
+        <button type="button" onclick="confirmResetAll()"
+          class="px-4 py-2 rounded-xl text-sm font-semibold text-white bg-rose-600 hover:bg-rose-700 transition">
+          确认清空
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // =========================================================================
+    // 讲师后台配置：在此粘贴 Google Apps Script 部署后的 Web App URL，即可后台静默归档
+    // =========================================================================
+    const SHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbx5augAG0F0ssPUCNjU5h6ANb4fQaDgEdff1sbPsckDEzs_i2U2slwe250bEvhoDeFh/exec";
+
+    // 本地存储键名
+    const STORAGE_DATA_KEY = "ccw_clover_workbench_v3";
+    const STORAGE_UID_KEY = "ccw_student_uid_v3";
+    const STORAGE_SHEET_KEY = "ccw_archive_endpoint_v3";
+
+    // =========================================================================
+    // 1. 8 个自由切换步骤定义
+    // =========================================================================
+    const NAV_STEPS = [
+      { id: 1, label: "1. 明确谈话目标" },
+      { id: 2, label: "2. 认知自我·价值" },
+      { id: 3, label: "3. 认知自我·兴趣" },
+      { id: 4, label: "4. 认知自我·能力" },
+      { id: 5, label: "5. 职业方向·SMART" },
+      { id: 6, label: "6. 对话中·提纲" },
+      { id: 7, label: "7. 对话后·沉淀" },
+      { id: 8, label: "8. 对话一页纸" }
+    ];
+
+    // Step 1 谈话目标灵感胶囊
+    const STEP1_GOAL_PILLS = [
+      "🎯 对齐晋升标准与当前差距",
+      "🧭 探索内部轮岗或转岗可能性",
+      "🚀 争取更有挑战性的关键项目",
+      "⚖️ 梳理当前工作瓶颈与优先级",
+      "🌱 明确未来半年的能力提升重点",
+      "🤝 了解团队接下来的业务新机会"
+    ];
+
+    // =========================================================================
+    // 2. 完整 112 个核心价值观词库（按 4 大维度无重复划分）
+    // =========================================================================
+    const VALUE_GROUPS = [
+      {
+        id: "all",
+        label: "全部 (112)",
+        words: []
+      },
+      {
+        id: "drive",
+        label: "成就与驱动",
+        words: [
+          "成就", "进取", "争做第一", "卓越", "业绩", "成功",
+          "挑战", "勇气", "大胆", "承担风险", "领导力", "权威",
+          "力量", "积极主动", "激励", "激情", "热情", "辉煌",
+          "远见", "认可", "人气", "果断", "财富", "资源丰富"
+        ]
+      },
+      {
+        id: "freedom",
+        label: "自由与创造",
+        words: [
+          "自由", "自主性", "独立", "灵活性", "创造力", "创新",
+          "独创性", "灵感", "好奇心", "冒险", "个性", "独特",
+          "与众不同", "表现力", "幽默", "乐趣", "嬉戏", "多变",
+          "开明", "直觉", "成长", "个人发展"
+        ]
+      },
+      {
+        id: "relation",
+        label: "关系与利他",
+        words: [
+          "团结", "合作", "团队精神", "友谊", "人际关系", "家庭",
+          "关怀", "同情心", "善良", "仁慈", "温暖", "体贴",
+          "理解", "接纳", "包容", "宽容", "多样性", "奉献精神",
+          "利他主义", "服务", "贡献", "慈善", "感恩", "鼓励",
+          "欣赏", "倡导", "依赖性", "吸引力", "无私"
+        ]
+      },
+      {
+        id: "stability",
+        label: "稳定与秩序",
+        words: [
+          "责任", "责任心", "承诺", "守信", "信誉", "诚实",
+          "职业道德", "公平", "一致性", "可靠性", "守时", "谦逊",
+          "冷静", "自我控制", "精神稳定", "平衡", "健康", "安康",
+          "安全", "稳定性", "和平", "简单", "传统", "质量",
+          "完美", "专业", "知识", "学习", "智慧", "正念",
+          "乐观主义", "快乐", "开朗", "丰富", "应变能力", "无邪",
+          "忠诚"
+        ]
+      }
+    ];
+
+    const ALL_112_VALUES = Array.from(new Set([
+      ...VALUE_GROUPS[1].words,
+      ...VALUE_GROUPS[2].words,
+      ...VALUE_GROUPS[3].words,
+      ...VALUE_GROUPS[4].words
+    ]));
+
+    // =========================================================================
+    // 3. 完整 51 张《诺德尔动力技能卡牌》数据
+    // =========================================================================
+    const MOTIVATED_SKILLS_51 = [
+      { id: 1, title: "作为联络协调人", desc: "代表、协助，作为个人或团队之间的桥梁" },
+      { id: 2, title: "适应变化", desc: "能快速回应工作内容、环境与优先级的变化" },
+      { id: 3, title: "分析", desc: "有逻辑地拆解问题并找出原因/解法" },
+      { id: 4, title: "预算管理", desc: "节省、调配与善用资金或其他资源" },
+      { id: 5, title: "分类", desc: "对数据、人或事物进行分组、分类与系统化整理" },
+      { id: 6, title: "电脑操作能力", desc: "使用软件工具来规划、组织并完成任务与项目" },
+      { id: 7, title: "概念化", desc: "构思并在脑中发展概念与想法" },
+      { id: 8, title: "咨询", desc: "促进洞察与个人成长；引导、建议、辅导学生/员工/客户" },
+      { id: 9, title: "客户服务", desc: "有效解决问题与挑战，让客户满意" },
+      { id: 10, title: "应对不确定性", desc: "在信息不清或缺乏确定性时，仍能从容且有效地推进" },
+      { id: 11, title: "处理情绪", desc: "引导表达与倾听、接纳与共情，化解怒气、安抚情绪、适度幽默、表达欣赏" },
+      { id: 12, title: "分派工作", desc: "通过分配任务给他人来达成更有效的结果" },
+      { id: 13, title: "设计", desc: "规划并构建新的或创新的做法、方案、产品或环境" },
+      { id: 14, title: "表演/带动气氛", desc: "娱乐与表演，做示范或进行台上表达" },
+      { id: 15, title: "预估", desc: "评估价值或成本" },
+      { id: 16, title: "评估", desc: "评审与检视可行性或质量" },
+      { id: 17, title: "加速推进", desc: "加快产出或服务进度，排查问题并简化流程" },
+      { id: 18, title: "产生点子", desc: "反思、构思、畅想并进行头脑风暴" },
+      { id: 19, title: "执行落地", desc: "对政策与计划进行细化推进与完整跟进" },
+      { id: 20, title: "即兴应变", desc: "在无准备情况下仍能有效思考、表达与行动" },
+      { id: 21, title: "推动变革", desc: "影响现状、带动方向转变，并在推动新方向上发挥领导力" },
+      { id: 22, title: "创新/发明", desc: "提出独特想法，或组合既有想法产生新的成果" },
+      { id: 23, title: "访谈收集信息", desc: "通过有洞察力的提问，引导对方提供信息" },
+      { id: 24, title: "资料管理", desc: "保持记录准确且及时更新；进行登记、记录、逐项列示、汇整与制表" },
+      { id: 25, title: "安排协调", desc: "协调活动与事务安排，处理各项后勤/物流" },
+      { id: 26, title: "做决策", desc: "进行重大的、复杂的或高频的决策" },
+      { id: 27, title: "时间管理", desc: "设定优先级、结构化并安排任务，以提升效率并按时交付" },
+      { id: 28, title: "调解", desc: "处理冲突、协调并弥合分歧" },
+      { id: 29, title: "指导他人", desc: "指导、教练或辅导经验较少/较初阶的同事" },
+      { id: 30, title: "跟进", desc: "跟踪数据、人员或事物的流动与进展" },
+      { id: 31, title: "激励他人", desc: "带动参与、凝聚能量、激发高峰表现" },
+      { id: 32, title: "多任务处理", desc: "同时有效管理多项任务与项目" },
+      { id: 33, title: "谈判", desc: "协商争取权利或优势条件" },
+      { id: 34, title: "观察", desc: "以较系统/科学的方式研究、审视与检视数据、人物或事物" },
+      { id: 35, title: "凭直觉洞察", desc: "凭直觉感知，展现洞察力与前瞻性" },
+      { id: 36, title: "规划与组织", desc: "定义目标与方向；安排进度并制定/推进项目或计划" },
+      { id: 37, title: "图像呈现", desc: "素描、绘画、插画、拍摄等视觉表达" },
+      { id: 38, title: "校对、编辑", desc: "检查文字用法与表达风格并进行优化修改" },
+      { id: 39, title: "阅读获取信息", desc: "高效且全面地查阅书面资料以获取信息" },
+      { id: 40, title: "网上做研究", desc: "使用搜索引擎与网络收集、整理信息与数据" },
+      { id: 41, title: "销售", desc: "推广个人/公司/产品/服务，说服他人认可其价值；筹集资金" },
+      { id: 42, title: "战略思考", desc: "制定并推进长期策略，以有效达成目标" },
+      { id: 43, title: "监督/管理", desc: "统筹并指导他人的工作" },
+      { id: 44, title: "综合归纳/整合", desc: "整合想法与信息，把多元元素组合成连贯的整体" },
+      { id: 45, title: "教学/培训", desc: "向学生、员工或客户说明、解释并给予指导" },
+      { id: 46, title: "团队合作", desc: "与他人高效协作以达成成果" },
+      { id: 47, title: "测试", desc: "衡量熟练度、质量或有效性；检查并复核" },
+      { id: 48, title: "运用机械操作能力", desc: "组装、调校、维修或操作引擎或其他机械设备" },
+      { id: 49, title: "可视化呈现", desc: "想象各种可能，在脑中形成画面" },
+      { id: 50, title: "处理数字/数据运算", desc: "能快速计算、整理、理解并解决数值与量化问题" },
+      { id: 51, title: "写作", desc: "撰写报告、信件、文章、广告文案、故事或教材等内容" }
+    ];
+
+    const PREF_LEVELS = [
+      { id: "love", label: "非常喜欢使用", tip: "至少 5 张", keyNum: "1", badgeClass: "bg-calmteal-700 text-white border-calmteal-700" },
+      { id: "like_lot", label: "很喜欢使用", tip: "", keyNum: "2", badgeClass: "bg-calmteal-600 text-white border-calmteal-600" },
+      { id: "like", label: "喜欢使用", tip: "", keyNum: "3", badgeClass: "bg-teal-50 text-calmteal-800 border-teal-200" },
+      { id: "avoid", label: "尽量不想用", tip: "", keyNum: "4", badgeClass: "bg-amber-50 text-warmamber-800 border-amber-200" },
+      { id: "dislike", label: "非常不喜欢使用", tip: "至少 5 张", keyNum: "5", badgeClass: "bg-rose-50 text-rose-800 border-rose-200" }
+    ];
+
+    const PROF_LEVELS = [
+      { id: "highly_proficient", label: "非常熟练" },
+      { id: "proficient", label: "熟练" },
+      { id: "developing", label: "尚未达到期望水平" }
+    ];
+
+    // Step 5 初始职业发展方向胶囊 & SMART 五维自检胶囊
+    const STEP5_DIRECTION_PILLS = [
+      "我想晋升到下一职级",
+      "我想走专业专家深耕路线",
+      "我想尝试跨职能转岗",
+      "我想带领小团队提升管理能力",
+      "我想独立负责核心业务模块"
+    ];
+
+    const SMART_CHECK_ITEMS = [
+      { id: "S", label: "S 具体明确（做什么/什么角色）" },
+      { id: "M", label: "M 可衡量（有数量/结果标准）" },
+      { id: "A", label: "A 可实现（跳一跳够得着）" },
+      { id: "R", label: "R 相关性（契合三叶草与业务需求）" },
+      { id: "T", label: "T 有时限（有明确时间节点）" }
+    ];
+
+    // Step 6 寻求帮助 6 维度
+    const STEP6_HELP_PILLS = [
+      { id: "time", label: "时间", hint: "如：每周预留固定学习时间或试点项目精力分配" },
+      { id: "ideas", label: "理念", hint: "如：请上级帮忙诊断能力盲区与优先级判断" },
+      { id: "opportunities", label: "机会", hint: "如：争取关键项目负责人、跨团队历练或轮岗机会" },
+      { id: "emotional", label: "情绪", hint: "如：在角色转型期获得信任授权与定期正向反馈" },
+      { id: "connections", label: "关系", hint: "如：引荐相关业务负责人或资深导师进行交流" },
+      { id: "experience", label: "经验", hint: "如：请上级分享过往类似职级跃迁的实战方法" }
+    ];
+
+    // =========================================================================
+    // 4. 状态管理与本地存储
+    // =========================================================================
+    function getTodayISO() {
+      const d = new Date();
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    }
+
+    function getFormattedTimestamp() {
+      const d = new Date();
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")} ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}:${String(d.getSeconds()).padStart(2, "0")}`;
+    }
+
+    function getOrCreateStudentUID() {
+      try {
+        let uid = window.localStorage.getItem(STORAGE_UID_KEY);
+        if (!uid) {
+          uid = "stu_" + Date.now().toString(36) + "_" + Math.random().toString(36).substring(2, 8);
+          window.localStorage.setItem(STORAGE_UID_KEY, uid);
+        }
+        return uid;
+      } catch (e) {
+        return "stu_session_" + Math.random().toString(36).substring(2, 10);
+      }
+    }
+
+    function createDefaultState() {
+      return {
+        currentStep: 1,
+        studentName: "",
+        step1: {
+          selectedPills: [],
+          conversationGoal: ""
+        },
+        step2: {
+          selectedValues: [],
+          top3Values: [],
+          customValues: []
+        },
+        step3: {
+          q1Flow: "",
+          q2Curiosity: "",
+          q3Drain: ""
+        },
+        step4: {
+          // ratings: { [skillId]: { pref: 'love'|'like_lot'|'like'|'avoid'|'dislike', prof: 'highly_proficient'|'proficient'|'developing' } }
+          ratings: {},
+          abilitySummary: ""
+        },
+        step5: {
+          initialDirection: "",
+          smartGoal: "",
+          smartChecks: [] // ['S','M','A','R','T']
+        },
+        step6: {
+          currentStatus: "",
+          devPath: "",
+          helpDimensions: [],
+          helpDetail: ""
+        },
+        step7: {
+          skillsCurrent: "",
+          skillsFuture: "",
+          skillsLongTerm: ""
+        },
+        step8: {
+          planDate: getTodayISO()
+        }
+      };
+    }
+
+    let appState = createDefaultState();
+
+    // UI 临时交互状态
+    let activeValueGroup = "all";
+    let valueSearchQuery = "";
+    let step4ViewMode = "swipe"; // 'swipe' | 'grid'
+    let step4SwipeCardId = 1;
+    let step4GridFilter = "all"; // 'all' | 'unclassified' | prefId
+
+    function loadLocalState() {
+      try {
+        const raw = window.localStorage.getItem(STORAGE_DATA_KEY);
+        if (!raw) return;
+        const parsed = JSON.parse(raw);
+        const base = createDefaultState();
+        appState = {
+          ...base,
+          ...parsed,
+          step1: { ...base.step1, ...(parsed.step1 || {}) },
+          step2: { ...base.step2, ...(parsed.step2 || {}) },
+          step3: { ...base.step3, ...(parsed.step3 || {}) },
+          step4: { ...base.step4, ...(parsed.step4 || {}) },
+          step5: { ...base.step5, ...(parsed.step5 || {}) },
+          step6: { ...base.step6, ...(parsed.step6 || {}) },
+          step7: { ...base.step7, ...(parsed.step7 || {}) },
+          step8: { ...base.step8, ...(parsed.step8 || {}) }
+        };
+      } catch (e) {}
+
+      // 将快刷卡片初始定位到第一张尚未分类的卡片
+      const firstUnclassified = MOTIVATED_SKILLS_51.find(s => !appState.step4.ratings[s.id]?.pref);
+      step4SwipeCardId = firstUnclassified ? firstUnclassified.id : 1;
+    }
+
+    function saveLocalState() {
+      try {
+        window.localStorage.setItem(STORAGE_DATA_KEY, JSON.stringify(appState));
+      } catch (e) {}
+    }
+
+    // =========================================================================
+    // 5. 诺德尔四象限能力诊断实时计算引擎
+    // =========================================================================
+    function computeNodelQuadrants() {
+      const ratings = appState.step4.ratings || {};
+      const motivated = [];     // ⚡ 动力技能（核心王牌区）
+      const developmental = []; // 🌱 发展技能（潜力成长区）
+      const burnout = [];       // 🔋 耗竭技能（警惕厌烦区）
+      const lowPriority = [];   // 📦 非重点技能（低优规避区）
+      const supporting = [];    // 喜欢使用 + 熟练/非常熟练（稳健支撑）
+
+      MOTIVATED_SKILLS_51.forEach(skill => {
+        const r = ratings[skill.id];
+        if (!r || !r.pref || !r.prof) return;
+
+        const isHighPref = r.pref === "love" || r.pref === "like_lot";
+        const isPosPref = isHighPref || r.pref === "like";
+        const isNegPref = r.pref === "avoid" || r.pref === "dislike";
+
+        const isProficient = r.prof === "highly_proficient" || r.prof === "proficient";
+        const isDeveloping = r.prof === "developing";
+
+        if (isHighPref && isProficient) {
+          motivated.push(skill.title);
+        } else if (isPosPref && isDeveloping) {
+          developmental.push(skill.title);
+        } else if (isNegPref && isProficient) {
+          burnout.push(skill.title);
+        } else if (isNegPref && isDeveloping) {
+          lowPriority.push(skill.title);
+        } else if (r.pref === "like" && isProficient) {
+          supporting.push(skill.title);
+        }
+      });
+
+      return { motivated, developmental, burnout, lowPriority, supporting };
+    }
+
+    // =========================================================================
+    // 6. 静默后台归档（学员端绝不出现任何“提交给导师”提示）
+    // =========================================================================
+    function getEffectiveArchiveUrl() {
+      if (SHEET_WEBAPP_URL && SHEET_WEBAPP_URL.trim()) {
+        return SHEET_WEBAPP_URL.trim();
+      }
+      try {
+        const stored = window.localStorage.getItem(STORAGE_SHEET_KEY);
+        if (stored && stored.trim()) return stored.trim();
+      } catch (e) {}
+      return "";
+    }
+
+    function checkQueryArchiveParam() {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const sheetParam = params.get("sheet");
+        if (sheetParam && sheetParam.trim()) {
+          window.localStorage.setItem(STORAGE_SHEET_KEY, sheetParam.trim());
+        }
+      } catch (e) {}
+    }
+
+    function buildArchivePayload() {
+      const quads = computeNodelQuadrants();
+      const helpLabels = STEP6_HELP_PILLS
+        .filter(p => appState.step6.helpDimensions.includes(p.id))
+        .map(p => p.label)
+        .join("、");
+
+      return {
+        student_uid: getOrCreateStudentUID(),
+        student_name: (appState.studentName || "").trim() || "未署名学员",
+        updated_at: getFormattedTimestamp(),
+        step1_pills: appState.step1.selectedPills.join("、"),
+        step1_conversation_goal: appState.step1.conversationGoal || "",
+        step2_values_10: appState.step2.selectedValues.join("、"),
+        step2_values_top3: appState.step2.top3Values.join("、"),
+        step3_q1_flow: appState.step3.q1Flow || "",
+        step3_q2_curiosity: appState.step3.q2Curiosity || "",
+        step3_q3_drain: appState.step3.q3Drain || "",
+        step4_motivated_skills: quads.motivated.join("、"),
+        step4_developmental_skills: quads.developmental.join("、"),
+        step4_burnout_skills: quads.burnout.join("、"),
+        step4_low_priority_skills: quads.lowPriority.join("、"),
+        step4_ability_summary: appState.step4.abilitySummary || "",
+        step5_initial_direction: appState.step5.initialDirection || "",
+        step5_smart_goal: appState.step5.smartGoal || "",
+        step5_smart_checks: appState.step5.smartChecks.join("、"),
+        step6_current_status: appState.step6.currentStatus || "",
+        step6_dev_path: appState.step6.devPath || "",
+        step6_help_dimensions: helpLabels,
+        step6_help_detail: appState.step6.helpDetail || "",
+        step7_skills_current: appState.step7.skillsCurrent || "",
+        step7_skills_future: appState.step7.skillsFuture || "",
+        step7_skills_longterm: appState.step7.skillsLongTerm || ""
+      };
+    }
+
+    function syncCloudSilently() {
+      const targetUrl = getEffectiveArchiveUrl();
+      if (!targetUrl) return;
+      try {
+        const payload = JSON.stringify(buildArchivePayload());
+        fetch(targetUrl, {
+          method: "POST",
+          mode: "no-cors",
+          keepalive: true,
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: payload
+        }).catch(() => {});
+      } catch (e) {}
+    }
+
+    let saveDebounceTimer = null;
+    function scheduleAutoSave(immediateCloud = false) {
+      saveLocalState();
+      const label = document.getElementById("save-label");
+      if (label) {
+        const t = new Date().toTimeString().slice(0, 5);
+        label.textContent = `✓ 个人笔记已自动保存 (${t})`;
+      }
+
+      if (saveDebounceTimer) clearTimeout(saveDebounceTimer);
+      if (immediateCloud) {
+        syncCloudSilently();
+      } else {
+        saveDebounceTimer = setTimeout(() => {
+          syncCloudSilently();
+        }, 1500);
+      }
+    }
+
+    // =========================================================================
+    // 7. 轻提示与隐蔽后台配置
+    // =========================================================================
+    function showToast(msg, tone = "teal") {
+      const box = document.getElementById("toast-box");
+      if (!box) return;
+      const el = document.createElement("div");
+      const cls = tone === "amber"
+        ? "bg-warmamber-600 text-white border-warmamber-500"
+        : "bg-calmteal-800 text-white border-calmteal-700";
+      el.className = `pointer-events-auto px-4 py-2.5 rounded-xl border shadow-md text-xs sm:text-sm font-medium transition-all duration-300 ${cls}`;
+      el.textContent = msg;
+      box.appendChild(el);
+      setTimeout(() => {
+        el.style.opacity = "0";
+        el.style.transform = "translateY(4px)";
+        setTimeout(() => el.remove(), 250);
+      }, 2400);
+    }
+
+    let footerClicks = 0;
+    let footerTimer = null;
+    document.getElementById("footer-secret-trigger").addEventListener("click", () => {
+      footerClicks += 1;
+      if (footerTimer) clearTimeout(footerTimer);
+      footerTimer = setTimeout(() => { footerClicks = 0; }, 700);
+      if (footerClicks >= 3) {
+        footerClicks = 0;
+        openArchiveConfig();
+      }
+    });
+
+    window.openArchiveConfig = function() {
+      const modal = document.getElementById("archive-config-modal");
+      const input = document.getElementById("config-sheet-url");
+      if (input) input.value = getEffectiveArchiveUrl();
+      if (modal) {
+        modal.classList.remove("hidden");
+        modal.classList.add("flex");
+      }
+    };
+
+    window.closeArchiveConfig = function() {
+      const modal = document.getElementById("archive-config-modal");
+      if (modal) {
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+      }
+    };
+
+    window.saveArchiveConfig = function() {
+      const input = document.getElementById("config-sheet-url");
+      if (input) {
+        try {
+          window.localStorage.setItem(STORAGE_SHEET_KEY, input.value.trim());
+        } catch (e) {}
+      }
+      closeArchiveConfig();
+      showToast("后台配置已保存");
+    };
+
+    // =========================================================================
+    // 8. 通用导航与输入事件
+    // =========================================================================
+    function isStepCompleted(stepId) {
+      switch (stepId) {
+        case 1:
+          return Boolean(appState.step1.conversationGoal.trim() || appState.step1.selectedPills.length > 0);
+        case 2:
+          return appState.step2.selectedValues.length > 0;
+        case 3:
+          return Boolean(appState.step3.q1Flow.trim() || appState.step3.q2Curiosity.trim() || appState.step3.q3Drain.trim());
+        case 4:
+          return Object.keys(appState.step4.ratings).length > 0 || Boolean(appState.step4.abilitySummary.trim());
+        case 5:
+          return Boolean(appState.step5.initialDirection.trim() || appState.step5.smartGoal.trim());
+        case 6:
+          return Boolean(appState.step6.currentStatus.trim() || appState.step6.devPath.trim() || appState.step6.helpDimensions.length > 0 || appState.step6.helpDetail.trim());
+        case 7:
+          return Boolean(appState.step7.skillsCurrent.trim() || appState.step7.skillsFuture.trim() || appState.step7.skillsLongTerm.trim());
+        case 8:
+          return [1, 2, 3, 4, 5, 6, 7].some(id => isStepCompleted(id));
+        default:
+          return false;
+      }
+    }
+
+    window.switchStep = function(stepId) {
+      appState.currentStep = stepId;
+      scheduleAutoSave(true);
+      renderApp();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
+    window.onStudentNameChange = function(val) {
+      appState.studentName = val;
+      scheduleAutoSave(false);
+      if (appState.currentStep === 8) {
+        renderStepView();
+      }
+    };
+
+    window.onFieldChange = function(stepKey, fieldKey, val) {
+      appState[stepKey][fieldKey] = val;
+      scheduleAutoSave(false);
+      renderNavGrid();
+    };
+
+    // =========================================================================
+    // 9. 各步骤交互逻辑
+    // =========================================================================
+    // --- Step 1 ---
+    window.toggleStep1Pill = function(pillText) {
+      const list = appState.step1.selectedPills;
+      const idx = list.indexOf(pillText);
+      const cleanLabel = pillText.replace(/^[^\u4e00-\u9fa5A-Za-z0-9]+/, "").trim();
+      if (idx > -1) {
+        list.splice(idx, 1);
+      } else {
+        list.push(pillText);
+        const cur = appState.step1.conversationGoal.trim();
+        if (!cur.includes(cleanLabel)) {
+          appState.step1.conversationGoal = cur
+            ? `${cur}\n• ${cleanLabel}：`
+            : `希望通过本次对话重点沟通「${cleanLabel}」，具体希望达成的共识是：`;
+        }
+      }
+      scheduleAutoSave(false);
+      renderApp();
+    };
+
+    // --- Step 2: 核心价值观 ---
+    window.setValueGroup = function(groupId) {
+      activeValueGroup = groupId;
+      renderValuesPool();
+    };
+
+    window.onValueSearchInput = function(val) {
+      valueSearchQuery = val;
+      renderValuesPool();
+    };
+
+    window.clearValueSearch = function() {
+      valueSearchQuery = "";
+      const inp = document.getElementById("value-smart-search");
+      if (inp) inp.value = "";
+      renderValuesPool();
+    };
+
+    window.addCustomValueWord = function() {
+      const raw = valueSearchQuery.trim();
+      if (!raw) return;
+      if (raw.length > 14) {
+        showToast("建议将自定义价值观控制在 14 字以内", "amber");
+        return;
+      }
+      const universe = [...ALL_112_VALUES, ...appState.step2.customValues];
+      if (!universe.includes(raw)) {
+        appState.step2.customValues.unshift(raw);
+      }
+      if (!appState.step2.selectedValues.includes(raw)) {
+        if (appState.step2.selectedValues.length < 10) {
+          appState.step2.selectedValues.push(raw);
+          showToast(`已添加并选中「${raw}」`);
+        } else {
+          showToast("已选满 10 个价值观，可先取消 1 个后再勾选", "amber");
+        }
+      }
+      valueSearchQuery = "";
+      scheduleAutoSave(false);
+      renderApp();
+    };
+
+    window.toggleValueWord = function(word) {
+      const sel = appState.step2.selectedValues;
+      const idx = sel.indexOf(word);
+      if (idx > -1) {
+        sel.splice(idx, 1);
+        appState.step2.top3Values = appState.step2.top3Values.filter(v => v !== word);
+      } else {
+        if (sel.length >= 10) {
+          showToast("已选满 10 个核心价值观，请先取消 1 个后再替换", "amber");
+          return;
+        }
+        sel.push(word);
+      }
+      scheduleAutoSave(false);
+      renderApp();
+    };
+
+    window.toggleTop3Star = function(word, event) {
+      if (event) event.stopPropagation();
+      const top3 = appState.step2.top3Values;
+      const idx = top3.indexOf(word);
+      if (idx > -1) {
+        top3.splice(idx, 1);
+      } else {
+        if (top3.length >= 3) {
+          showToast("最多标记 3 项核心底线星标，请先取消其中 1 颗星", "amber");
+          return;
+        }
+        top3.push(word);
+      }
+      scheduleAutoSave(false);
+      renderApp();
+    };
+
+    // --- Step 4: 诺德尔 51 张动力技能卡牌 ---
+    window.setStep4ViewMode = function(mode) {
+      step4ViewMode = mode;
+      renderStepView();
+    };
+
+    window.setStep4GridFilter = function(filterId) {
+      step4GridFilter = filterId;
+      renderStepView();
+    };
+
+    window.navigateSwipeCard = function(delta) {
+      let nextId = step4SwipeCardId + delta;
+      if (nextId < 1) nextId = 51;
+      if (nextId > 51) nextId = 1;
+      step4SwipeCardId = nextId;
+      renderStepView();
+    };
+
+    window.jumpToNextUnclassifiedSkill = function() {
+      const ratings = appState.step4.ratings;
+      // 优先从当前卡片往后找，找不到再从头找
+      let found = MOTIVATED_SKILLS_51.find(s => s.id > step4SwipeCardId && !ratings[s.id]?.pref);
+      if (!found) {
+        found = MOTIVATED_SKILLS_51.find(s => !ratings[s.id]?.pref);
+      }
+      if (found) {
+        step4SwipeCardId = found.id;
+        renderStepView();
+      } else {
+        showToast("太棒了！51 张技能卡已全部分类完成");
+      }
+    };
+
+    window.classifySkillPref = function(skillId, prefId, autoAdvance = false) {
+      if (!appState.step4.ratings[skillId]) {
+        appState.step4.ratings[skillId] = { pref: prefId, prof: "" };
+      } else {
+        appState.step4.ratings[skillId].pref = prefId;
+      }
+
+      if (autoAdvance) {
+        const ratings = appState.step4.ratings;
+        let nextUnclassified = MOTIVATED_SKILLS_51.find(s => s.id > skillId && !ratings[s.id]?.pref);
+        if (!nextUnclassified) {
+          nextUnclassified = MOTIVATED_SKILLS_51.find(s => !ratings[s.id]?.pref);
+        }
+        if (nextUnclassified) {
+          step4SwipeCardId = nextUnclassified.id;
+        } else if (skillId < 51) {
+          step4SwipeCardId = skillId + 1;
+        }
+      }
+
+      scheduleAutoSave(false);
+      renderApp();
+    };
+
+    window.classifySkillProf = function(skillId, profId) {
+      if (!appState.step4.ratings[skillId]) return;
+      // 点击已选中的熟练度支持切换/取消或直接设置
+      appState.step4.ratings[skillId].prof =
+        appState.step4.ratings[skillId].prof === profId ? "" : profId;
+      scheduleAutoSave(false);
+      renderApp();
+    };
+
+    window.scrollToRound2 = function() {
+      const el = document.getElementById("step4-round2-section");
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    };
+
+    // 键盘快捷键（Step 4 快刷模式支持 1-5 分类与左右方向键切换）
+    document.addEventListener("keydown", (e) => {
+      if (appState.currentStep !== 4 || step4ViewMode !== "swipe") return;
+      const tag = document.activeElement?.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+      const resetModal = document.getElementById("reset-confirm-modal");
+      const cfgModal = document.getElementById("archive-config-modal");
+      if ((resetModal && !resetModal.classList.contains("hidden")) ||
+          (cfgModal && !cfgModal.classList.contains("hidden"))) return;
+
+      if (["1", "2", "3", "4", "5"].includes(e.key)) {
+        e.preventDefault();
+        const prefObj = PREF_LEVELS[Number(e.key) - 1];
+        if (prefObj) {
+          classifySkillPref(step4SwipeCardId, prefObj.id, true);
+        }
+      } else if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        navigateSwipeCard(-1);
+      } else if (e.key === "ArrowRight") {
+        e.preventDefault();
+        navigateSwipeCard(1);
+      }
+    });
+
+    // --- Step 5: 职业方向与 SMART ---
+    window.selectDirectionPill = function(text) {
+      appState.step5.initialDirection = text;
+      scheduleAutoSave(false);
+      renderApp();
+    };
+
+    window.toggleSmartCheck = function(code) {
+      const list = appState.step5.smartChecks;
+      const idx = list.indexOf(code);
+      if (idx > -1) {
+        list.splice(idx, 1);
+      } else {
+        list.push(code);
+      }
+      scheduleAutoSave(false);
+      renderStepView();
+    };
+
+    // --- Step 6: 寻求帮助胶囊 ---
+    window.toggleStep6Help = function(pillId) {
+      const list = appState.step6.helpDimensions;
+      const idx = list.indexOf(pillId);
+      if (idx > -1) {
+        list.splice(idx, 1);
+      } else {
+        list.push(pillId);
+      }
+      scheduleAutoSave(false);
+      renderApp();
+    };
+
+    // --- Step 8: 复制完整文本摘要 & 打印 & 重置 ---
+    function generatePlainSummaryText() {
+      const quads = computeNodelQuadrants();
+      const s1 = appState.step1;
+      const s2 = appState.step2;
+      const s3 = appState.step3;
+      const s4 = appState.step4;
+      const s5 = appState.step5;
+      const s6 = appState.step6;
+      const s7 = appState.step7;
+      const s8 = appState.step8;
+
+      const helpText = STEP6_HELP_PILLS
+        .filter(p => s6.helpDimensions.includes(p.id))
+        .map(p => p.label)
+        .join("、") || "—";
+
+      const checkedSmart = SMART_CHECK_ITEMS
+        .filter(i => s5.smartChecks.includes(i.id))
+        .map(i => i.id)
+        .join(" / ") || "未勾选";
+
+      return [
+        `【职业发展对话准备单 · 一页纸汇总】`,
+        `姓名/昵称：${(appState.studentName || "").trim() || "—"}   |   日期：${s8.planDate || getTodayISO()}`,
+        `==================================================`,
+        `一、【对话前】本次谈话的核心目标`,
+        `• 关注主题：${s1.selectedPills.length ? s1.selectedPills.join("、") : "—"}`,
+        `• 谈话目标：${s1.conversationGoal.trim() || "—"}`,
+        ``,
+        `二、【三叶草自我认知】价值 · 兴趣 · 能力`,
+        `1. 核心价值观`,
+        `   - Top 3 底线价值观：${s2.top3Values.length ? s2.top3Values.join("、") : "—"}`,
+        `   - 已选 10 项价值观：${s2.selectedValues.length ? s2.selectedValues.join("、") : "—"}`,
+        `2. 内在兴趣与动力`,
+        `   - 心流与能量来源：${s3.q1Flow.trim() || "—"}`,
+        `   - 好奇与主动探索：${s3.q2Curiosity.trim() || "—"}`,
+        `   - 消耗与排斥边界：${s3.q3Drain.trim() || "—"}`,
+        `3. 诺德尔动力技能盘点`,
+        `   - ⚡ 动力技能（核心王牌）：${quads.motivated.length ? quads.motivated.join("、") : "—"}`,
+        `   - 🌱 发展技能（潜力成长）：${quads.developmental.length ? quads.developmental.join("、") : "—"}`,
+        `   - 🔋 耗竭技能（警惕厌烦）：${quads.burnout.length ? quads.burnout.join("、") : "—"}`,
+        `   - 能力一句话总结：${s4.abilitySummary.trim() || "—"}`,
+        ``,
+        `三、【对话前】职业发展方向与 SMART 目标`,
+        `• 初始方向想法：${s5.initialDirection.trim() || "—"}`,
+        `• 完整 SMART 目标：${s5.smartGoal.trim() || "—"}`,
+        `• 已核对 SMART 要素：${checkedSmart}`,
+        ``,
+        `四、【对话中】与上级的三个沟通角度`,
+        `• 现状分析：${s6.currentStatus.trim() || "—"}`,
+        `• 发展路径：${s6.devPath.trim() || "—"}`,
+        `• 寻求帮助维度：${helpText}`,
+        `• 具体支持请求：${s6.helpDetail.trim() || "—"}`,
+        ``,
+        `五、【对话后】能力与知识行动清单`,
+        `• 在当前岗位上：${s7.skillsCurrent.trim() || "—"}`,
+        `• 未来的职位：${s7.skillsFuture.trim() || "—"}`,
+        `• 保持长期竞争力：${s7.skillsLongTerm.trim() || "—"}`,
+        `==================================================`
+      ].join("\n");
+    }
+
+    window.copyFullSummaryText = function() {
+      scheduleAutoSave(true);
+      const text = generatePlainSummaryText();
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.left = "-9999px";
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      let ok = false;
+      try {
+        ok = document.execCommand("copy");
+      } catch (e) {
+        ok = false;
+      }
+      document.body.removeChild(ta);
+      if (ok) {
+        showToast("✓ 已复制完整文本摘要，可直接粘贴至 Notion / 微信 / Docs");
+      } else {
+        showToast("当前浏览器限制自动复制，请使用「打印 / 保存为 PDF」", "amber");
+      }
+    };
+
+    window.triggerPrintOnePager = function() {
+      scheduleAutoSave(true);
+      window.print();
+    };
+
+    window.openResetModal = function() {
+      const m = document.getElementById("reset-confirm-modal");
+      if (m) {
+        m.classList.remove("hidden");
+        m.classList.add("flex");
+      }
+    };
+
+    window.closeResetModal = function() {
+      const m = document.getElementById("reset-confirm-modal");
+      if (m) {
+        m.classList.add("hidden");
+        m.classList.remove("flex");
+      }
+    };
+
+    window.confirmResetAll = function() {
+      appState = createDefaultState();
+      activeValueGroup = "all";
+      valueSearchQuery = "";
+      step4ViewMode = "swipe";
+      step4SwipeCardId = 1;
+      step4GridFilter = "all";
+      const headerInp = document.getElementById("header-student-name");
+      if (headerInp) headerInp.value = "";
+      closeResetModal();
+      saveLocalState();
+      renderApp();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      showToast("练习工作台已清空重置");
+    };
+
+    // =========================================================================
+    // 10. HTML 转义与共用组件渲染
+    // =========================================================================
+    function esc(str) {
+      if (str === null || str === undefined) return "";
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function renderNavGrid() {
+      const grid = document.getElementById("step-nav-grid");
+      if (!grid) return;
+
+      grid.innerHTML = NAV_STEPS.map(step => {
+        const isActive = appState.currentStep === step.id;
+        const done = isStepCompleted(step.id);
+
+        let btnStyle = "bg-white text-slate-600 border-[#E2E8F0] hover:border-calmteal-600 hover:text-calmteal-800";
+        if (isActive) {
+          btnStyle = "bg-calmteal-700 text-white border-calmteal-700 shadow-2xs font-bold";
+        } else if (done) {
+          btnStyle = "bg-calmteal-50/70 text-calmteal-900 border-calmteal-200 hover:border-calmteal-600 font-semibold";
+        }
+
+        const dotHtml = done
+          ? `<span class="w-1.5 h-1.5 rounded-full shrink-0 ${isActive ? "bg-warmamber-300" : "bg-calmteal-600"}"></span>`
+          : `<span class="w-1.5 h-1.5 rounded-full shrink-0 ${isActive ? "bg-white/40" : "bg-slate-200"}"></span>`;
+
+        return `
+          <button type="button" onclick="switchStep(${step.id})"
+            class="px-2.5 py-2 rounded-xl border text-[11px] sm:text-xs font-medium flex items-center justify-between gap-1.5 transition-all cursor-pointer ${btnStyle}">
+            <span class="truncate">${step.label}</span>
+            ${dotHtml}
+          </button>
+        `;
+      }).join("");
+    }
+
+    function renderCloverBanner(activeLeaf, insightText) {
+      const leaves = [
+        { key: "value", label: "① 价值" },
+        { key: "interest", label: "② 兴趣" },
+        { key: "ability", label: "③ 能力" }
+      ];
+      return `
+        <div class="mt-4 p-3.5 sm:p-4 rounded-2xl bg-calmteal-50/65 border border-calmteal-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div class="flex items-center gap-1.5 flex-wrap shrink-0">
+            <span class="text-xs font-bold text-calmteal-900 mr-1">🍀 三叶草模型：</span>
+            ${leaves.map(l => {
+              const isCur = l.key === activeLeaf;
+              return `<span class="px-2.5 py-0.5 rounded-full text-xs font-semibold ${
+                isCur
+                  ? "bg-calmteal-700 text-white shadow-2xs"
+                  : "bg-white text-calmteal-800 border border-calmteal-200"
+              }">${l.label}</span>`;
+            }).join("")}
+            <span class="text-xs font-semibold text-warmamber-700 ml-0.5">= 完美事业</span>
+          </div>
+          <p class="text-xs sm:text-[13px] text-slate-700 leading-relaxed">${insightText}</p>
+        </div>
+      `;
+    }
+
+    function renderStepFooterNav(stepId) {
+      const prevBtn = stepId > 1
+        ? `<button type="button" onclick="switchStep(${stepId - 1})"
+             class="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-medium text-slate-600 bg-[#F8F7F4] hover:bg-slate-200/70 border border-[#E2E8F0] transition">
+             ← 上一步
+           </button>`
+        : `<div></div>`;
+
+      const nextBtn = stepId < 8
+        ? `<button type="button" onclick="switchStep(${stepId + 1})"
+             class="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-white bg-calmteal-700 hover:bg-calmteal-800 transition shadow-2xs">
+             继续下一步 →
+           </button>`
+        : `<div></div>`;
+
+      return `
+        <div class="no-print mt-8 pt-5 border-t border-[#E2E8F0] flex items-center justify-between gap-3">
+          ${prevBtn}
+          ${nextBtn}
+        </div>
+      `;
+    }
+
+    // =========================================================================
+    // 11. 八大步骤视图渲染函数
+    // =========================================================================
+    // --- Step 1: 明确本次谈话的目标 ---
+    function renderStep1() {
+      const s1 = appState.step1;
+      return `
+        <div class="bg-white rounded-2xl border border-[#E2E8F0] p-6 sm:p-8 shadow-2xs">
+          <div class="pb-4 border-b border-[#E2E8F0]">
+            <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold bg-calmteal-50 text-calmteal-700 mb-2">
+              对话前准备 · Step 1 / 7
+            </span>
+            <h2 class="text-xl sm:text-2xl font-bold text-slateink">明确本次谈话的目标</h2>
+            <p class="text-sm text-slate-600 mt-2 leading-relaxed">
+              在和上级或导师开启对话前，先聚焦这一次沟通本身：你最希望通过这次谈话达成什么具体目的？（长期职业发展方向将在第 5 步结合自我认知来锚定）
+            </p>
+          </div>
+
+          <!-- 灵感胶囊 -->
+          <div class="mt-6">
+            <div class="text-xs font-semibold text-slate-500 mb-2.5">
+              常见谈话目的灵感胶囊（点击快速填入或追加）：
+            </div>
+            <div class="flex flex-wrap gap-2">
+              ${STEP1_GOAL_PILLS.map(pill => {
+                const active = s1.selectedPills.includes(pill);
+                return `
+                  <button type="button" onclick="toggleStep1Pill('${esc(pill)}')"
+                    class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-medium border transition-all ${
+                      active
+                        ? "bg-calmteal-700 text-white border-calmteal-700 shadow-2xs"
+                        : "bg-[#F8F7F4] text-slate-700 border-[#E2E8F0] hover:border-calmteal-600 hover:text-calmteal-800"
+                    }">
+                    ${esc(pill)}
+                  </button>
+                `;
+              }).join("")}
+            </div>
+          </div>
+
+          <!-- 核心谈话目标输入框 -->
+          <div class="mt-6">
+            <label for="s1-goal-textarea" class="block text-sm font-bold text-slateink mb-2">
+              本次谈话的核心目标
+            </label>
+            <textarea id="s1-goal-textarea" rows="5"
+              oninput="onFieldChange('step1', 'conversationGoal', this.value)"
+              placeholder="例如：希望和主管对齐我距离下一职级还差哪些关键能力，并争取在 Q3 参与一个跨部门项目。"
+              class="w-full rounded-xl border border-[#E2E8F0] bg-[#F8F7F4]/60 p-4 text-sm text-slateink placeholder-slate-400 editorial-input leading-relaxed">${esc(s1.conversationGoal)}</textarea>
+          </div>
+
+          ${renderStepFooterNav(1)}
+        </div>
+      `;
+    }
+
+    // --- Step 2: 认知自我 · 价值 ---
+    function renderStep2() {
+      const s2 = appState.step2;
+      const count = s2.selectedValues.length;
+      const top3Count = s2.top3Values.length;
+
+      return `
+        <div class="bg-white rounded-2xl border border-[#E2E8F0] p-6 sm:p-8 shadow-2xs">
+          <div class="pb-4 border-b border-[#E2E8F0]">
+            <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold bg-calmteal-50 text-calmteal-700 mb-2">
+              自我认知（1/3 · 价值）
+            </span>
+            <h2 class="text-xl sm:text-2xl font-bold text-slateink">探索你的核心价值观</h2>
+            ${renderCloverBanner("value", "价值观回答的是「什么对我有意义」。缺乏价值感的工作容易让人产生「失落感」。")}
+          </div>
+
+          <!-- Stage B 顶部高亮托盘：已选 10 项 & 聚焦 Top 3 底线 -->
+          <div class="mt-6 p-4 sm:p-5 rounded-2xl bg-[#F8F7F4] border border-[#E2E8F0]">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="text-sm font-bold text-slateink">已选核心价值观</span>
+                <span class="px-2.5 py-0.5 rounded-full text-xs font-bold border ${
+                  count === 10
+                    ? "bg-calmteal-50 text-calmteal-800 border-calmteal-300"
+                    : "bg-white text-slate-700 border-[#E2E8F0]"
+                }">
+                  已选 ${count} / 10 个
+                </span>
+                <span class="px-2.5 py-0.5 rounded-full text-xs font-bold border ${
+                  top3Count === 3
+                    ? "bg-warmamber-100 text-warmamber-800 border-warmamber-300"
+                    : "bg-warmamber-50 text-warmamber-700 border-warmamber-200"
+                }">
+                  Top 3 底线星标: ${top3Count} / 3
+                </span>
+              </div>
+              <span class="text-xs text-slate-500">
+                点击胶囊最左侧 <strong>☆</strong> 标记最不可妥协的 Top 3
+              </span>
+            </div>
+
+            ${count === 0
+              ? `<div class="py-5 text-center text-xs text-slate-400 bg-white rounded-xl border border-dashed border-[#E2E8F0]">
+                   阶段 A（海选）：请从下方 112 个价值观词库中先挑选出 10 个最能代表你的词汇
+                 </div>`
+              : `<div class="flex flex-wrap gap-2">
+                   ${s2.selectedValues.map(word => {
+                     const isStar = s2.top3Values.includes(word);
+                     return `
+                       <div class="inline-flex items-center gap-3 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-semibold border transition-all ${
+                         isStar
+                           ? "bg-warmamber-500 text-white border-warmamber-600 shadow-2xs"
+                           : "bg-calmteal-700 text-white border-calmteal-700 shadow-2xs"
+                       }">
+                         <button type="button" onclick="toggleTop3Star('${esc(word)}', event)"
+                           title="${isStar ? "取消 Top 3 底线星标" : "标记为 Top 3 底线星标"}"
+                           class="w-6 h-6 -ml-1 rounded-lg flex items-center justify-center text-base leading-none hover:bg-black/15 transition">
+                           ${isStar ? "★" : "☆"}
+                         </button>
+                         <span>${esc(word)}</span>
+                         <button type="button" onclick="toggleValueWord('${esc(word)}')"
+                           title="移除此项"
+                           class="w-6 h-6 -mr-1 rounded-lg flex items-center justify-center text-sm leading-none opacity-80 hover:opacity-100 hover:bg-black/15 transition">
+                           ×
+                         </button>
+                       </div>
+                     `;
+                   }).join("")}
+                 </div>`
+            }
+          </div>
+
+          <!-- Stage A：智能搜索创建框 + 4 分类标签 + 无内部滚动词库 -->
+          <div class="mt-6">
+            <div class="relative">
+              <input type="text" id="value-smart-search" value="${esc(valueSearchQuery)}"
+                oninput="onValueSearchInput(this.value)"
+                onkeydown="if(event.key==='Enter'){event.preventDefault();addCustomValueWord();}"
+                placeholder="输入关键词筛选 112 个价值观，或直接回车添加自定义词..."
+                class="w-full rounded-xl border border-[#E2E8F0] bg-white pl-4 pr-10 py-3 text-sm text-slateink placeholder-slate-400 editorial-input" />
+              ${valueSearchQuery
+                ? `<button type="button" onclick="clearValueSearch()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 text-base font-bold">×</button>`
+                : ""
+              }
+            </div>
+
+            <!-- 4 分类筛选标签 -->
+            <div class="mt-3.5 flex flex-wrap items-center gap-1.5">
+              ${VALUE_GROUPS.map(g => {
+                const totalCount = ALL_112_VALUES.length + s2.customValues.length;
+                const label = g.id === "all" ? `全部 (${totalCount})` : g.label;
+                const isCur = activeValueGroup === g.id;
+                return `
+                  <button type="button" onclick="setValueGroup('${g.id}')"
+                    class="px-3.5 py-1.5 rounded-xl text-xs font-semibold border transition-all ${
+                      isCur
+                        ? "bg-slateink text-white border-slateink"
+                        : "bg-[#F8F7F4] text-slate-600 border-[#E2E8F0] hover:border-slate-400"
+                    }">
+                    ${label}
+                  </button>
+                `;
+              }).join("")}
+            </div>
+
+            <!-- 开放式响应式词库展示（无任何内部滚动框） -->
+            <div id="values-pool-container" class="mt-4">
+              ${buildValuesPoolHTML()}
+            </div>
+          </div>
+
+          ${renderStepFooterNav(2)}
+        </div>
+      `;
+    }
+
+    function buildValuesPoolHTML() {
+      const s2 = appState.step2;
+      const isFull = s2.selectedValues.length >= 10;
+      const allWords = [...s2.customValues, ...ALL_112_VALUES];
+
+      let baseList = allWords;
+      if (activeValueGroup !== "all") {
+        const grp = VALUE_GROUPS.find(g => g.id === activeValueGroup);
+        baseList = grp ? grp.words : allWords;
+      }
+
+      const q = valueSearchQuery.trim();
+      const filtered = q ? allWords.filter(w => w.includes(q)) : baseList;
+      const exactMatch = q && allWords.includes(q);
+
+      let customBanner = "";
+      if (q && !exactMatch) {
+        customBanner = `
+          <div class="mb-3 p-3 rounded-xl bg-calmteal-50 border border-calmteal-200 flex flex-wrap items-center justify-between gap-2">
+            <span class="text-xs text-calmteal-900">词库中暂无「<strong>${esc(q)}</strong>」，按回车或点击右侧按钮添加：</span>
+            <button type="button" onclick="addCustomValueWord()"
+              class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-calmteal-700 text-white hover:bg-calmteal-800 transition">
+              + 添加「${esc(q)}」
+            </button>
+          </div>
+        `;
+      }
+
+      return `
+        ${customBanner}
+        <div class="flex flex-wrap gap-2">
+          ${filtered.map(word => {
+            const selected = s2.selectedValues.includes(word);
+            const starred = s2.top3Values.includes(word);
+
+            let cls = "bg-[#F8F7F4] text-slateink border-[#E2E8F0] hover:border-calmteal-600 hover:bg-calmteal-50/70";
+            if (starred) {
+              cls = "bg-warmamber-500 text-white border-warmamber-600 font-bold shadow-2xs";
+            } else if (selected) {
+              cls = "bg-calmteal-700 text-white border-calmteal-700 font-semibold shadow-2xs";
+            } else if (isFull) {
+              cls = "bg-[#F8F7F4] text-slate-400 border-[#E2E8F0] opacity-50 hover:opacity-80";
+            }
+
+            return `
+              <button type="button" onclick="toggleValueWord('${esc(word)}')"
+                class="px-3.5 py-2 rounded-xl text-xs sm:text-sm border transition-all ${cls}">
+                ${starred ? "★ " : selected ? "✓ " : ""}${esc(word)}
+              </button>
+            `;
+          }).join("")}
+        </div>
+      `;
+    }
+
+    function renderValuesPool() {
+      const box = document.getElementById("values-pool-container");
+      if (box) {
+        box.innerHTML = buildValuesPoolHTML();
+      } else {
+        renderStepView();
+      }
+    }
+
+    // --- Step 3: 认知自我 · 兴趣 ---
+    function renderStep3() {
+      const s3 = appState.step3;
+      const questions = [
+        {
+          num: "01",
+          title: "心流与能量来源",
+          prompt: "在过去的工作或学习中，做哪类事情会让你忘记时间、越做越有精神？",
+          placeholder: "记录那些让你感到全神贯注、兴奋且越做越有能量的具体任务或场景...",
+          field: "q1Flow",
+          val: s3.q1Flow
+        },
+        {
+          num: "02",
+          title: "好奇与主动探索",
+          prompt: "如果没有考核和头衔限制，你平时最愿意主动花时间研究、请教或尝试的领域是什么？",
+          placeholder: "写下令你产生持续好奇心的新课题、业务方向或想深入探索的专业领域...",
+          field: "q2Curiosity",
+          val: s3.q2Curiosity
+        },
+        {
+          num: "03",
+          title: "消耗与排斥边界",
+          prompt: "日常工作中的哪些任务最让你感到疲惫、拖延或提不起劲？",
+          placeholder: "诚实梳理长期消耗你精力、让你感到内耗的工作类型，帮助识别职业边界...",
+          field: "q3Drain",
+          val: s3.q3Drain
+        }
+      ];
+
+      return `
+        <div class="bg-white rounded-2xl border border-[#E2E8F0] p-6 sm:p-8 shadow-2xs">
+          <div class="pb-4 border-b border-[#E2E8F0]">
+            <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold bg-calmteal-50 text-calmteal-700 mb-2">
+              自我认知（2/3 · 兴趣）
+            </span>
+            <h2 class="text-xl sm:text-2xl font-bold text-slateink">发掘你的内在兴趣与动力</h2>
+            ${renderCloverBanner("interest", "兴趣回答的是「什么让我感到有趣和好奇」。有能力、有价值但缺乏兴趣，容易陷入「厌烦」。")}
+          </div>
+
+          <div class="mt-6 space-y-5">
+            ${questions.map(q => `
+              <div class="p-4 sm:p-5 rounded-2xl bg-[#F8F7F4] border border-[#E2E8F0]">
+                <div class="flex items-center gap-2 mb-1.5">
+                  <span class="px-2 py-0.5 rounded-md bg-calmteal-700 text-white text-xs font-bold">${q.num}</span>
+                  <h3 class="text-sm sm:text-base font-bold text-slateink">${q.title}</h3>
+                </div>
+                <p class="text-xs sm:text-sm text-slate-600 mb-3 leading-relaxed">${q.prompt}</p>
+                <textarea rows="3"
+                  oninput="onFieldChange('step3', '${q.field}', this.value)"
+                  placeholder="${q.placeholder}"
+                  class="w-full rounded-xl border border-[#E2E8F0] bg-white p-3.5 text-sm text-slateink placeholder-slate-400 editorial-input leading-relaxed">${esc(q.val)}</textarea>
+              </div>
+            `).join("")}
+          </div>
+
+          ${renderStepFooterNav(3)}
+        </div>
+      `;
+    }
+
+    // --- Step 4: 认知自我 · 能力（内置《诺德尔动力技能卡牌分类》51 张卡） ---
+    function renderStep4() {
+      const ratings = appState.step4.ratings;
+      const classifiedIds = Object.keys(ratings).filter(id => ratings[id]?.pref);
+      const totalClassified = classifiedIds.length;
+      const loveCount = classifiedIds.filter(id => ratings[id].pref === "love").length;
+      const dislikeCount = classifiedIds.filter(id => ratings[id].pref === "dislike").length;
+      const quads = computeNodelQuadrants();
+
+      const currentCard = MOTIVATED_SKILLS_51.find(s => s.id === step4SwipeCardId) || MOTIVATED_SKILLS_51[0];
+      const currentCardPref = ratings[currentCard.id]?.pref || "";
+
+      // 全览网格筛选列表
+      const gridCards = MOTIVATED_SKILLS_51.filter(skill => {
+        const p = ratings[skill.id]?.pref || "";
+        if (step4GridFilter === "all") return true;
+        if (step4GridFilter === "unclassified") return !p;
+        return p === step4GridFilter;
+      });
+
+      return `
+        <div class="space-y-6">
+          <!-- 顶部标题与三叶草提示卡片 -->
+          <div class="bg-white rounded-2xl border border-[#E2E8F0] p-6 sm:p-8 shadow-2xs">
+            <div class="pb-4 border-b border-[#E2E8F0]">
+              <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold bg-calmteal-50 text-calmteal-700 mb-2">
+                自我认知（3/3 · 能力）
+              </span>
+              <h2 class="text-xl sm:text-2xl font-bold text-slateink">诺德尔动力技能卡牌分类</h2>
+              ${renderCloverBanner("ability", "能力回答的是「我擅长什么、拥有哪些资源和天赋」。有价值有兴趣但缺乏能力支撑，容易产生「焦虑」。")}
+            </div>
+
+            <!-- ==================== 第一轮：按喜欢程度分类（5 档） ==================== -->
+            <div class="mt-6">
+              <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+                <div>
+                  <h3 class="text-base sm:text-lg font-bold text-slateink">
+                    第一轮：按「你有多喜欢使用这项技能」分类（5 档）
+                  </h3>
+                  <p class="text-xs text-slate-500 mt-1">
+                    共 51 张技能卡 · 已分类 <strong>${totalClassified} / 51</strong> 张（提示：「非常喜欢使用」建议至少 5 张，当前 ${loveCount} 张；「非常不喜欢使用」建议至少 5 张，当前 ${dislikeCount} 张）
+                  </p>
+                </div>
+
+                <!-- 快刷模式 vs 全览网格模式切换 -->
+                <div class="inline-flex p-1 rounded-xl bg-[#F8F7F4] border border-[#E2E8F0]">
+                  <button type="button" onclick="setStep4ViewMode('swipe')"
+                    class="px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+                      step4ViewMode === "swipe"
+                        ? "bg-calmteal-700 text-white shadow-2xs"
+                        : "text-slate-600 hover:text-slateink"
+                    }">
+                    快刷卡牌模式
+                  </button>
+                  <button type="button" onclick="setStep4ViewMode('grid')"
+                    class="px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+                      step4ViewMode === "grid"
+                        ? "bg-calmteal-700 text-white shadow-2xs"
+                        : "text-slate-600 hover:text-slateink"
+                    }">
+                    全览网格模式
+                  </button>
+                </div>
+              </div>
+
+              <!-- 进度条 -->
+              <div class="w-full h-2 rounded-full bg-slate-100 overflow-hidden mb-5">
+                <div class="h-full bg-calmteal-600 transition-all duration-300" style="width: ${Math.round((totalClassified / 51) * 100)}%"></div>
+              </div>
+
+              ${step4ViewMode === "swipe"
+                ? `<!-- 模式 1：单张沉浸式快刷卡牌 -->
+                   <div class="p-5 sm:p-7 rounded-2xl bg-[#F8F7F4] border border-[#E2E8F0]">
+                     <div class="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500 mb-4">
+                       <span class="font-bold text-calmteal-800">技能卡牌 #${currentCard.id} / 51</span>
+                       <div class="flex items-center gap-2">
+                         ${currentCardPref
+                           ? `<span class="px-2.5 py-0.5 rounded-full font-semibold bg-calmteal-100 text-calmteal-800">
+                                当前归类：${PREF_LEVELS.find(p => p.id === currentCardPref)?.label || ""}
+                              </span>`
+                           : `<span class="px-2.5 py-0.5 rounded-full bg-white border border-[#E2E8F0] text-slate-500">尚未分类</span>`
+                         }
+                         ${totalClassified < 51
+                           ? `<button type="button" onclick="jumpToNextUnclassifiedSkill()" class="text-calmteal-700 hover:underline font-medium">跳至下一张未分类 →</button>`
+                           : ""
+                         }
+                       </div>
+                     </div>
+
+                     <!-- 实体质感技能卡片 -->
+                     <div class="bg-white rounded-2xl border border-[#E2E8F0] p-6 sm:p-8 text-center shadow-2xs max-w-xl mx-auto">
+                       <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Motivated Skill Card</div>
+                       <h4 class="text-xl sm:text-2xl font-bold text-slateink">${esc(currentCard.title)}</h4>
+                       <p class="text-sm sm:text-base text-slate-600 mt-3 leading-relaxed">${esc(currentCard.desc)}</p>
+                     </div>
+
+                     <!-- 5 档一键分类大按钮 -->
+                     <div class="mt-6 grid grid-cols-1 sm:grid-cols-5 gap-2">
+                       ${PREF_LEVELS.map(lvl => {
+                         const isSelected = currentCardPref === lvl.id;
+                         return `
+                           <button type="button" onclick="classifySkillPref(${currentCard.id}, '${lvl.id}', true)"
+                             class="px-3 py-3 rounded-xl border text-center transition-all flex flex-col items-center justify-center gap-1 ${
+                               isSelected
+                                 ? "bg-calmteal-700 text-white border-calmteal-700 shadow-xs font-bold"
+                                 : "bg-white text-slateink border-[#E2E8F0] hover:border-calmteal-600 hover:bg-calmteal-50/50 font-semibold"
+                             }">
+                             <span class="text-xs sm:text-sm">${lvl.label}</span>
+                             <span class="text-[10px] ${isSelected ? "text-calmteal-100" : "text-slate-400"}">
+                               快捷键 [${lvl.keyNum}]${lvl.tip ? ` · ${lvl.tip}` : ""}
+                             </span>
+                           </button>
+                         `;
+                       }).join("")}
+                     </div>
+
+                     <!-- 上一张 / 跳过下一张 导航 -->
+                     <div class="mt-5 flex items-center justify-between text-xs">
+                       <button type="button" onclick="navigateSwipeCard(-1)"
+                         class="px-3.5 py-2 rounded-xl bg-white border border-[#E2E8F0] text-slate-600 hover:border-slate-400 font-medium transition">
+                         ← 上一张 (#${currentCard.id === 1 ? 51 : currentCard.id - 1})
+                       </button>
+                       <span class="text-slate-400 hidden sm:inline">提示：键盘按 1–5 可秒速分类，← / → 切换卡片</span>
+                       <button type="button" onclick="navigateSwipeCard(1)"
+                         class="px-3.5 py-2 rounded-xl bg-white border border-[#E2E8F0] text-slate-600 hover:border-slate-400 font-medium transition">
+                         跳过下一张 (#${currentCard.id === 51 ? 1 : currentCard.id + 1}) →
+                       </button>
+                     </div>
+
+                     ${totalClassified === 51
+                       ? `<div class="mt-5 p-4 rounded-xl bg-calmteal-50 border border-calmteal-200 flex flex-wrap items-center justify-between gap-3">
+                            <span class="text-xs sm:text-sm font-semibold text-calmteal-900">🎉 全部 51 张卡牌已完成第一轮偏好分类！</span>
+                            <button type="button" onclick="scrollToRound2()"
+                              class="px-4 py-2 rounded-xl text-xs font-bold bg-calmteal-700 text-white hover:bg-calmteal-800 transition">
+                              前往第二轮：评估熟练程度 ↓
+                            </button>
+                          </div>`
+                       : ""
+                     }
+                   </div>`
+                : `<!-- 模式 2：51 张卡牌全览网格（无内部滚动条） -->
+                   <div>
+                     <div class="flex flex-wrap gap-1.5 mb-4">
+                       <button type="button" onclick="setStep4GridFilter('all')"
+                         class="px-3 py-1.5 rounded-xl text-xs font-semibold border transition ${
+                           step4GridFilter === "all" ? "bg-slateink text-white border-slateink" : "bg-[#F8F7F4] text-slate-600 border-[#E2E8F0]"
+                         }">
+                         全部 (51)
+                       </button>
+                       <button type="button" onclick="setStep4GridFilter('unclassified')"
+                         class="px-3 py-1.5 rounded-xl text-xs font-semibold border transition ${
+                           step4GridFilter === "unclassified" ? "bg-slateink text-white border-slateink" : "bg-[#F8F7F4] text-slate-600 border-[#E2E8F0]"
+                         }">
+                         未分类 (${51 - totalClassified})
+                       </button>
+                       ${PREF_LEVELS.map(lvl => {
+                         const cnt = classifiedIds.filter(id => ratings[id].pref === lvl.id).length;
+                         return `
+                           <button type="button" onclick="setStep4GridFilter('${lvl.id}')"
+                             class="px-3 py-1.5 rounded-xl text-xs font-semibold border transition ${
+                               step4GridFilter === lvl.id ? "bg-calmteal-700 text-white border-calmteal-700" : "bg-[#F8F7F4] text-slate-600 border-[#E2E8F0]"
+                             }">
+                             ${lvl.label} (${cnt})
+                           </button>
+                         `;
+                       }).join("")}
+                     </div>
+
+                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+                       ${gridCards.map(skill => {
+                         const p = ratings[skill.id]?.pref || "";
+                         return `
+                           <div class="p-3.5 rounded-xl border transition-all flex flex-col justify-between ${
+                             p ? "bg-white border-calmteal-200" : "bg-[#F8F7F4] border-[#E2E8F0]"
+                           }">
+                             <div>
+                               <div class="flex items-center justify-between gap-2">
+                                 <span class="text-sm font-bold text-slateink">${skill.id}. ${esc(skill.title)}</span>
+                               </div>
+                               <p class="text-xs text-slate-500 mt-1 leading-relaxed">${esc(skill.desc)}</p>
+                             </div>
+                             <div class="mt-3 pt-2.5 border-t border-slate-100 flex flex-wrap gap-1">
+                               ${PREF_LEVELS.map(lvl => {
+                                 const active = p === lvl.id;
+                                 const shortNames = {
+                                   love: "非常喜欢",
+                                   like_lot: "很喜欢",
+                                   like: "喜欢",
+                                   avoid: "尽量不想",
+                                   dislike: "非常不喜欢"
+                                 };
+                                 return `
+                                   <button type="button" onclick="classifySkillPref(${skill.id}, '${lvl.id}', false)"
+                                     class="px-2 py-1 rounded-lg text-[11px] font-medium border transition ${
+                                       active
+                                         ? "bg-calmteal-700 text-white border-calmteal-700 font-semibold"
+                                         : "bg-[#F8F7F4] text-slate-600 border-[#E2E8F0] hover:border-calmteal-600"
+                                     }">
+                                     ${shortNames[lvl.id]}
+                                   </button>
+                                 `;
+                               }).join("")}
+                             </div>
+                           </div>
+                         `;
+                       }).join("")}
+                     </div>
+                   </div>`
+              }
+            </div>
+          </div>
+
+          <!-- ==================== 第二轮：按「你目前的熟练程度」定级（3 档） ==================== -->
+          <div id="step4-round2-section" class="bg-white rounded-2xl border border-[#E2E8F0] p-6 sm:p-8 shadow-2xs">
+            <div class="pb-4 border-b border-[#E2E8F0]">
+              <h3 class="text-base sm:text-lg font-bold text-slateink">
+                第二轮：按「你目前的熟练程度」定级（3 档）
+              </h3>
+              <p class="text-xs sm:text-sm text-slate-500 mt-1">
+                针对第一轮已分类的技能，快速标注你当下的熟练程度（提示：「非常熟练」「熟练」「尚未达到期望水平」每一类建议至少有 1 张）。
+              </p>
+            </div>
+
+            ${totalClassified === 0
+              ? `<div class="mt-5 py-8 text-center text-xs sm:text-sm text-slate-400 bg-[#F8F7F4] rounded-2xl border border-dashed border-[#E2E8F0]">
+                   请先在上方「第一轮」中至少对几张技能卡进行偏好分类，随后即可在此处标注熟练度。
+                 </div>`
+              : `<div class="mt-5 space-y-5">
+                   ${PREF_LEVELS.map(lvl => {
+                     const bucketSkills = MOTIVATED_SKILLS_51.filter(s => ratings[s.id]?.pref === lvl.id);
+                     if (bucketSkills.length === 0) return "";
+                     return `
+                       <div class="p-4 rounded-2xl bg-[#F8F7F4] border border-[#E2E8F0]">
+                         <div class="flex items-center justify-between mb-3">
+                           <span class="px-2.5 py-1 rounded-lg text-xs font-bold border ${lvl.badgeClass}">
+                             ${lvl.label}（${bucketSkills.length} 张）
+                           </span>
+                         </div>
+                         <div class="space-y-2">
+                           ${bucketSkills.map(skill => {
+                             const curProf = ratings[skill.id]?.prof || "";
+                             return `
+                               <div class="p-3 rounded-xl bg-white border border-[#E2E8F0] flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                                 <div>
+                                   <span class="text-sm font-bold text-slateink">${esc(skill.title)}</span>
+                                   <span class="text-xs text-slate-400 ml-2 hidden md:inline">${esc(skill.desc)}</span>
+                                 </div>
+                                 <div class="flex flex-wrap items-center gap-1.5 shrink-0">
+                                   ${PROF_LEVELS.map(pf => {
+                                     const active = curProf === pf.id;
+                                     let activeCls = "bg-calmteal-700 text-white border-calmteal-700";
+                                     if (active && pf.id === "developing") {
+                                       activeCls = "bg-warmamber-600 text-white border-warmamber-600";
+                                     }
+                                     return `
+                                       <button type="button" onclick="classifySkillProf(${skill.id}, '${pf.id}')"
+                                         class="px-2.5 py-1.5 rounded-lg text-xs font-semibold border transition ${
+                                           active
+                                             ? activeCls
+                                             : "bg-[#F8F7F4] text-slate-600 border-[#E2E8F0] hover:border-calmteal-600"
+                                         }">
+                                         ${active ? "✓ " : ""}${pf.label}
+                                       </button>
+                                     `;
+                                   }).join("")}
+                                 </div>
+                               </div>
+                             `;
+                           }).join("")}
+                         </div>
+                       </div>
+                     `;
+                   }).join("")}
+                 </div>`
+            }
+          </div>
+
+          <!-- ==================== 实时《诺德尔四象限能力诊断看板》 ==================== -->
+          <div class="bg-white rounded-2xl border border-[#E2E8F0] p-6 sm:p-8 shadow-2xs">
+            <div class="pb-4 border-b border-[#E2E8F0]">
+              <h3 class="text-base sm:text-lg font-bold text-slateink">实时《诺德尔四象限能力诊断看板》</h3>
+              <p class="text-xs text-slate-500 mt-1">
+                同时完成「喜欢程度」与「熟练程度」标注的卡牌，将自动归入以下四大能力象限：
+              </p>
+            </div>
+
+            <div class="mt-5 grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- 象限 1：动力技能 -->
+              <div class="p-4 sm:p-5 rounded-2xl bg-calmteal-50/75 border border-calmteal-200">
+                <div class="flex items-center justify-between mb-1">
+                  <h4 class="text-sm sm:text-base font-bold text-calmteal-900">⚡ 动力技能（核心王牌区）</h4>
+                  <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-calmteal-700 text-white">${quads.motivated.length}</span>
+                </div>
+                <p class="text-xs text-calmteal-800/80 mb-3">既热爱又擅长，是职业发展的核心引擎。</p>
+                <div class="flex flex-wrap gap-1.5">
+                  ${quads.motivated.length
+                    ? quads.motivated.map(t => `<span class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-white text-calmteal-900 border border-calmteal-200 shadow-2xs">${esc(t)}</span>`).join("")
+                    : `<span class="text-xs text-slate-400">暂无（在第一轮选「非常/很喜欢」且第二轮选「非常熟练/熟练」即自动汇总）</span>`
+                  }
+                </div>
+              </div>
+
+              <!-- 象限 2：发展技能 -->
+              <div class="p-4 sm:p-5 rounded-2xl bg-warmamber-50/75 border border-warmamber-200">
+                <div class="flex items-center justify-between mb-1">
+                  <h4 class="text-sm sm:text-base font-bold text-warmamber-900">🌱 发展技能（潜力成长区）</h4>
+                  <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-warmamber-600 text-white">${quads.developmental.length}</span>
+                </div>
+                <p class="text-xs text-warmamber-800/80 mb-3">有热情但待打磨，最值得向主管争取资源培养。</p>
+                <div class="flex flex-wrap gap-1.5">
+                  ${quads.developmental.length
+                    ? quads.developmental.map(t => `<span class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-white text-warmamber-900 border border-warmamber-200 shadow-2xs">${esc(t)}</span>`).join("")
+                    : `<span class="text-xs text-slate-400">暂无（在第一轮选「喜欢类」且第二轮选「尚未达到期望水平」即自动汇总）</span>`
+                  }
+                </div>
+              </div>
+
+              <!-- 象限 3：耗竭技能 -->
+              <div class="p-4 sm:p-5 rounded-2xl bg-[#F8F7F4] border border-[#E2E8F0]">
+                <div class="flex items-center justify-between mb-1">
+                  <h4 class="text-sm sm:text-base font-bold text-slateink">🔋 耗竭技能（警惕厌烦区）</h4>
+                  <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-slate-600 text-white">${quads.burnout.length}</span>
+                </div>
+                <p class="text-xs text-slate-500 mb-3">虽然能做好但消耗能量，长期依赖易倦怠。</p>
+                <div class="flex flex-wrap gap-1.5">
+                  ${quads.burnout.length
+                    ? quads.burnout.map(t => `<span class="px-2.5 py-1 rounded-lg text-xs font-medium bg-white text-slate-700 border border-[#E2E8F0]">${esc(t)}</span>`).join("")
+                    : `<span class="text-xs text-slate-400">暂无（第一轮选「尽量不想用/非常不喜欢」且第二轮选「熟练类」）</span>`
+                  }
+                </div>
+              </div>
+
+              <!-- 象限 4：非重点技能 -->
+              <div class="p-4 sm:p-5 rounded-2xl bg-[#F8F7F4] border border-[#E2E8F0]">
+                <div class="flex items-center justify-between mb-1">
+                  <h4 class="text-sm sm:text-base font-bold text-slateink">📦 非重点技能（低优规避区）</h4>
+                  <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-slate-400 text-white">${quads.lowPriority.length}</span>
+                </div>
+                <p class="text-xs text-slate-500 mb-3">非核心优势区，可借助工具或协作补位。</p>
+                <div class="flex flex-wrap gap-1.5">
+                  ${quads.lowPriority.length
+                    ? quads.lowPriority.map(t => `<span class="px-2.5 py-1 rounded-lg text-xs font-medium bg-white text-slate-500 border border-[#E2E8F0]">${esc(t)}</span>`).join("")
+                    : `<span class="text-xs text-slate-400">暂无（第一轮选「尽量不想用/非常不喜欢」且第二轮选「尚未达到期望水平」）</span>`
+                  }
+                </div>
+              </div>
+            </div>
+
+            ${quads.supporting.length > 0
+              ? `<div class="mt-3 text-xs text-slate-500">
+                   另有 ${quads.supporting.length} 项「喜欢使用且熟练」的稳健支撑技能：${esc(quads.supporting.join("、"))}
+                 </div>`
+              : ""
+            }
+
+            <!-- 一句话总结 -->
+            <div class="mt-6 pt-5 border-t border-[#E2E8F0]">
+              <label for="s4-summary" class="block text-sm font-bold text-slateink mb-2">
+                我的能力盘点一句话总结（可选）
+              </label>
+              <input type="text" id="s4-summary" value="${esc(appState.step4.abilitySummary)}"
+                oninput="onFieldChange('step4', 'abilitySummary', this.value)"
+                placeholder="例如：擅长分析与执行落地，希望重点补强战略思考与推动变革"
+                class="w-full rounded-xl border border-[#E2E8F0] bg-[#F8F7F4]/60 px-4 py-3 text-sm text-slateink placeholder-slate-400 editorial-input" />
+            </div>
+
+            ${renderStepFooterNav(4)}
+          </div>
+        </div>
+      `;
+    }
+
+    // --- Step 5: 锚定职业发展方向 · SMART 目标设定 ---
+    function renderStep5() {
+      const s5 = appState.step5;
+      const quads = computeNodelQuadrants();
+      const valTags = appState.step2.top3Values.length > 0
+        ? appState.step2.top3Values
+        : appState.step2.selectedValues.slice(0, 3);
+
+      return `
+        <div class="bg-white rounded-2xl border border-[#E2E8F0] p-6 sm:p-8 shadow-2xs">
+          <div class="pb-4 border-b border-[#E2E8F0]">
+            <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold bg-calmteal-50 text-calmteal-700 mb-2">
+              对话前准备 · Step 5 / 7
+            </span>
+            <h2 class="text-xl sm:text-2xl font-bold text-slateink">锚定职业发展方向 · SMART 目标</h2>
+            <p class="text-sm text-slate-600 mt-1.5 leading-relaxed">
+              结合前面梳理的三叶草自我认知，先把脑海中的初步职业想法写下来，再将它提炼为一整句清晰可落地的 SMART 目标。
+            </p>
+          </div>
+
+          <!-- 三叶草自我认知回显参考条 -->
+          <div class="mt-5 p-4 rounded-2xl bg-[#F8F7F4] border border-[#E2E8F0] space-y-2.5">
+            <div class="text-xs font-bold text-slate-500">🍀 你的三叶草自我认知锚点（制定目标时可对照参考）：</div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-2.5 text-xs">
+              <div class="p-2.5 rounded-xl bg-white border border-[#E2E8F0]">
+                <span class="font-bold text-warmamber-700 block mb-1">Top 3 核心价值观</span>
+                <span class="text-slate-700">${valTags.length ? esc(valTags.join("、")) : "尚未在 Step 2 选择"}</span>
+              </div>
+              <div class="p-2.5 rounded-xl bg-white border border-[#E2E8F0]">
+                <span class="font-bold text-calmteal-700 block mb-1">⚡ 动力技能（核心王牌）</span>
+                <span class="text-slate-700">${quads.motivated.length ? esc(quads.motivated.join("、")) : "尚未在 Step 4 标定"}</span>
+              </div>
+              <div class="p-2.5 rounded-xl bg-white border border-[#E2E8F0]">
+                <span class="font-bold text-warmamber-700 block mb-1">🌱 发展技能（潜力成长）</span>
+                <span class="text-slate-700">${quads.developmental.length ? esc(quads.developmental.join("、")) : "尚未在 Step 4 标定"}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 第一步：初始职业发展方向 / 想法 -->
+          <div class="mt-6">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="px-2 py-0.5 rounded-md bg-slateink text-white text-xs font-bold">第一步</span>
+              <label for="s5-initial-dir" class="text-sm sm:text-base font-bold text-slateink">
+                写下你的初始职业发展方向 / 想法
+              </label>
+            </div>
+
+            <div class="flex flex-wrap gap-1.5 mb-3">
+              ${STEP5_DIRECTION_PILLS.map(pill => {
+                const active = s5.initialDirection.trim() === pill;
+                return `
+                  <button type="button" onclick="selectDirectionPill('${esc(pill)}')"
+                    class="px-3 py-1.5 rounded-xl text-xs font-medium border transition ${
+                      active
+                        ? "bg-calmteal-700 text-white border-calmteal-700"
+                        : "bg-[#F8F7F4] text-slate-600 border-[#E2E8F0] hover:border-calmteal-600 hover:text-calmteal-800"
+                    }">
+                    ${esc(pill)}
+                  </button>
+                `;
+              }).join("")}
+            </div>
+
+            <input type="text" id="s5-initial-dir" value="${esc(s5.initialDirection)}"
+              oninput="onFieldChange('step5', 'initialDirection', this.value)"
+              placeholder="例如：我想晋升"
+              class="w-full rounded-xl border border-[#E2E8F0] bg-[#F8F7F4]/60 px-4 py-3 text-sm text-slateink placeholder-slate-400 editorial-input" />
+          </div>
+
+          <!-- 转化连接器 -->
+          <div class="my-5 flex items-center justify-center">
+            <div class="px-4 py-2 rounded-full bg-calmteal-50 border border-calmteal-200 text-xs sm:text-sm font-semibold text-calmteal-800">
+              ↓ 结合三叶草认知，把初始想法升级为一整句可落地的 SMART 目标
+            </div>
+          </div>
+
+          <!-- 第二步：一整句完整的 SMART 目标 + 五维自检胶囊 -->
+          <div>
+            <div class="flex items-center gap-2 mb-2">
+              <span class="px-2 py-0.5 rounded-md bg-calmteal-700 text-white text-xs font-bold">第二步</span>
+              <label for="s5-smart-goal" class="text-sm sm:text-base font-bold text-slateink">
+                我的 SMART 职业发展目标
+              </label>
+            </div>
+
+            <textarea id="s5-smart-goal" rows="4"
+              oninput="onFieldChange('step5', 'smartGoal', this.value)"
+              placeholder="例如：我希望在 3 年内达到下一职级的项目管理能力，并主导完成 1 个相关重点项目，获得业务方与主管的达标评估。"
+              class="w-full rounded-xl border border-[#E2E8F0] bg-[#F8F7F4]/60 p-4 text-sm text-slateink placeholder-slate-400 editorial-input leading-relaxed">${esc(s5.smartGoal)}</textarea>
+
+            <!-- SMART 五维自检小胶囊 -->
+            <div class="mt-4 p-4 rounded-2xl bg-[#F8F7F4] border border-[#E2E8F0]">
+              <div class="text-xs font-semibold text-slate-600 mb-2.5">
+                SMART 五维自检（对照你上面写的那一整句话，点击点亮已涵盖的要素）：
+              </div>
+              <div class="flex flex-wrap gap-2">
+                ${SMART_CHECK_ITEMS.map(item => {
+                  const checked = s5.smartChecks.includes(item.id);
+                  return `
+                    <button type="button" onclick="toggleSmartCheck('${item.id}')"
+                      class="px-3 py-2 rounded-xl text-xs font-semibold border transition-all flex items-center gap-1.5 ${
+                        checked
+                          ? "bg-calmteal-700 text-white border-calmteal-700 shadow-2xs"
+                          : "bg-white text-slate-600 border-[#E2E8F0] hover:border-calmteal-600"
+                      }">
+                      <span class="w-4 h-4 rounded-full flex items-center justify-center text-[10px] ${
+                        checked ? "bg-white text-calmteal-800 font-bold" : "bg-slate-100 text-slate-400"
+                      }">${checked ? "✓" : item.id}</span>
+                      <span>${item.label}</span>
+                    </button>
+                  `;
+                }).join("")}
+              </div>
+            </div>
+          </div>
+
+          ${renderStepFooterNav(5)}
+        </div>
+      `;
+    }
+
+    // --- Step 6: 对话中 · 沟通提纲 ---
+    function renderStep6() {
+      const s6 = appState.step6;
+      const selectedHints = STEP6_HELP_PILLS
+        .filter(p => s6.helpDimensions.includes(p.id))
+        .map(p => `${p.label}（${p.hint}）`)
+        .join("；");
+
+      return `
+        <div class="bg-white rounded-2xl border border-[#E2E8F0] p-6 sm:p-8 shadow-2xs">
+          <div class="pb-4 border-b border-[#E2E8F0]">
+            <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold bg-warmamber-50 text-warmamber-700 mb-2">
+              对话进行中 · Step 6 / 7
+            </span>
+            <h2 class="text-xl sm:text-2xl font-bold text-slateink">与上级的三个沟通角度</h2>
+            <p class="text-sm text-slate-600 mt-1.5 leading-relaxed">
+              围绕「现状分析 — 发展路径 — 寻求帮助」三个结构化视角展开对话，让沟通既有事实依据又有明确请求。
+            </p>
+          </div>
+
+          <div class="mt-6 space-y-5">
+            <!-- 角度 1：现状分析 -->
+            <div class="p-4 sm:p-5 rounded-2xl bg-[#F8F7F4] border border-[#E2E8F0]">
+              <h3 class="text-sm sm:text-base font-bold text-calmteal-800 mb-1">【现状分析】</h3>
+              <p class="text-xs sm:text-sm text-slate-600 mb-3">
+                在当前岗位上有效工作所需的技能和知识是什么？我目前的表现与目标是什么？
+              </p>
+              <textarea rows="3"
+                oninput="onFieldChange('step6', 'currentStatus', this.value)"
+                placeholder="梳理当前岗位的核心要求，以及你现阶段的优势表现与最聚焦的工作目标..."
+                class="w-full rounded-xl border border-[#E2E8F0] bg-white p-3.5 text-sm text-slateink placeholder-slate-400 editorial-input leading-relaxed">${esc(s6.currentStatus)}</textarea>
+            </div>
+
+            <!-- 角度 2：发展路径 -->
+            <div class="p-4 sm:p-5 rounded-2xl bg-[#F8F7F4] border border-[#E2E8F0]">
+              <h3 class="text-sm sm:text-base font-bold text-calmteal-800 mb-1">【发展路径】</h3>
+              <p class="text-xs sm:text-sm text-slate-600 mb-3">
+                为了靠近 SMART 目标，我已经做了什么？接下来还需要做什么、怎样做？
+              </p>
+              <textarea rows="3"
+                oninput="onFieldChange('step6', 'devPath', this.value)"
+                placeholder="盘点你已做出的努力与阶段成果，明确下一阶段的关键行动与能力补齐计划..."
+                class="w-full rounded-xl border border-[#E2E8F0] bg-white p-3.5 text-sm text-slateink placeholder-slate-400 editorial-input leading-relaxed">${esc(s6.devPath)}</textarea>
+            </div>
+
+            <!-- 角度 3：寻求帮助 -->
+            <div class="p-4 sm:p-5 rounded-2xl bg-[#F8F7F4] border border-[#E2E8F0]">
+              <h3 class="text-sm sm:text-base font-bold text-calmteal-800 mb-1">【寻求帮助】</h3>
+              <p class="text-xs sm:text-sm text-slate-600 mb-3">
+                勾选你希望获得的支持维度（可多选），并具体写下希望上级/导师提供的帮助：
+              </p>
+
+              <div class="flex flex-wrap gap-2 mb-3.5">
+                ${STEP6_HELP_PILLS.map(pill => {
+                  const active = s6.helpDimensions.includes(pill.id);
+                  return `
+                    <button type="button" onclick="toggleStep6Help('${pill.id}')"
+                      class="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold border transition-all ${
+                        active
+                          ? "bg-calmteal-700 text-white border-calmteal-700 shadow-2xs"
+                          : "bg-white text-slate-700 border-[#E2E8F0] hover:border-calmteal-600"
+                      }">
+                      ${active ? "✓ " : ""}${pill.label}
+                    </button>
+                  `;
+                }).join("")}
+              </div>
+
+              ${selectedHints
+                ? `<div class="mb-3 px-3 py-2 rounded-xl bg-warmamber-50 border border-warmamber-200 text-xs text-warmamber-800 leading-relaxed">
+                     参考提示：${esc(selectedHints)}
+                   </div>`
+                : ""
+              }
+
+              <textarea rows="3"
+                oninput="onFieldChange('step6', 'helpDetail', this.value)"
+                placeholder="写下希望上级或导师提供的具体支持、资源协调或反馈频率..."
+                class="w-full rounded-xl border border-[#E2E8F0] bg-white p-3.5 text-sm text-slateink placeholder-slate-400 editorial-input leading-relaxed">${esc(s6.helpDetail)}</textarea>
+            </div>
+          </div>
+
+          ${renderStepFooterNav(6)}
+        </div>
+      `;
+    }
+
+    // --- Step 7: 对话后 · 技能沉淀清单 ---
+    function renderStep7() {
+      const s7 = appState.step7;
+      const cards = [
+        {
+          badge: "当下胜任",
+          title: "在当前岗位上",
+          desc: "有效履行当下核心职责所需的技能和知识",
+          placeholder: "记录对话后确认的、在当前岗位上需要精进或巩固的关键技能与业务知识...",
+          field: "skillsCurrent",
+          val: s7.skillsCurrent
+        },
+        {
+          badge: "进阶储备",
+          title: "未来的职位",
+          desc: "为迈向目标岗位/下一职级需要提前储备的技能和知识",
+          placeholder: "记录与上级对齐后，为下一职级或目标岗位需要提前锻炼的能力与项目经验...",
+          field: "skillsFuture",
+          val: s7.skillsFuture
+        },
+        {
+          badge: "长期壁垒",
+          title: "保持长期竞争力",
+          desc: "跨越单一岗位周期、值得持续投入的底层能力",
+          placeholder: "沉淀不局限于单一岗位的长期竞争力（如跨界整合、复杂决策、AI 赋能等）...",
+          field: "skillsLongTerm",
+          val: s7.skillsLongTerm
+        }
+      ];
+
+      return `
+        <div class="bg-white rounded-2xl border border-[#E2E8F0] p-6 sm:p-8 shadow-2xs">
+          <div class="pb-4 border-b border-[#E2E8F0]">
+            <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold bg-warmamber-50 text-warmamber-700 mb-2">
+              对话后复盘 · Step 7 / 7
+            </span>
+            <h2 class="text-xl sm:text-2xl font-bold text-slateink">能力与知识行动清单</h2>
+            <p class="text-sm text-slate-600 mt-1.5 leading-relaxed">
+              将职业对话中的共识转化为分层次的能力发展清单，让每一次成长都有清晰抓手。
+            </p>
+          </div>
+
+          <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+            ${cards.map((c, idx) => `
+              <div class="p-4 sm:p-5 rounded-2xl bg-[#F8F7F4] border border-[#E2E8F0] flex flex-col">
+                <span class="inline-block w-fit px-2.5 py-0.5 rounded-md text-[11px] font-bold mb-2 ${
+                  idx === 0 ? "bg-slate-200/80 text-slate-700" : idx === 1 ? "bg-calmteal-100 text-calmteal-800" : "bg-warmamber-100 text-warmamber-800"
+                }">
+                  ${c.badge}
+                </span>
+                <h3 class="text-base font-bold text-slateink">${c.title}</h3>
+                <p class="text-xs text-slate-500 mt-1 mb-3 leading-relaxed">${c.desc}</p>
+                <textarea rows="6"
+                  oninput="onFieldChange('step7', '${c.field}', this.value)"
+                  placeholder="${c.placeholder}"
+                  class="w-full flex-1 rounded-xl border border-[#E2E8F0] bg-white p-3.5 text-sm text-slateink placeholder-slate-400 editorial-input leading-relaxed">${esc(c.val)}</textarea>
+              </div>
+            `).join("")}
+          </div>
+
+          ${renderStepFooterNav(7)}
+        </div>
+      `;
+    }
+
+    // --- Step 8: 我的职业对话准备单（One-Pager） ---
+    function renderTextOrDash(text) {
+      if (text && text.trim()) {
+        return `<div class="text-sm text-slateink whitespace-pre-line leading-relaxed">${esc(text.trim())}</div>`;
+      }
+      return `<div class="text-sm text-slate-400">—</div>`;
+    }
+
+    function renderStep8() {
+      const quads = computeNodelQuadrants();
+      const s1 = appState.step1;
+      const s2 = appState.step2;
+      const s3 = appState.step3;
+      const s4 = appState.step4;
+      const s5 = appState.step5;
+      const s6 = appState.step6;
+      const s7 = appState.step7;
+      const s8 = appState.step8;
+
+      const selectedHelpObjects = STEP6_HELP_PILLS.filter(p => s6.helpDimensions.includes(p.id));
+      const checkedSmartObjs = SMART_CHECK_ITEMS.filter(i => s5.smartChecks.includes(i.id));
+
+      return `
+        <div>
+          <!-- 顶部操作栏（打印时隐藏） -->
+          <div class="no-print mb-5 bg-white rounded-2xl border border-[#E2E8F0] p-4 flex flex-wrap items-center justify-between gap-3 shadow-2xs">
+            <button type="button" onclick="switchStep(7)"
+              class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-medium text-slate-600 bg-[#F8F7F4] hover:bg-slate-200/70 border border-[#E2E8F0] transition">
+              ← 返回修改
+            </button>
+
+            <div class="flex flex-wrap items-center gap-2">
+              <button type="button" onclick="copyFullSummaryText()"
+                class="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-white bg-calmteal-700 hover:bg-calmteal-800 transition shadow-2xs">
+                📋 复制完整文本摘要
+              </button>
+
+              <button type="button" onclick="triggerPrintOnePager()"
+                class="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-warmamber-800 bg-warmamber-50 hover:bg-warmamber-100 border border-warmamber-200 transition">
+                🖨️ 打印 / 保存为 PDF
+              </button>
+
+              <button type="button" onclick="openResetModal()"
+                class="px-3 py-2.5 rounded-xl text-xs font-medium text-slate-400 hover:text-rose-600 transition">
+                清空重置
+              </button>
+            </div>
+          </div>
+
+          <!-- ==================== A4 行政摘要风《职业发展对话准备单》 ==================== -->
+          <div class="one-pager-card bg-white rounded-2xl border border-[#E2E8F0] shadow-xs overflow-hidden">
+            <!-- 抬头 -->
+            <div class="bg-calmteal-800 text-white px-6 py-6 sm:px-8">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <div class="text-[11px] uppercase tracking-widest text-calmteal-200 font-semibold mb-1">
+                    Career Development Conversation · Executive One-Pager
+                  </div>
+                  <h2 class="text-xl sm:text-2xl font-bold tracking-tight">我的《职业发展对话准备单》</h2>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-3 bg-calmteal-900/60 px-4 py-2.5 rounded-xl border border-calmteal-700 text-xs sm:text-sm">
+                  <div>
+                    <span class="text-calmteal-200">姓名/昵称：</span>
+                    <span class="font-bold">${esc((appState.studentName || "").trim()) || "—"}</span>
+                  </div>
+                  <span class="text-calmteal-600">|</span>
+                  <div class="flex items-center gap-1.5">
+                    <label for="s8-date" class="text-calmteal-200">日期：</label>
+                    <input type="date" id="s8-date" value="${esc(s8.planDate)}"
+                      oninput="onFieldChange('step8', 'planDate', this.value)"
+                      class="bg-transparent text-white font-semibold focus:outline-none" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 汇总主体 -->
+            <div class="p-6 sm:p-8 space-y-6">
+
+              <!-- 一、本次谈话目标 -->
+              <section class="print-avoid-break">
+                <div class="flex items-center justify-between border-b border-[#E2E8F0] pb-2 mb-3">
+                  <h3 class="text-sm sm:text-base font-bold text-calmteal-800">一、【对话前】本次谈话的核心目标</h3>
+                  <button type="button" onclick="switchStep(1)" class="no-print text-xs text-slate-400 hover:text-calmteal-700">编辑</button>
+                </div>
+                <div class="p-4 rounded-xl bg-[#F8F7F4] border border-[#E2E8F0] space-y-2">
+                  ${s1.selectedPills.length
+                    ? `<div class="flex flex-wrap gap-1.5 mb-1">
+                         ${s1.selectedPills.map(p => `<span class="px-2.5 py-0.5 rounded-lg text-xs font-semibold bg-calmteal-100 text-calmteal-800">${esc(p)}</span>`).join("")}
+                       </div>`
+                    : ""
+                  }
+                  ${renderTextOrDash(s1.conversationGoal)}
+                </div>
+              </section>
+
+              <!-- 二、三叶草自我认知画像 -->
+              <section class="print-avoid-break">
+                <div class="flex items-center justify-between border-b border-[#E2E8F0] pb-2 mb-3">
+                  <h3 class="text-sm sm:text-base font-bold text-calmteal-800">二、【三叶草自我认知画像】价值 · 兴趣 · 能力</h3>
+                  <div class="no-print flex items-center gap-2 text-xs text-slate-400">
+                    <button type="button" onclick="switchStep(2)" class="hover:text-calmteal-700">价值</button>
+                    <span>·</span>
+                    <button type="button" onclick="switchStep(3)" class="hover:text-calmteal-700">兴趣</button>
+                    <span>·</span>
+                    <button type="button" onclick="switchStep(4)" class="hover:text-calmteal-700">能力</button>
+                  </div>
+                </div>
+
+                <div class="space-y-3">
+                  <!-- 价值 -->
+                  <div class="p-4 rounded-xl bg-[#F8F7F4] border border-[#E2E8F0]">
+                    <div class="text-xs font-bold text-slate-500 mb-2">1. 核心价值观（★ 暖琥珀标星为 Top 3 底线）</div>
+                    ${s2.selectedValues.length === 0
+                      ? `<div class="text-sm text-slate-400">—</div>`
+                      : `<div class="flex flex-wrap gap-1.5">
+                           ${s2.selectedValues.map(w => {
+                             const star = s2.top3Values.includes(w);
+                             return `<span class="px-2.5 py-1 rounded-lg text-xs font-semibold ${
+                               star
+                                 ? "bg-warmamber-500 text-white"
+                                 : "bg-white text-slateink border border-[#E2E8F0]"
+                             }">${star ? "★ " : ""}${esc(w)}</span>`;
+                           }).join("")}
+                         </div>`
+                    }
+                  </div>
+
+                  <!-- 兴趣 -->
+                  <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div class="p-3.5 rounded-xl bg-[#F8F7F4] border border-[#E2E8F0]">
+                      <div class="text-xs font-bold text-slate-500 mb-1">2.1 心流与能量来源</div>
+                      ${renderTextOrDash(s3.q1Flow)}
+                    </div>
+                    <div class="p-3.5 rounded-xl bg-[#F8F7F4] border border-[#E2E8F0]">
+                      <div class="text-xs font-bold text-slate-500 mb-1">2.2 好奇与主动探索</div>
+                      ${renderTextOrDash(s3.q2Curiosity)}
+                    </div>
+                    <div class="p-3.5 rounded-xl bg-[#F8F7F4] border border-[#E2E8F0]">
+                      <div class="text-xs font-bold text-slate-500 mb-1">2.3 消耗与排斥边界</div>
+                      ${renderTextOrDash(s3.q3Drain)}
+                    </div>
+                  </div>
+
+                  <!-- 能力四象限 -->
+                  <div class="p-4 rounded-xl bg-[#F8F7F4] border border-[#E2E8F0] space-y-2.5">
+                    <div class="text-xs font-bold text-slate-500">3. 诺德尔动力技能盘点</div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-2.5 text-xs">
+                      <div class="p-3 rounded-lg bg-white border border-calmteal-200">
+                        <div class="font-bold text-calmteal-800 mb-1">⚡ 动力技能（核心王牌）</div>
+                        <div class="text-slateink leading-relaxed">${quads.motivated.length ? esc(quads.motivated.join("、")) : "—"}</div>
+                      </div>
+                      <div class="p-3 rounded-lg bg-white border border-warmamber-200">
+                        <div class="font-bold text-warmamber-800 mb-1">🌱 发展技能（潜力成长）</div>
+                        <div class="text-slateink leading-relaxed">${quads.developmental.length ? esc(quads.developmental.join("、")) : "—"}</div>
+                      </div>
+                      <div class="p-3 rounded-lg bg-white border border-[#E2E8F0]">
+                        <div class="font-bold text-slate-600 mb-1">🔋 耗竭技能（警惕厌烦）</div>
+                        <div class="text-slate-600 leading-relaxed">${quads.burnout.length ? esc(quads.burnout.join("、")) : "—"}</div>
+                      </div>
+                    </div>
+                    ${s4.abilitySummary.trim()
+                      ? `<div class="pt-1 text-xs text-slate-700"><strong>一句话总结：</strong>${esc(s4.abilitySummary.trim())}</div>`
+                      : ""
+                    }
+                  </div>
+                </div>
+              </section>
+
+              <!-- 三、职业发展方向与 SMART 目标 -->
+              <section class="print-avoid-break">
+                <div class="flex items-center justify-between border-b border-[#E2E8F0] pb-2 mb-3">
+                  <h3 class="text-sm sm:text-base font-bold text-calmteal-800">三、【对话前】职业发展方向与 SMART 目标</h3>
+                  <button type="button" onclick="switchStep(5)" class="no-print text-xs text-slate-400 hover:text-calmteal-700">编辑</button>
+                </div>
+                <div class="p-4 rounded-xl bg-[#F8F7F4] border border-[#E2E8F0] space-y-2.5">
+                  <div>
+                    <span class="text-xs font-bold text-slate-500">初始职业发展方向：</span>
+                    <span class="text-sm font-semibold text-slateink">${esc(s5.initialDirection.trim()) || "—"}</span>
+                  </div>
+                  <div>
+                    <div class="text-xs font-bold text-slate-500 mb-1">完整 SMART 职业发展目标：</div>
+                    ${renderTextOrDash(s5.smartGoal)}
+                  </div>
+                  ${checkedSmartObjs.length
+                    ? `<div class="flex flex-wrap gap-1.5 pt-1">
+                         ${checkedSmartObjs.map(i => `<span class="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-calmteal-100 text-calmteal-800">✓ ${esc(i.label)}</span>`).join("")}
+                       </div>`
+                    : ""
+                  }
+                </div>
+              </section>
+
+              <!-- 四、对话中沟通提纲 & 五、对话后技能沉淀清单 -->
+              <section class="print-avoid-break grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div>
+                  <div class="flex items-center justify-between border-b border-[#E2E8F0] pb-2 mb-3">
+                    <h3 class="text-sm sm:text-base font-bold text-calmteal-800">四、【对话中】沟通提纲</h3>
+                    <button type="button" onclick="switchStep(6)" class="no-print text-xs text-slate-400 hover:text-calmteal-700">编辑</button>
+                  </div>
+                  <div class="p-4 rounded-xl bg-[#F8F7F4] border border-[#E2E8F0] space-y-3">
+                    <div>
+                      <div class="text-xs font-bold text-slate-500 mb-0.5">现状分析</div>
+                      ${renderTextOrDash(s6.currentStatus)}
+                    </div>
+                    <div>
+                      <div class="text-xs font-bold text-slate-500 mb-0.5">发展路径</div>
+                      ${renderTextOrDash(s6.devPath)}
+                    </div>
+                    <div>
+                      <div class="text-xs font-bold text-slate-500 mb-1">寻求帮助</div>
+                      ${selectedHelpObjects.length
+                        ? `<div class="flex flex-wrap gap-1 mb-1.5">
+                             ${selectedHelpObjects.map(h => `<span class="px-2 py-0.5 rounded-md text-xs font-semibold bg-calmteal-100 text-calmteal-800">${h.label}</span>`).join("")}
+                           </div>`
+                        : ""
+                      }
+                      ${renderTextOrDash(s6.helpDetail)}
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <div class="flex items-center justify-between border-b border-[#E2E8F0] pb-2 mb-3">
+                    <h3 class="text-sm sm:text-base font-bold text-calmteal-800">五、【对话后】技能沉淀清单</h3>
+                    <button type="button" onclick="switchStep(7)" class="no-print text-xs text-slate-400 hover:text-calmteal-700">编辑</button>
+                  </div>
+                  <div class="p-4 rounded-xl bg-[#F8F7F4] border border-[#E2E8F0] space-y-3">
+                    <div>
+                      <div class="text-xs font-bold text-slate-500 mb-0.5">在当前岗位上</div>
+                      ${renderTextOrDash(s7.skillsCurrent)}
+                    </div>
+                    <div>
+                      <div class="text-xs font-bold text-slate-500 mb-0.5">未来的职位</div>
+                      ${renderTextOrDash(s7.skillsFuture)}
+                    </div>
+                    <div>
+                      <div class="text-xs font-bold text-slate-500 mb-0.5">保持长期竞争力</div>
+                      ${renderTextOrDash(s7.skillsLongTerm)}
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderStepView() {
+      const view = document.getElementById("step-view");
+      if (!view) return;
+
+      view.classList.remove("animate-reveal");
+      void view.offsetWidth;
+      view.classList.add("animate-reveal");
+
+      switch (appState.currentStep) {
+        case 1: view.innerHTML = renderStep1(); break;
+        case 2: view.innerHTML = renderStep2(); break;
+        case 3: view.innerHTML = renderStep3(); break;
+        case 4: view.innerHTML = renderStep4(); break;
+        case 5: view.innerHTML = renderStep5(); break;
+        case 6: view.innerHTML = renderStep6(); break;
+        case 7: view.innerHTML = renderStep7(); break;
+        case 8: view.innerHTML = renderStep8(); break;
+        default: view.innerHTML = renderStep1();
+      }
+    }
+
+    function renderApp() {
+      const nameInput = document.getElementById("header-student-name");
+      if (nameInput && nameInput.value !== appState.studentName) {
+        nameInput.value = appState.studentName || "";
+      }
+      renderNavGrid();
+      renderStepView();
+    }
+
+    // 初始化启动
+    window.addEventListener("DOMContentLoaded", () => {
+      checkQueryArchiveParam();
+      getOrCreateStudentUID();
+      loadLocalState();
+      renderApp();
+    });
+  </script>
+</body>
+</html>
